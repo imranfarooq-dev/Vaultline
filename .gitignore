@@ -10,3 +10,9 @@ coverage
 *.tfstate.*
 *.tfplan
 .terraform.lock.hcl.bak
+# generated at deploy time
+k8s/overlays/aws/app.env
+k8s/overlays/aws/.generated/
+# CI reports and Jenkins secrets
+reports/
+jenkins/.env
