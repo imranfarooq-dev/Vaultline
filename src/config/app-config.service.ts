@@ -12,4 +12,8 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AppConfigService {
   constructor(private readonly config: ConfigService) {}
+
+  get nodeEnv(): string { return this.config.getOrThrow('NODE_ENV'); }
+  get appMode(): 'api' | 'worker' { return this.config.getOrThrow('APP_MODE'); }
+  get port(): number { return Number(this.config.getOrThrow('PORT')); }
 }
