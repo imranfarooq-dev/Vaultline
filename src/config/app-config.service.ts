@@ -40,4 +40,15 @@ export class AppConfigService {
       replicationFactor: Number(this.config.getOrThrow('KAFKA_REPLICATION_FACTOR')),
     };
   }
+
+  get ai() {
+    return {
+      provider: this.config.getOrThrow<'ollama' | 'fake'>('AI_PROVIDER'),
+      baseUrl: this.config.getOrThrow<string>('OLLAMA_BASE_URL'),
+      chatModel: this.config.getOrThrow<string>('OLLAMA_CHAT_MODEL'),
+      embeddingModel: this.config.getOrThrow<string>('OLLAMA_EMBEDDING_MODEL'),
+      autoIngest: this.bool('AI_AUTO_INGEST'),
+      knowledgeDir: this.config.getOrThrow<string>('KNOWLEDGE_DIR'),
+    };
+  }
 }
