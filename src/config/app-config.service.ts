@@ -29,4 +29,15 @@ export class AppConfigService {
       ssl: this.bool('DB_SSL'),
     };
   }
+
+  get kafka() {
+    return {
+      enabled: this.bool('KAFKA_ENABLED'),
+      brokers: this.config.getOrThrow<string>('KAFKA_BROKERS').split(',').map((b) => b.trim()),
+      clientId: this.config.getOrThrow<string>('KAFKA_CLIENT_ID'),
+      consumerGroup: this.config.getOrThrow<string>('KAFKA_CONSUMER_GROUP'),
+      ssl: this.bool('KAFKA_SSL'),
+      replicationFactor: Number(this.config.getOrThrow('KAFKA_REPLICATION_FACTOR')),
+    };
+  }
 }
