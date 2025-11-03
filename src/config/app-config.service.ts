@@ -16,4 +16,17 @@ export class AppConfigService {
   get nodeEnv(): string { return this.config.getOrThrow('NODE_ENV'); }
   get appMode(): 'api' | 'worker' { return this.config.getOrThrow('APP_MODE'); }
   get port(): number { return Number(this.config.getOrThrow('PORT')); }
+  get logFormat(): 'pretty' | 'json' { return this.config.getOrThrow('LOG_FORMAT'); }
+
+  get database() {
+    return {
+      host: this.config.getOrThrow<string>('DB_HOST'),
+      port: Number(this.config.getOrThrow('DB_PORT')),
+      username: this.config.getOrThrow<string>('DB_USER'),
+      password: this.config.getOrThrow<string>('DB_PASSWORD'),
+      database: this.config.getOrThrow<string>('DB_NAME'),
+      runMigrations: this.bool('DB_RUN_MIGRATIONS'),
+      ssl: this.bool('DB_SSL'),
+    };
+  }
 }
