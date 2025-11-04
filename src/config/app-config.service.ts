@@ -51,4 +51,8 @@ export class AppConfigService {
       knowledgeDir: this.config.getOrThrow<string>('KNOWLEDGE_DIR'),
     };
   }
+
+  get internalTransferFeeMinor(): number {
+    return Number(this.config.getOrThrow('INTERNAL_TRANSFER_FEE_MINOR'));
+  }
 }
