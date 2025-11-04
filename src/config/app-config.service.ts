@@ -55,4 +55,12 @@ export class AppConfigService {
   get internalTransferFeeMinor(): number {
     return Number(this.config.getOrThrow('INTERNAL_TRANSFER_FEE_MINOR'));
   }
+
+  /** Fraud rules are separated by ";" so they fit in one env variable. */
+  get fraudRules(): string[] {
+    return (this.config.get<string>('FRAUD_RULES') ?? '')
+      .split(';')
+      .map((rule) => rule.trim())
+      .filter(Boolean);
+  }
 }
