@@ -63,4 +63,9 @@ export class AppConfigService {
       .map((rule) => rule.trim())
       .filter(Boolean);
   }
+
+  private bool(key: string): boolean {
+    const value = this.config.get(key);
+    return value === true || value === 'true';
+  }
 }
