@@ -17,4 +17,10 @@ async function bootstrap(): Promise<void> {
     app.setGlobalPrefix('api'); // the worker only exposes /api/health for Kubernetes probes
     app.enableShutdownHooks();
   }
+
+  const port = Number(process.env.PORT ?? 3000);
+  await app.listen(port, '0.0.0.0');
+  Logger.log(mode === 'api' ? `API ready on http://localhost:${port}/api  |  Swagger: http://localhost:${port}/docs` : `Worker running (health on :${port})`, 'Bootstrap');
 }
+
+void bootstrap();
