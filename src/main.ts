@@ -8,4 +8,13 @@ import { WorkerModule } from './worker.module';
 async function bootstrap(): Promise<void> {
   const mode = process.env.APP_MODE === 'worker' ? 'worker' : 'api';
   const logger = new ConsoleLogger({ json: process.env.LOG_FORMAT === 'json', prefix: mode === 'api' ? 'BankAPI' : 'BankWorker' });
+
+  const app = await NestFactory.create(mode === 'api' ? AppModule : WorkerModule, { logger });
+
+  if (mode === 'api') {
+    configureApp(app);
+  } else {
+    app.setGlobalPrefix('api'); // the worker only exposes /api/health for Kubernetes probes
+    app.enableShutdownHooks();
+  }
 }
