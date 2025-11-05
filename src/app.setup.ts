@@ -8,4 +8,17 @@ export const configureApp = (app: INestApplication, withSwagger = true): INestAp
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
   app.useGlobalFilters(new DomainExceptionFilter());
   app.enableShutdownHooks();
+
+  if (withSwagger) {
+    const document = SwaggerModule.createDocument(
+      app,
+      new DocumentBuilder()
+        .setTitle('NestBank - GoF Design Patterns')
+        .setDescription('Every endpoint group is named after the design patterns it demonstrates. Start with GET /api/patterns.')
+        .setVersion('1.0.0')
+        .build(),
+    );
+    SwaggerModule.setup('docs', app, document);
+  }
+  return app;
 };
