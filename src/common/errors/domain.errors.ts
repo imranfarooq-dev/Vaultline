@@ -16,3 +16,8 @@ export class NotFoundError extends DomainError {
   readonly code = 'NOT_FOUND';
   readonly httpStatus = 404;
 }
+
+export class BusinessRuleError extends DomainError {
+  readonly code = 'BUSINESS_RULE_VIOLATION';
+  readonly httpStatus = 422;
+}
