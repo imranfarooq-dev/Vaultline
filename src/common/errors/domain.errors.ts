@@ -11,3 +11,8 @@ export abstract class DomainError extends Error {
     this.name = new.target.name;
   }
 }
+
+export class NotFoundError extends DomainError {
+  readonly code = 'NOT_FOUND';
+  readonly httpStatus = 404;
+}
