@@ -21,3 +21,8 @@ export class BusinessRuleError extends DomainError {
   readonly code = 'BUSINESS_RULE_VIOLATION';
   readonly httpStatus = 422;
 }
+
+export class InvalidStateTransitionError extends DomainError {
+  readonly code = 'INVALID_STATE_TRANSITION';
+  readonly httpStatus = 409;
+}
