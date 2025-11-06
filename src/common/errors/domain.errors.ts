@@ -26,3 +26,8 @@ export class InvalidStateTransitionError extends DomainError {
   readonly code = 'INVALID_STATE_TRANSITION';
   readonly httpStatus = 409;
 }
+
+export class FraudSuspectedError extends DomainError {
+  readonly code = 'FRAUD_SUSPECTED';
+  readonly httpStatus = 403;
+}
