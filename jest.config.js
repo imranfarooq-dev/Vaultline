@@ -7,3 +7,10 @@
  *   e2e          whole HTTP app against real Postgres (needs Docker)
  */
 const tsJest = ['ts-jest', { tsconfig: '<rootDir>/tsconfig.test.json' }];
+
+const base = {
+  rootDir: __dirname,
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  transform: { '^.+\\.ts$': tsJest },
+  testEnvironment: 'node',
+};
