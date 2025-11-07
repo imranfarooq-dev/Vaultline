@@ -14,3 +14,14 @@ const base = {
   transform: { '^.+\\.ts$': tsJest },
   testEnvironment: 'node',
 };
+
+module.exports = {
+  coverageDirectory: '<rootDir>/coverage',
+  collectCoverageFrom: ['src/**/*.ts', '!src/main.ts', '!src/**/*.module.ts', '!src/database/migrations/**'],
+  projects: [
+    { ...base, displayName: 'unit', testMatch: ['<rootDir>/src/**/*.spec.ts', '<rootDir>/test/docs/**/*.spec.ts'] },
+    { ...base, displayName: 'contract', testMatch: ['<rootDir>/test/contract/**/*.contract-spec.ts'] },
+    { ...base, displayName: 'integration', testMatch: ['<rootDir>/test/integration/**/*.int-spec.ts'], setupFilesAfterEnv: ['<rootDir>/test/support/long-timeout.ts'] },
+    { ...base, displayName: 'e2e', testMatch: ['<rootDir>/test/e2e/**/*.e2e-spec.ts'], setupFilesAfterEnv: ['<rootDir>/test/support/long-timeout.ts'] },
+  ],
+};
