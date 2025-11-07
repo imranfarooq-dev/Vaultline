@@ -31,3 +31,8 @@ export class FraudSuspectedError extends DomainError {
   readonly code = 'FRAUD_SUSPECTED';
   readonly httpStatus = 403;
 }
+
+export class DependencyUnavailableError extends DomainError {
+  readonly code = 'DEPENDENCY_UNAVAILABLE';
+  readonly httpStatus = 503;
+}
