@@ -6,3 +6,10 @@ export enum AccountType {
   CURRENT = 'CURRENT',
   FIXED_DEPOSIT = 'FIXED_DEPOSIT',
 }
+
+export enum AccountStatus {
+  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
+  FROZEN = 'FROZEN',
+  CLOSED = 'CLOSED',
+}
