@@ -10,3 +10,14 @@ export enum LedgerEntryType {
   INTEREST = 'INTEREST',
   REVERSAL = 'REVERSAL',
 }
+
+/**
+ * An immutable line in the ledger. Balances are never edited silently:
+ * every change is a new entry, and a mistake is fixed with a REVERSAL entry.
+ */
+@Entity('ledger_entries')
+@Index(['accountId', 'createdAt', 'id'])
+export class LedgerEntryEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+}
