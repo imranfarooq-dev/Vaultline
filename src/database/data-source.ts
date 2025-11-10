@@ -13,3 +13,13 @@ export interface DbConnectionOptions {
   database: string;
   ssl?: boolean;
 }
+
+export const buildDataSourceOptions = ({ ssl, ...db }: DbConnectionOptions): DataSourceOptions => ({
+  type: 'postgres',
+  ...db,
+  // RDS certificates are signed by Amazon's CA; for a learning project we accept them without bundling the CA file.
+  ssl: ssl ? { rejectUnauthorized: false } : false,
+  entities: ALL_ENTITIES,
+  migrations: MIGRATIONS,
+  synchronize: false,
+});
