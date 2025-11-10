@@ -13,3 +13,9 @@ export enum AccountStatus {
   FROZEN = 'FROZEN',
   CLOSED = 'CLOSED',
 }
+
+@Entity('accounts')
+export class AccountEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+}
