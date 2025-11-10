@@ -20,4 +20,10 @@ export enum LedgerEntryType {
 export class LedgerEntryEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ name: 'account_id', type: 'uuid' })
+  accountId: string;
+
+  @Column({ type: 'varchar', length: 20 })
+  type: LedgerEntryType;
 }
