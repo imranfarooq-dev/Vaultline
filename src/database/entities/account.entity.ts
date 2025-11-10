@@ -18,4 +18,8 @@ export enum AccountStatus {
 export class AccountEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Index({ unique: true })
+  @Column({ name: 'account_number', length: 24 })
+  accountNumber: string;
 }
