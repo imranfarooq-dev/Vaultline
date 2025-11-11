@@ -22,4 +22,8 @@ export class AccountEntity {
   @Index({ unique: true })
   @Column({ name: 'account_number', length: 24 })
   accountNumber: string;
+
+  @Index()
+  @Column({ name: 'owner_name', length: 120 })
+  ownerName: string;
 }
