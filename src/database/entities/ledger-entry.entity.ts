@@ -26,4 +26,8 @@ export class LedgerEntryEntity {
 
   @Column({ type: 'varchar', length: 20 })
   type: LedgerEntryType;
+
+  /** Positive for credits, negative for debits. */
+  @Column({ name: 'amount_minor', type: 'bigint', transformer: bigintTransformer })
+  amountMinor: number;
 }
