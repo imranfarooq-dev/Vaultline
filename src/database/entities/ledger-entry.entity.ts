@@ -30,4 +30,11 @@ export class LedgerEntryEntity {
   /** Positive for credits, negative for debits. */
   @Column({ name: 'amount_minor', type: 'bigint', transformer: bigintTransformer })
   amountMinor: number;
+
+  @Column({ name: 'balance_after_minor', type: 'bigint', transformer: bigintTransformer })
+  balanceAfterMinor: number;
+
+  @Index()
+  @Column({ length: 40 })
+  reference: string;
 }
