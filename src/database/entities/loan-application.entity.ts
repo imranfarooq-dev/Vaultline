@@ -6,3 +6,9 @@ export enum LoanStatus {
   REJECTED = 'REJECTED',
   MANUAL_REVIEW = 'MANUAL_REVIEW',
 }
+
+@Entity('loan_applications')
+export class LoanApplicationEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+}
