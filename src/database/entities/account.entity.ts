@@ -32,4 +32,10 @@ export class AccountEntity {
 
   @Column({ length: 3 })
   currency: string;
+
+  @Column({ name: 'product_code', type: 'varchar', length: 40, nullable: true })
+  productCode: string | null;
+
+  @Column({ name: 'balance_minor', type: 'bigint', default: 0, transformer: bigintTransformer })
+  balanceMinor: number;
 }
