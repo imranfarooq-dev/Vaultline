@@ -38,4 +38,10 @@ export class AccountEntity {
 
   @Column({ name: 'balance_minor', type: 'bigint', default: 0, transformer: bigintTransformer })
   balanceMinor: number;
+
+  @Column({ name: 'daily_withdrawal_limit_minor', type: 'bigint', transformer: bigintTransformer })
+  dailyWithdrawalLimitMinor: number;
+
+  @Column({ name: 'annual_interest_rate', type: 'numeric', precision: 5, scale: 2, default: 0, transformer: { to: (v: number) => v, from: (v: string) => Number(v) } })
+  annualInterestRate: number;
 }
