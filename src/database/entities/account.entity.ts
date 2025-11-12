@@ -44,4 +44,10 @@ export class AccountEntity {
 
   @Column({ name: 'annual_interest_rate', type: 'numeric', precision: 5, scale: 2, default: 0, transformer: { to: (v: number) => v, from: (v: string) => Number(v) } })
   annualInterestRate: number;
+
+  @Column({ type: 'varchar', length: 12 })
+  status: AccountStatus;
+
+  @VersionColumn()
+  version: number;
 }
