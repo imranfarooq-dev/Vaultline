@@ -26,4 +26,10 @@ export class AccountEntity {
   @Index()
   @Column({ name: 'owner_name', length: 120 })
   ownerName: string;
+
+  @Column({ type: 'varchar', length: 20 })
+  type: AccountType;
+
+  @Column({ length: 3 })
+  currency: string;
 }
