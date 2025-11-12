@@ -37,4 +37,10 @@ export class LedgerEntryEntity {
   @Index()
   @Column({ length: 40 })
   reference: string;
+
+  @Column({ length: 255, default: '' })
+  description: string;
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  createdAt: Date;
 }
