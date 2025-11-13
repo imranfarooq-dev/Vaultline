@@ -12,4 +12,11 @@ export class NotificationEntity {
 
   @Column({ length: 255 })
   message: string;
+
+  @Column({ type: 'jsonb' })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload: Record<string, any>;
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  createdAt: Date;
 }
