@@ -11,4 +11,10 @@ export enum LoanStatus {
 export class LoanApplicationEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ name: 'applicant_name', length: 120 })
+  applicantName: string;
+
+  @Column({ name: 'account_id', type: 'uuid' })
+  accountId: string;
 }
