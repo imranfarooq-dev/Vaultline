@@ -9,4 +9,18 @@ import { dataSourceFromEnv } from './data-source';
 async function run(): Promise<void> {
   const logger = new Logger('Migrations');
   const dataSource = dataSourceFromEnv();
+
+  for (let attempt = 1; attempt <= 30; attempt++) {
+    try {
+      await dataSource.initialize();
+      break;
+    } catch (error) {
+      const message = (error as Error).message;
+      const transient = /ECONNREFUSED|ENOTFOUND|EAI_AGAIN|timeout|starting up|terminating|does not exist/i.test(message);
+      if (!transient) throw error;
+      logger.warn(`Database not ready (attempt ${attempt}/30): ${message}`);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  }
+  if (!dataSource.isInitialized) throw new Error('Could not connect to the database');
 }
