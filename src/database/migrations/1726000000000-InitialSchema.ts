@@ -81,4 +81,12 @@ export class InitialSchema1726000000000 implements MigrationInterface {
     await q.query(`CREATE INDEX idx_knowledge_source ON knowledge_chunks (source)`);
     await q.query(`CREATE INDEX idx_knowledge_embedding ON knowledge_chunks USING hnsw (embedding vector_cosine_ops)`);
   }
+
+  async down(q: QueryRunner): Promise<void> {
+    await q.query(`DROP TABLE IF EXISTS knowledge_chunks`);
+    await q.query(`DROP TABLE IF EXISTS notifications`);
+    await q.query(`DROP TABLE IF EXISTS loan_applications`);
+    await q.query(`DROP TABLE IF EXISTS ledger_entries`);
+    await q.query(`DROP TABLE IF EXISTS accounts`);
+  }
 }
