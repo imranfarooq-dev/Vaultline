@@ -29,4 +29,13 @@ export class LoanApplicationEntity {
 
   @Column({ name: 'monthly_income_minor', type: 'bigint', transformer: bigintTransformer })
   monthlyIncomeMinor: number;
+
+  @Column({ type: 'varchar', length: 16 })
+  status: LoanStatus;
+
+  @Column({ name: 'decision_log', type: 'jsonb', default: () => "'[]'" })
+  decisionLog: string[];
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  createdAt: Date;
 }
