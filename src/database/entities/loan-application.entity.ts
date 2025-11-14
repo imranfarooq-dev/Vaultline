@@ -23,4 +23,10 @@ export class LoanApplicationEntity {
 
   @Column({ name: 'term_months', type: 'int' })
   termMonths: number;
+
+  @Column({ length: 80 })
+  purpose: string;
+
+  @Column({ name: 'monthly_income_minor', type: 'bigint', transformer: bigintTransformer })
+  monthlyIncomeMinor: number;
 }
