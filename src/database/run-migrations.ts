@@ -23,4 +23,8 @@ async function run(): Promise<void> {
     }
   }
   if (!dataSource.isInitialized) throw new Error('Could not connect to the database');
+
+  const applied = await dataSource.runMigrations({ transaction: 'each' });
+  logger.log(applied.length ? `Applied: ${applied.map((m) => m.name).join(', ')}` : 'Database already up to date');
+  await dataSource.destroy();
 }
