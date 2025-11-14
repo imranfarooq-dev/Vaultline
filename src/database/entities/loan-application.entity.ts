@@ -17,4 +17,10 @@ export class LoanApplicationEntity {
 
   @Column({ name: 'account_id', type: 'uuid' })
   accountId: string;
+
+  @Column({ name: 'amount_minor', type: 'bigint', transformer: bigintTransformer })
+  amountMinor: number;
+
+  @Column({ name: 'term_months', type: 'int' })
+  termMonths: number;
 }
