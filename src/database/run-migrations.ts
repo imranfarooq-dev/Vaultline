@@ -28,3 +28,8 @@ async function run(): Promise<void> {
   logger.log(applied.length ? `Applied: ${applied.map((m) => m.name).join(', ')}` : 'Database already up to date');
   await dataSource.destroy();
 }
+
+run().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
