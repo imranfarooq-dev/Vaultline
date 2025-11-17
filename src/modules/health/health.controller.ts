@@ -26,4 +26,10 @@ export class HealthController {
   live() {
     return { status: 'ok', mode: this.config.appMode, uptimeSeconds: Math.round(process.uptime()) };
   }
+
+  @Get('ready')
+  @HealthCheck()
+  ready() {
+    return this.health.check([() => this.db.pingCheck('database', { timeout: 3000 })]);
+  }
 }
