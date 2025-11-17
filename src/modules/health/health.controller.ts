@@ -32,4 +32,21 @@ export class HealthController {
   ready() {
     return this.health.check([() => this.db.pingCheck('database', { timeout: 3000 })]);
   }
+
+  /** Informational: shows every dependency, never used by probes. */
+  @Get('dependencies')
+  async dependencies() {
+    const kafka = this.publisher instanceof KafkaEventPublisherAdapter ? (this.publisher.isConnected ? 'connected' : 'connecting') : 'disabled (in-memory)';
+    let ollama = 'not used (fake provider)';
+    if (this.config.ai.provider === 'ollama') {
+      try {
+        const res = await fetch(`${this.config.ai.baseUrl}/api/tags`, { signal: AbortSignal.timeout(2000) });
+        const body = (await res.json()) as { models?: { name: string }[] };
+        ollama = `up, models: ${(body.models ?? []).map((m) => m.name).join(', ') || 'none pulled yet'}`;
+      } catch {
+        ollama = 'unreachable';
+      }
+    }
+    return { kafka, ollama };
+  }
 }
