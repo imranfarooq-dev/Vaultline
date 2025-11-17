@@ -21,4 +21,9 @@ export class HealthController {
     private readonly config: AppConfigService,
     @Inject(EVENT_PUBLISHER) private readonly publisher: EventPublisher,
   ) {}
+
+  @Get('live')
+  live() {
+    return { status: 'ok', mode: this.config.appMode, uptimeSeconds: Math.round(process.uptime()) };
+  }
 }
