@@ -26,4 +26,11 @@ export class ReferenceNumberGenerator {
     const host = process.env.HOSTNAME ?? 'local';
     this.nodeTag = host.slice(-4).toUpperCase().replace(/[^A-Z0-9]/g, 'X');
   }
+
+  static getInstance(): ReferenceNumberGenerator {
+    if (!ReferenceNumberGenerator.instance) {
+      ReferenceNumberGenerator.instance = new ReferenceNumberGenerator();
+    }
+    return ReferenceNumberGenerator.instance;
+  }
 }
