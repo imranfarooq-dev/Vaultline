@@ -40,4 +40,9 @@ export class ReferenceNumberGenerator {
     const random = Math.floor(Math.random() * 1296).toString(36).toUpperCase().padStart(2, '0');
     return `${prefix}-${date}-${this.nodeTag}-${String(this.sequence).padStart(6, '0')}${random}`;
   }
+
+  /** Only for tests: forget the shared instance. */
+  static resetForTesting(): void {
+    ReferenceNumberGenerator.instance = undefined;
+  }
 }
