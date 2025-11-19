@@ -33,4 +33,11 @@ export class ReferenceNumberGenerator {
     }
     return ReferenceNumberGenerator.instance;
   }
+
+  next(prefix = 'TXN'): string {
+    this.sequence = (this.sequence + 1) % 1_000_000;
+    const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const random = Math.floor(Math.random() * 1296).toString(36).toUpperCase().padStart(2, '0');
+    return `${prefix}-${date}-${this.nodeTag}-${String(this.sequence).padStart(6, '0')}${random}`;
+  }
 }
