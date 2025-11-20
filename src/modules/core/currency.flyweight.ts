@@ -33,3 +33,12 @@ export class Currency {
     })}`;
   }
 }
+
+const KNOWN_CURRENCIES: Record<string, [name: string, symbol: string, decimals: number]> = {
+  PKR: ['Pakistani Rupee', 'Rs', 2],
+  USD: ['US Dollar', '$', 2],
+  EUR: ['Euro', '€', 2],
+  GBP: ['British Pound', '£', 2],
+  AED: ['UAE Dirham', 'AED', 2],
+  SAR: ['Saudi Riyal', 'SAR', 2],
+};
