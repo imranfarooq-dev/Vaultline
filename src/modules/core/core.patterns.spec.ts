@@ -7,4 +7,12 @@ describe('Singleton: ReferenceNumberGenerator', () => {
   it('always returns the very same instance', () => {
     expect(ReferenceNumberGenerator.getInstance()).toBe(ReferenceNumberGenerator.getInstance());
   });
+
+  it('hands out unique, increasing references from the shared sequence', () => {
+    const a = ReferenceNumberGenerator.getInstance().next('TXN');
+    const b = ReferenceNumberGenerator.getInstance().next('TXN');
+    expect(a).not.toEqual(b);
+    expect(a).toMatch(/^TXN-\d{8}-[A-Z0-9]{4}-000001[A-Z0-9]{2}$/);
+    expect(b).toContain('-000002');
+  });
 });
