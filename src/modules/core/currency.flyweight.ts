@@ -23,4 +23,13 @@ export class Currency {
   ) {
     Object.freeze(this);
   }
+
+  /** The amount is EXTRINSIC state: it is supplied by the caller. */
+  format(amountMinor: number): string {
+    const major = amountMinor / 10 ** this.decimals;
+    return `${this.symbol} ${major.toLocaleString('en-US', {
+      minimumFractionDigits: this.decimals,
+      maximumFractionDigits: this.decimals,
+    })}`;
+  }
 }
