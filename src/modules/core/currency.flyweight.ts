@@ -42,3 +42,8 @@ const KNOWN_CURRENCIES: Record<string, [name: string, symbol: string, decimals: 
   AED: ['UAE Dirham', 'AED', 2],
   SAR: ['Saudi Riyal', 'SAR', 2],
 };
+
+/** The flyweight factory. */
+export class CurrencyRegistry {
+  private readonly pool = new Map<string, Currency>();
+}
