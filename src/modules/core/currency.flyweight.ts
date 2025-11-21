@@ -46,4 +46,17 @@ const KNOWN_CURRENCIES: Record<string, [name: string, symbol: string, decimals: 
 /** The flyweight factory. */
 export class CurrencyRegistry {
   private readonly pool = new Map<string, Currency>();
+
+  get(code: string): Currency {
+    const key = code.toUpperCase();
+    const cached = this.pool.get(key);
+    if (cached) return cached;
+
+    const definition = KNOWN_CURRENCIES[key];
+    if (!definition) throw new Error(`Unsupported currency: ${code}`);
+
+    const currency = new Currency(key, ...definition);
+    this.pool.set(key, currency);
+    return currency;
+  }
 }
