@@ -15,4 +15,10 @@ describe('Singleton: ReferenceNumberGenerator', () => {
     expect(a).toMatch(/^TXN-\d{8}-[A-Z0-9]{4}-000001[A-Z0-9]{2}$/);
     expect(b).toContain('-000002');
   });
+
+  it('cannot be constructed with new (private constructor)', () => {
+    // @ts-expect-error the constructor is private: this line would not compile
+    const attempt = () => new ReferenceNumberGenerator();
+    expect(attempt).toBeDefined();
+  });
 });
