@@ -30,4 +30,10 @@ describe('Flyweight: CurrencyRegistry', () => {
     const again = registry.get('pkr');
     expect(first).toBe(again);
   });
+
+  it('keeps one object per currency no matter how many amounts are formatted', () => {
+    const registry = new CurrencyRegistry();
+    for (let i = 0; i < 10_000; i++) registry.get(i % 2 ? 'PKR' : 'USD').format(i);
+    expect(registry.sharedInstanceCount).toBe(2);
+  });
 });
