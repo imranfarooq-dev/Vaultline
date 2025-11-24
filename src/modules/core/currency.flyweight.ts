@@ -67,4 +67,9 @@ export class CurrencyRegistry {
   supportedCodes(): string[] {
     return Object.keys(KNOWN_CURRENCIES);
   }
+
+  /** How many real objects exist, no matter how many times get() was called. */
+  get sharedInstanceCount(): number {
+    return this.pool.size;
+  }
 }
