@@ -22,3 +22,12 @@ describe('Singleton: ReferenceNumberGenerator', () => {
     expect(attempt).toBeDefined();
   });
 });
+
+describe('Flyweight: CurrencyRegistry', () => {
+  it('returns the same shared object for the same currency code', () => {
+    const registry = new CurrencyRegistry();
+    const first = registry.get('PKR');
+    const again = registry.get('pkr');
+    expect(first).toBe(again);
+  });
+});
