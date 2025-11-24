@@ -36,4 +36,8 @@ describe('Flyweight: CurrencyRegistry', () => {
     for (let i = 0; i < 10_000; i++) registry.get(i % 2 ? 'PKR' : 'USD').format(i);
     expect(registry.sharedInstanceCount).toBe(2);
   });
+
+  it('formats the extrinsic amount with the intrinsic currency data', () => {
+    expect(new CurrencyRegistry().get('PKR').format(125050)).toBe('Rs 1,250.50');
+  });
 });
