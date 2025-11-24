@@ -63,4 +63,8 @@ export class CurrencyRegistry {
   isSupported(code: string): boolean {
     return code.toUpperCase() in KNOWN_CURRENCIES;
   }
+
+  supportedCodes(): string[] {
+    return Object.keys(KNOWN_CURRENCIES);
+  }
 }
