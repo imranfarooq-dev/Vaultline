@@ -59,4 +59,8 @@ export class CurrencyRegistry {
     this.pool.set(key, currency);
     return currency;
   }
+
+  isSupported(code: string): boolean {
+    return code.toUpperCase() in KNOWN_CURRENCIES;
+  }
 }
