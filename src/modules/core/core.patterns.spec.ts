@@ -45,4 +45,8 @@ describe('Flyweight: CurrencyRegistry', () => {
     const pkr = new CurrencyRegistry().get('PKR');
     expect(() => Object.assign(pkr, { symbol: 'X' })).toThrow();
   });
+
+  it('rejects unsupported currencies', () => {
+    expect(() => new CurrencyRegistry().get('XYZ')).toThrow('Unsupported currency');
+  });
 });
