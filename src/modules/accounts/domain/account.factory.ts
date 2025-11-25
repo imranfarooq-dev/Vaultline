@@ -23,3 +23,15 @@ export interface OpenAccountInput {
   initialDepositMinor: number;
   product?: AccountProduct;
 }
+
+/** A not-yet-saved account: everything needed to insert the row. */
+export interface AccountBlueprint {
+  ownerName: string;
+  type: AccountType;
+  currency: string;
+  productCode: string | null;
+  dailyWithdrawalLimitMinor: number;
+  annualInterestRate: number;
+  minimumOpeningBalanceMinor: number;
+  status: AccountStatus;
+}
