@@ -40,4 +40,9 @@ describe('Flyweight: CurrencyRegistry', () => {
   it('formats the extrinsic amount with the intrinsic currency data', () => {
     expect(new CurrencyRegistry().get('PKR').format(125050)).toBe('Rs 1,250.50');
   });
+
+  it('shared objects are immutable', () => {
+    const pkr = new CurrencyRegistry().get('PKR');
+    expect(() => Object.assign(pkr, { symbol: 'X' })).toThrow();
+  });
 });
