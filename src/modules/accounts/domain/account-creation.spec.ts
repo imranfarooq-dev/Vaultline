@@ -23,4 +23,8 @@ describe('Factory Method: account creators', () => {
     expect(current.annualInterestRate).toBe(0);
     expect(fd.dailyWithdrawalLimitMinor).toBe(0);
   });
+
+  it('enforces the minimum opening balance of the chosen type', () => {
+    expect(() => accountCreatorFor(AccountType.FIXED_DEPOSIT).open({ ...input, initialDepositMinor: 1 })).toThrow(BusinessRuleError);
+  });
 });
