@@ -39,4 +39,29 @@ export interface AccountBlueprint {
 export abstract class AccountCreator {
   /** THE factory method. Subclasses decide what exactly gets built. */
   protected abstract createBlueprint(input: OpenAccountInput): AccountBlueprint;
+
+  /** Shared algorithm that USES the factory method. */
+  open(input: OpenAccountInput): AccountBlueprint {
+    const blueprint = this.createBlueprint(input);
+
+    // Product settings (cloned prototype) override the type defaults.
+    if (input.product) {
+      if (input.product.accountType !== blueprint.type) {
+        throw new BusinessRuleError(`Product ${input.product.code} is not a ${blueprint.type} product`);
+      }
+      Object.assign(blueprint, {
+        productCode: input.product.code,
+        dailyWithdrawalLimitMinor: input.product.dailyWithdrawalLimitMinor,
+        annualInterestRate: input.product.annualInterestRate,
+        minimumOpeningBalanceMinor: input.product.minimumOpeningBalanceMinor,
+      });
+    }
+
+    if (input.initialDepositMinor < blueprint.minimumOpeningBalanceMinor) {
+      throw new BusinessRuleError(`Minimum opening balance is ${blueprint.minimumOpeningBalanceMinor} minor units`, {
+        required: blueprint.minimumOpeningBalanceMinor,
+      });
+    }
+    return blueprint;
+  }
 }
