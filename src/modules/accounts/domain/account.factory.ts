@@ -35,3 +35,8 @@ export interface AccountBlueprint {
   minimumOpeningBalanceMinor: number;
   status: AccountStatus;
 }
+
+export abstract class AccountCreator {
+  /** THE factory method. Subclasses decide what exactly gets built. */
+  protected abstract createBlueprint(input: OpenAccountInput): AccountBlueprint;
+}
