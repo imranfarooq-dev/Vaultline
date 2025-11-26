@@ -5,4 +5,12 @@ import { accountCreatorFor, CurrentAccountCreator, FixedDepositCreator, SavingsA
 
 describe('Factory Method: account creators', () => {
   const input = { ownerName: '  Sana  ', currency: 'pkr', initialDepositMinor: 10_000_000 };
+
+  it.each([
+    [AccountType.SAVINGS, SavingsAccountCreator],
+    [AccountType.CURRENT, CurrentAccountCreator],
+    [AccountType.FIXED_DEPOSIT, FixedDepositCreator],
+  ])('picks the right creator for %s', (type, creatorClass) => {
+    expect(accountCreatorFor(type)).toBeInstanceOf(creatorClass);
+  });
 });
