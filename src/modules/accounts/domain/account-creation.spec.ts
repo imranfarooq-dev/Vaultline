@@ -39,3 +39,14 @@ describe('Factory Method: account creators', () => {
     expect(() => accountCreatorFor(AccountType.SAVINGS).open({ ...input, product })).toThrow('is not a SAVINGS product');
   });
 });
+
+describe('Prototype: account products', () => {
+  it('derives products by cloning and changing only the differences', () => {
+    const catalog = new AccountProductCatalog();
+    const freelancer = catalog.get('FREELANCER_SAVER')!;
+    expect(freelancer.accountType).toBe(AccountType.SAVINGS);
+    expect(freelancer.annualInterestRate).toBe(9.25);
+    expect(freelancer.features.internationalTransfers).toBe(true);
+    expect(freelancer.features.debitCard).toBe(true); // inherited from Basic Saver
+  });
+});
