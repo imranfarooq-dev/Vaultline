@@ -75,3 +75,9 @@ export class SavingsAccountCreator extends AccountCreator {
     return { ...this.base(input, AccountType.SAVINGS), dailyWithdrawalLimitMinor: 5_000_000, annualInterestRate: 8.5, minimumOpeningBalanceMinor: 100_000 };
   }
 }
+
+export class CurrentAccountCreator extends AccountCreator {
+  protected createBlueprint(input: OpenAccountInput): AccountBlueprint {
+    return { ...this.base(input, AccountType.CURRENT), dailyWithdrawalLimitMinor: 50_000_000, annualInterestRate: 0, minimumOpeningBalanceMinor: 0 };
+  }
+}
