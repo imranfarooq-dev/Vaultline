@@ -69,3 +69,9 @@ export abstract class AccountCreator {
     return { ownerName: input.ownerName.trim(), currency: input.currency.toUpperCase(), type, productCode: null, status: AccountStatus.PENDING };
   }
 }
+
+export class SavingsAccountCreator extends AccountCreator {
+  protected createBlueprint(input: OpenAccountInput): AccountBlueprint {
+    return { ...this.base(input, AccountType.SAVINGS), dailyWithdrawalLimitMinor: 5_000_000, annualInterestRate: 8.5, minimumOpeningBalanceMinor: 100_000 };
+  }
+}
