@@ -27,4 +27,10 @@ describe('Factory Method: account creators', () => {
   it('enforces the minimum opening balance of the chosen type', () => {
     expect(() => accountCreatorFor(AccountType.FIXED_DEPOSIT).open({ ...input, initialDepositMinor: 1 })).toThrow(BusinessRuleError);
   });
+
+  it('applies product settings from a cloned prototype', () => {
+    const product = new AccountProductCatalog().get('STUDENT_SAVER')!;
+    const blueprint = accountCreatorFor(AccountType.SAVINGS).open({ ...input, initialDepositMinor: 0, product });
+    expect(blueprint).toMatchObject({ productCode: 'STUDENT_SAVER', dailyWithdrawalLimitMinor: 2_000_000, minimumOpeningBalanceMinor: 0 });
+  });
 });
