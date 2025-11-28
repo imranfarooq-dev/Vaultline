@@ -81,3 +81,10 @@ export class CurrentAccountCreator extends AccountCreator {
     return { ...this.base(input, AccountType.CURRENT), dailyWithdrawalLimitMinor: 50_000_000, annualInterestRate: 0, minimumOpeningBalanceMinor: 0 };
   }
 }
+
+export class FixedDepositCreator extends AccountCreator {
+  protected createBlueprint(input: OpenAccountInput): AccountBlueprint {
+    // Money is locked: withdrawals are not allowed until maturity.
+    return { ...this.base(input, AccountType.FIXED_DEPOSIT), dailyWithdrawalLimitMinor: 0, annualInterestRate: 12, minimumOpeningBalanceMinor: 5_000_000 };
+  }
+}
