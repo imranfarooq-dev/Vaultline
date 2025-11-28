@@ -64,4 +64,8 @@ export abstract class AccountCreator {
     }
     return blueprint;
   }
+
+  protected base(input: OpenAccountInput, type: AccountType) {
+    return { ownerName: input.ownerName.trim(), currency: input.currency.toUpperCase(), type, productCode: null, status: AccountStatus.PENDING };
+  }
 }
