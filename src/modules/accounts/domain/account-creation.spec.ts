@@ -33,4 +33,9 @@ describe('Factory Method: account creators', () => {
     const blueprint = accountCreatorFor(AccountType.SAVINGS).open({ ...input, initialDepositMinor: 0, product });
     expect(blueprint).toMatchObject({ productCode: 'STUDENT_SAVER', dailyWithdrawalLimitMinor: 2_000_000, minimumOpeningBalanceMinor: 0 });
   });
+
+  it('refuses a product that belongs to another account type', () => {
+    const product = new AccountProductCatalog().get('BUSINESS_CURRENT')!;
+    expect(() => accountCreatorFor(AccountType.SAVINGS).open({ ...input, product })).toThrow('is not a SAVINGS product');
+  });
 });
