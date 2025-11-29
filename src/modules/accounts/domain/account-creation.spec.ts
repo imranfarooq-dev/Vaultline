@@ -60,4 +60,12 @@ describe('Prototype: account products', () => {
     expect(fresh.features.perks).toEqual(['Free SMS alerts']);
     expect(fresh.dailyWithdrawalLimitMinor).toBe(5_000_000);
   });
+
+  it('clone() accepts partial overrides including nested features', () => {
+    const base = new AccountProductCatalog().get('BASIC_SAVER')!;
+    const clone = base.clone({ code: 'X', features: { chequeBook: true } });
+    expect(clone).not.toBe(base);
+    expect(clone.code).toBe('X');
+    expect(clone.features).toMatchObject({ chequeBook: true, debitCard: true });
+  });
 });
