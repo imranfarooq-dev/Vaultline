@@ -88,3 +88,17 @@ export class FixedDepositCreator extends AccountCreator {
     return { ...this.base(input, AccountType.FIXED_DEPOSIT), dailyWithdrawalLimitMinor: 0, annualInterestRate: 12, minimumOpeningBalanceMinor: 5_000_000 };
   }
 }
+
+/** Picks the right concrete creator. Adding a new account type = one new class + one line here. */
+export const accountCreatorFor = (type: AccountType): AccountCreator => {
+  switch (type) {
+    case AccountType.SAVINGS:
+      return new SavingsAccountCreator();
+    case AccountType.CURRENT:
+      return new CurrentAccountCreator();
+    case AccountType.FIXED_DEPOSIT:
+      return new FixedDepositCreator();
+    default:
+      throw new BusinessRuleError(`Unknown account type: ${type as string}`);
+  }
+};
