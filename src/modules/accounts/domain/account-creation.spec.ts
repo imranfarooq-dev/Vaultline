@@ -49,4 +49,15 @@ describe('Prototype: account products', () => {
     expect(freelancer.features.internationalTransfers).toBe(true);
     expect(freelancer.features.debitCard).toBe(true); // inherited from Basic Saver
   });
+
+  it('deep clone: changing a clone never changes the original', () => {
+    const catalog = new AccountProductCatalog();
+    const copy = catalog.get('BASIC_SAVER')!;
+    copy.features.perks.push('hacked');
+    copy.dailyWithdrawalLimitMinor = 1;
+
+    const fresh = catalog.get('BASIC_SAVER')!;
+    expect(fresh.features.perks).toEqual(['Free SMS alerts']);
+    expect(fresh.dailyWithdrawalLimitMinor).toBe(5_000_000);
+  });
 });
