@@ -101,4 +101,8 @@ export class AccountProductCatalog {
   get(code: string): AccountProduct | undefined {
     return this.prototypes.get(code)?.clone();
   }
+
+  list(): AccountProduct[] {
+    return [...this.prototypes.values()].map((p) => p.clone());
+  }
 }
