@@ -54,4 +54,46 @@ export class AccountProduct {
 /** Registry of prototypes. New products are derived by cloning, not rebuilding. */
 export class AccountProductCatalog {
   private readonly prototypes = new Map<string, AccountProduct>();
+
+  constructor() {
+    const basicSaver = new AccountProduct('BASIC_SAVER', 'Basic Saver', AccountType.SAVINGS, 5_000_000, 8.5, 100_000, {
+      chequeBook: false,
+      debitCard: true,
+      internationalTransfers: false,
+      perks: ['Free SMS alerts'],
+    });
+
+    const studentSaver = basicSaver.clone({
+      code: 'STUDENT_SAVER',
+      displayName: 'Student Saver',
+      dailyWithdrawalLimitMinor: 2_000_000,
+      minimumOpeningBalanceMinor: 0,
+    });
+    studentSaver.features.perks.push('No minimum balance');
+
+    const freelancerSaver = basicSaver.clone({
+      code: 'FREELANCER_SAVER',
+      displayName: 'Freelancer Saver',
+      dailyWithdrawalLimitMinor: 20_000_000,
+      annualInterestRate: 9.25,
+      features: { internationalTransfers: true },
+    });
+    freelancerSaver.features.perks.push('Foreign remittance tracking');
+
+    const businessCurrent = new AccountProduct('BUSINESS_CURRENT', 'Business Current', AccountType.CURRENT, 100_000_000, 0, 2_500_000, {
+      chequeBook: true,
+      debitCard: true,
+      internationalTransfers: true,
+      perks: ['Unlimited transactions'],
+    });
+
+    const termDeposit = new AccountProduct('TERM_DEPOSIT_1Y', '1-Year Term Deposit', AccountType.FIXED_DEPOSIT, 0, 12, 5_000_000, {
+      chequeBook: false,
+      debitCard: false,
+      internationalTransfers: false,
+      perks: ['Fixed profit for 12 months'],
+    });
+
+    [basicSaver, studentSaver, freelancerSaver, businessCurrent, termDeposit].forEach((p) => this.prototypes.set(p.code, p));
+  }
 }
