@@ -96,4 +96,9 @@ export class AccountProductCatalog {
 
     [basicSaver, studentSaver, freelancerSaver, businessCurrent, termDeposit].forEach((p) => this.prototypes.set(p.code, p));
   }
+
+  /** Always hand out a clone so callers can never modify the stored prototype. */
+  get(code: string): AccountProduct | undefined {
+    return this.prototypes.get(code)?.clone();
+  }
 }
