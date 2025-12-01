@@ -50,3 +50,8 @@ export class AccountProduct {
     return Object.assign(copy, rest);
   }
 }
+
+/** Registry of prototypes. New products are derived by cloning, not rebuilding. */
+export class AccountProductCatalog {
+  private readonly prototypes = new Map<string, AccountProduct>();
+}
