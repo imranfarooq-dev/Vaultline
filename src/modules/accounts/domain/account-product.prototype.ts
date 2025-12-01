@@ -19,3 +19,15 @@ export interface ProductFeatures {
   internationalTransfers: boolean;
   perks: string[];
 }
+
+export class AccountProduct {
+  constructor(
+    public code: string,
+    public displayName: string,
+    public accountType: AccountType,
+    public dailyWithdrawalLimitMinor: number,
+    public annualInterestRate: number,
+    public minimumOpeningBalanceMinor: number,
+    public features: ProductFeatures,
+  ) {}
+}
