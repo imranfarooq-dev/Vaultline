@@ -28,4 +28,11 @@ export abstract class AccountState {
   canWithdraw(): boolean { return false; }
 
   activate(): AccountState { return this.illegal('activate'); }
+  freeze(): AccountState { return this.illegal('freeze'); }
+  unfreeze(): AccountState { return this.illegal('unfreeze'); }
+  close(_balanceMinor: number): AccountState { return this.illegal('close'); }
+
+  protected illegal(action: string): never {
+    throw new InvalidStateTransitionError(`Cannot ${action} an account that is ${this.status}`);
+  }
 }
