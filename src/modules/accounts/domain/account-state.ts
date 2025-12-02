@@ -23,4 +23,9 @@ import { AccountStatus } from '../../../database/entities';
  */
 export abstract class AccountState {
   abstract readonly status: AccountStatus;
+
+  canDeposit(): boolean { return false; }
+  canWithdraw(): boolean { return false; }
+
+  activate(): AccountState { return this.illegal('activate'); }
 }
