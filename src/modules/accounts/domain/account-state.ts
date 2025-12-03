@@ -36,3 +36,10 @@ export abstract class AccountState {
     throw new InvalidStateTransitionError(`Cannot ${action} an account that is ${this.status}`);
   }
 }
+
+class PendingState extends AccountState {
+  readonly status = AccountStatus.PENDING;
+  override canDeposit() { return true; } // initial deposit during onboarding
+  override activate() { return new ActiveState(); }
+  override close(balanceMinor: number) { return closeIfEmpty(balanceMinor); }
+}
