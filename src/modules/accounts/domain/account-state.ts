@@ -51,3 +51,10 @@ class ActiveState extends AccountState {
   override freeze() { return new FrozenState(); }
   override close(balanceMinor: number) { return closeIfEmpty(balanceMinor); }
 }
+
+class FrozenState extends AccountState {
+  readonly status = AccountStatus.FROZEN;
+  override canDeposit() { return true; } // salary can still arrive
+  override unfreeze() { return new ActiveState(); }
+  override close(balanceMinor: number) { return closeIfEmpty(balanceMinor); }
+}
