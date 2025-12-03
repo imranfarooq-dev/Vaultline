@@ -43,3 +43,11 @@ class PendingState extends AccountState {
   override activate() { return new ActiveState(); }
   override close(balanceMinor: number) { return closeIfEmpty(balanceMinor); }
 }
+
+class ActiveState extends AccountState {
+  readonly status = AccountStatus.ACTIVE;
+  override canDeposit() { return true; }
+  override canWithdraw() { return true; }
+  override freeze() { return new FrozenState(); }
+  override close(balanceMinor: number) { return closeIfEmpty(balanceMinor); }
+}
