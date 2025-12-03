@@ -62,3 +62,8 @@ class FrozenState extends AccountState {
 class ClosedState extends AccountState {
   readonly status = AccountStatus.CLOSED; // terminal: every action is illegal
 }
+
+const closeIfEmpty = (balanceMinor: number): AccountState => {
+  if (balanceMinor !== 0) throw new InvalidStateTransitionError('Withdraw the remaining balance before closing the account');
+  return new ClosedState();
+};
