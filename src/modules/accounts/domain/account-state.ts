@@ -67,3 +67,12 @@ const closeIfEmpty = (balanceMinor: number): AccountState => {
   if (balanceMinor !== 0) throw new InvalidStateTransitionError('Withdraw the remaining balance before closing the account');
   return new ClosedState();
 };
+
+export const stateOf = (status: AccountStatus): AccountState => {
+  switch (status) {
+    case AccountStatus.PENDING: return new PendingState();
+    case AccountStatus.ACTIVE: return new ActiveState();
+    case AccountStatus.FROZEN: return new FrozenState();
+    case AccountStatus.CLOSED: return new ClosedState();
+  }
+};
