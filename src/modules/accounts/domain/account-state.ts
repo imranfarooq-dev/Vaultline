@@ -58,3 +58,7 @@ class FrozenState extends AccountState {
   override unfreeze() { return new ActiveState(); }
   override close(balanceMinor: number) { return closeIfEmpty(balanceMinor); }
 }
+
+class ClosedState extends AccountState {
+  readonly status = AccountStatus.CLOSED; // terminal: every action is illegal
+}
