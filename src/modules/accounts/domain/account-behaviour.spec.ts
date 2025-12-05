@@ -17,4 +17,15 @@ describe('State: account lifecycle', () => {
     state = state.close(0);
     expect(state.status).toBe(AccountStatus.CLOSED);
   });
+
+  it.each([
+    [AccountStatus.PENDING, true, false],
+    [AccountStatus.ACTIVE, true, true],
+    [AccountStatus.FROZEN, true, false],
+    [AccountStatus.CLOSED, false, false],
+  ])('%s: canDeposit=%s canWithdraw=%s', (status, deposit, withdraw) => {
+    const state = stateOf(status);
+    expect(state.canDeposit()).toBe(deposit);
+    expect(state.canWithdraw()).toBe(withdraw);
+  });
 });
