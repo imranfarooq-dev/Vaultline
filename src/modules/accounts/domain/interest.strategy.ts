@@ -19,3 +19,10 @@ export interface InterestStrategy {
   readonly name: string;
   monthlyInterestMinor(balanceMinor: number, annualRatePercent: number): number;
 }
+
+export class NoInterestStrategy implements InterestStrategy {
+  readonly name = 'none';
+  monthlyInterestMinor(): number {
+    return 0;
+  }
+}
