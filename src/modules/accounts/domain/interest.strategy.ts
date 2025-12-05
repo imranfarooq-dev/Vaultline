@@ -26,3 +26,10 @@ export class NoInterestStrategy implements InterestStrategy {
     return 0;
   }
 }
+
+export class FlatRateStrategy implements InterestStrategy {
+  readonly name = 'flat';
+  monthlyInterestMinor(balanceMinor: number, annualRatePercent: number): number {
+    return Math.floor((balanceMinor * annualRatePercent) / 100 / 12);
+  }
+}
