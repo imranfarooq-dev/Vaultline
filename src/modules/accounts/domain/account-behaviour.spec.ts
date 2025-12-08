@@ -33,4 +33,8 @@ describe('State: account lifecycle', () => {
     expect(() => stateOf(AccountStatus.CLOSED).activate()).toThrow(InvalidStateTransitionError);
     expect(() => stateOf(AccountStatus.PENDING).freeze()).toThrow('Cannot freeze an account that is PENDING');
   });
+
+  it('cannot close an account that still holds money', () => {
+    expect(() => stateOf(AccountStatus.ACTIVE).close(1)).toThrow('Withdraw the remaining balance');
+  });
 });
