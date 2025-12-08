@@ -38,3 +38,9 @@ describe('State: account lifecycle', () => {
     expect(() => stateOf(AccountStatus.ACTIVE).close(1)).toThrow('Withdraw the remaining balance');
   });
 });
+
+describe('Strategy: interest calculation', () => {
+  it('no interest for current accounts', () => {
+    expect(new NoInterestStrategy().monthlyInterestMinor()).toBe(0);
+  });
+});
