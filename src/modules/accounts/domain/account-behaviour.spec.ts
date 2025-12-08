@@ -43,4 +43,8 @@ describe('Strategy: interest calculation', () => {
   it('no interest for current accounts', () => {
     expect(new NoInterestStrategy().monthlyInterestMinor()).toBe(0);
   });
+
+  it('flat rate: 12% on Rs 10,000 = Rs 100 per month', () => {
+    expect(new FlatRateStrategy().monthlyInterestMinor(1_000_000, 12)).toBe(10_000);
+  });
 });
