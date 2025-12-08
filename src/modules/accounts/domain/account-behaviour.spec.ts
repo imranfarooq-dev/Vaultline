@@ -28,4 +28,9 @@ describe('State: account lifecycle', () => {
     expect(state.canDeposit()).toBe(deposit);
     expect(state.canWithdraw()).toBe(withdraw);
   });
+
+  it('rejects illegal transitions', () => {
+    expect(() => stateOf(AccountStatus.CLOSED).activate()).toThrow(InvalidStateTransitionError);
+    expect(() => stateOf(AccountStatus.PENDING).freeze()).toThrow('Cannot freeze an account that is PENDING');
+  });
 });
