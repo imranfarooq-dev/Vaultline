@@ -56,3 +56,12 @@ export class CompoundMonthlyStrategy implements InterestStrategy {
     return Math.floor(balanceMinor * (Math.pow(1 + monthlyRate, 1) - 1));
   }
 }
+
+/** The "context" that chooses a strategy. */
+export class InterestCalculator {
+  private readonly byType: Record<AccountType, InterestStrategy> = {
+    [AccountType.CURRENT]: new NoInterestStrategy(),
+    [AccountType.SAVINGS]: new TieredRateStrategy(),
+    [AccountType.FIXED_DEPOSIT]: new CompoundMonthlyStrategy(),
+  };
+}
