@@ -33,3 +33,17 @@ export class FlatRateStrategy implements InterestStrategy {
     return Math.floor((balanceMinor * annualRatePercent) / 100 / 12);
   }
 }
+
+/** Balance above 1,000,000 PKR earns +1.5% on the portion above the slab. */
+export class TieredRateStrategy implements InterestStrategy {
+  readonly name = 'tiered';
+  private static readonly SLAB_MINOR = 100_000_000;
+  private static readonly BONUS_PERCENT = 1.5;
+
+  monthlyInterestMinor(balanceMinor: number, annualRatePercent: number): number {
+    const base = Math.min(balanceMinor, TieredRateStrategy.SLAB_MINOR);
+    const above = Math.max(0, balanceMinor - TieredRateStrategy.SLAB_MINOR);
+    const yearly = base * annualRatePercent + above * (annualRatePercent + TieredRateStrategy.BONUS_PERCENT);
+    return Math.floor(yearly / 100 / 12);
+  }
+}
