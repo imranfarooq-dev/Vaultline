@@ -47,3 +47,12 @@ export class TieredRateStrategy implements InterestStrategy {
     return Math.floor(yearly / 100 / 12);
   }
 }
+
+/** Monthly compounding: balance * ((1 + r/12)^1 - 1). Kept explicit for learning. */
+export class CompoundMonthlyStrategy implements InterestStrategy {
+  readonly name = 'compound-monthly';
+  monthlyInterestMinor(balanceMinor: number, annualRatePercent: number): number {
+    const monthlyRate = annualRatePercent / 100 / 12;
+    return Math.floor(balanceMinor * (Math.pow(1 + monthlyRate, 1) - 1));
+  }
+}
