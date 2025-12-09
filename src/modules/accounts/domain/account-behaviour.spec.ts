@@ -47,4 +47,11 @@ describe('Strategy: interest calculation', () => {
   it('flat rate: 12% on Rs 10,000 = Rs 100 per month', () => {
     expect(new FlatRateStrategy().monthlyInterestMinor(1_000_000, 12)).toBe(10_000);
   });
+
+  it('tiered: portion above Rs 1,000,000 earns +1.5%', () => {
+    const tiered = new TieredRateStrategy();
+    expect(tiered.monthlyInterestMinor(100_000_000, 12)).toBe(1_000_000);
+    // extra Rs 1,000,000 at 13.5% => +1,125,000 minor
+    expect(tiered.monthlyInterestMinor(200_000_000, 12)).toBe(2_125_000);
+  });
 });
