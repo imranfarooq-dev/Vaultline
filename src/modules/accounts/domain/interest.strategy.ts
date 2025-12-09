@@ -64,4 +64,8 @@ export class InterestCalculator {
     [AccountType.SAVINGS]: new TieredRateStrategy(),
     [AccountType.FIXED_DEPOSIT]: new CompoundMonthlyStrategy(),
   };
+
+  strategyFor(type: AccountType): InterestStrategy {
+    return this.byType[type];
+  }
 }
