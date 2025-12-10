@@ -68,4 +68,9 @@ export class InterestCalculator {
   strategyFor(type: AccountType): InterestStrategy {
     return this.byType[type];
   }
+
+  calculate(type: AccountType, balanceMinor: number, annualRatePercent: number) {
+    const strategy = this.strategyFor(type);
+    return { strategy: strategy.name, monthlyInterestMinor: strategy.monthlyInterestMinor(balanceMinor, annualRatePercent) };
+  }
 }
