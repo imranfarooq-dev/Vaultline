@@ -90,3 +90,17 @@ describe('Visitor: month-end reports', () => {
     expect([smallSavings, bigSavings, current, fd].map((a) => a.accept(risk))).toEqual(['LOW', 'MEDIUM', 'HIGH', 'LOW']);
   });
 });
+
+describe('Composite: portfolio tree', () => {
+  it('treats a single account and a nested group the same way', () => {
+    const leafPkr = new AccountLeaf(anAccount({ balanceMinor: 100 }));
+    const leafUsd = new AccountLeaf(anAccount({ balanceMinor: 7, currency: 'USD' }));
+    const inner = new PortfolioGroup('inner').add(new AccountLeaf(anAccount({ balanceMinor: 50 })), leafUsd);
+    const root = new PortfolioGroup('root').add(leafPkr, inner, new PortfolioGroup('empty'));
+
+    expect(leafPkr.totals()).toEqual({ PKR: 100 });
+    expect(root.totals()).toEqual({ PKR: 150, USD: 7 });
+    expect(root.accountCount()).toBe(3);
+    expect((root.toJSON() as { children: unknown[] }).children).toHaveLength(3);
+  });
+});
