@@ -77,4 +77,11 @@ describe('Visitor: month-end reports', () => {
     const fee = new MaintenanceFeeVisitor();
     expect([smallSavings, bigSavings, current, fd].map((a) => a.accept(fee))).toEqual([15_000, 0, 50_000, 0]);
   });
+
+  it('withholding tax: 15% savings, 20% FD, 0% current', () => {
+    const tax = new WithholdingTaxVisitor();
+    expect(smallSavings.accept(tax)).toBe(750); // 5000 interest * 15%
+    expect(fd.accept(tax)).toBe(2_400); // 12000 interest * 20%
+    expect(current.accept(tax)).toBe(0);
+  });
 });
