@@ -58,4 +58,11 @@ describe('Strategy: interest calculation', () => {
   it('compound monthly equals flat for a single month', () => {
     expect(new CompoundMonthlyStrategy().monthlyInterestMinor(1_200_000, 12)).toBe(12_000);
   });
+
+  it('the calculator selects a strategy by account type', () => {
+    const calc = new InterestCalculator();
+    expect(calc.strategyFor(AccountType.CURRENT).name).toBe('none');
+    expect(calc.strategyFor(AccountType.SAVINGS).name).toBe('tiered');
+    expect(calc.strategyFor(AccountType.FIXED_DEPOSIT).name).toBe('compound-monthly');
+  });
 });
