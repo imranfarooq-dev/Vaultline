@@ -54,4 +54,8 @@ describe('Strategy: interest calculation', () => {
     // extra Rs 1,000,000 at 13.5% => +1,125,000 minor
     expect(tiered.monthlyInterestMinor(200_000_000, 12)).toBe(2_125_000);
   });
+
+  it('compound monthly equals flat for a single month', () => {
+    expect(new CompoundMonthlyStrategy().monthlyInterestMinor(1_200_000, 12)).toBe(12_000);
+  });
 });
