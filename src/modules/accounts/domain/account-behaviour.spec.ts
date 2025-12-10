@@ -84,4 +84,9 @@ describe('Visitor: month-end reports', () => {
     expect(fd.accept(tax)).toBe(2_400); // 12000 interest * 20%
     expect(current.accept(tax)).toBe(0);
   });
+
+  it('risk exposure labels', () => {
+    const risk = new RiskExposureVisitor();
+    expect([smallSavings, bigSavings, current, fd].map((a) => a.accept(risk))).toEqual(['LOW', 'MEDIUM', 'HIGH', 'LOW']);
+  });
 });
