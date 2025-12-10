@@ -23,3 +23,7 @@ export interface PortfolioComponent {
   accountCount(): number;
   toJSON(): unknown;
 }
+
+export class AccountLeaf implements PortfolioComponent {
+  constructor(private readonly account: AccountEntity) {}
+}
