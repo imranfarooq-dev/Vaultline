@@ -66,3 +66,10 @@ describe('Strategy: interest calculation', () => {
     expect(calc.strategyFor(AccountType.FIXED_DEPOSIT).name).toBe('compound-monthly');
   });
 });
+
+describe('Visitor: month-end reports', () => {
+  const smallSavings = toElement(anAccount({ type: AccountType.SAVINGS, balanceMinor: 500_000, annualInterestRate: 12 }));
+  const bigSavings = toElement(anAccount({ type: AccountType.SAVINGS, balanceMinor: 900_000_000, annualInterestRate: 12 }));
+  const current = toElement(anAccount({ type: AccountType.CURRENT, dailyWithdrawalLimitMinor: 100_000_000 }));
+  const fd = toElement(anAccount({ type: AccountType.FIXED_DEPOSIT, balanceMinor: 1_200_000, annualInterestRate: 12 }));
+});
