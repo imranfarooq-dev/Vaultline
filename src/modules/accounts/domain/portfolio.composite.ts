@@ -36,4 +36,11 @@ export class AccountLeaf implements PortfolioComponent {
   accountCount(): number {
     return 1;
   }
+  toJSON() {
+    return { kind: 'account', name: this.name, status: this.account.status, totals: this.totals() };
+  }
+}
+
+export class PortfolioGroup implements PortfolioComponent {
+  private readonly children: PortfolioComponent[] = [];
 }
