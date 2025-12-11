@@ -31,3 +31,7 @@ export abstract class AccountElement {
   constructor(readonly data: AccountEntity) {}
   abstract accept<R>(visitor: AccountVisitor<R>): R;
 }
+
+export class SavingsElement extends AccountElement {
+  accept<R>(visitor: AccountVisitor<R>): R { return visitor.visitSavings(this); }
+}
