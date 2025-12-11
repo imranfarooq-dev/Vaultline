@@ -43,4 +43,11 @@ export class AccountLeaf implements PortfolioComponent {
 
 export class PortfolioGroup implements PortfolioComponent {
   private readonly children: PortfolioComponent[] = [];
+
+  constructor(readonly name: string) {}
+
+  add(...components: PortfolioComponent[]): this {
+    this.children.push(...components);
+    return this;
+  }
 }
