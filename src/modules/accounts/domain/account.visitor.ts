@@ -35,3 +35,9 @@ export abstract class AccountElement {
 export class SavingsElement extends AccountElement {
   accept<R>(visitor: AccountVisitor<R>): R { return visitor.visitSavings(this); }
 }
+export class CurrentElement extends AccountElement {
+  accept<R>(visitor: AccountVisitor<R>): R { return visitor.visitCurrent(this); }
+}
+export class FixedDepositElement extends AccountElement {
+  accept<R>(visitor: AccountVisitor<R>): R { return visitor.visitFixedDeposit(this); }
+}
