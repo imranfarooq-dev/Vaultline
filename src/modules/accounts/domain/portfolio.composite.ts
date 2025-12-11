@@ -30,4 +30,10 @@ export class AccountLeaf implements PortfolioComponent {
   get name(): string {
     return `${this.account.type} ${this.account.accountNumber}`;
   }
+  totals(): Record<string, number> {
+    return { [this.account.currency]: this.account.balanceMinor };
+  }
+  accountCount(): number {
+    return 1;
+  }
 }
