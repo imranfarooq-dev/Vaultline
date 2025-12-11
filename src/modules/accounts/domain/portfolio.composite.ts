@@ -26,4 +26,8 @@ export interface PortfolioComponent {
 
 export class AccountLeaf implements PortfolioComponent {
   constructor(private readonly account: AccountEntity) {}
+
+  get name(): string {
+    return `${this.account.type} ${this.account.accountNumber}`;
+  }
 }
