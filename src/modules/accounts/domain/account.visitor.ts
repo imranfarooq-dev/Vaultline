@@ -41,3 +41,11 @@ export class CurrentElement extends AccountElement {
 export class FixedDepositElement extends AccountElement {
   accept<R>(visitor: AccountVisitor<R>): R { return visitor.visitFixedDeposit(this); }
 }
+
+export const toElement = (account: AccountEntity): AccountElement => {
+  switch (account.type) {
+    case AccountType.SAVINGS: return new SavingsElement(account);
+    case AccountType.CURRENT: return new CurrentElement(account);
+    case AccountType.FIXED_DEPOSIT: return new FixedDepositElement(account);
+  }
+};
