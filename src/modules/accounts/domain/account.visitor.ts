@@ -49,3 +49,16 @@ export const toElement = (account: AccountEntity): AccountElement => {
     case AccountType.FIXED_DEPOSIT: return new FixedDepositElement(account);
   }
 };
+
+/** Visitor 1: monthly maintenance fee. */
+export class MaintenanceFeeVisitor implements AccountVisitor<number> {
+  visitSavings(a: SavingsElement): number {
+    return a.data.balanceMinor < 1_000_000 ? 15_000 : 0; // Rs 150 if balance under Rs 10,000
+  }
+  visitCurrent(): number {
+    return 50_000; // flat Rs 500
+  }
+  visitFixedDeposit(): number {
+    return 0;
+  }
+}
