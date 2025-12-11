@@ -26,3 +26,8 @@ export interface AccountVisitor<R> {
   visitCurrent(account: CurrentElement): R;
   visitFixedDeposit(account: FixedDepositElement): R;
 }
+
+export abstract class AccountElement {
+  constructor(readonly data: AccountEntity) {}
+  abstract accept<R>(visitor: AccountVisitor<R>): R;
+}
