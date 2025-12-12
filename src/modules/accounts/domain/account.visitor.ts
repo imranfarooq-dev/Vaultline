@@ -62,3 +62,8 @@ export class MaintenanceFeeVisitor implements AccountVisitor<number> {
     return 0;
   }
 }
+
+/** Visitor 2: withholding tax on this month's profit (rates are illustrative). */
+export class WithholdingTaxVisitor implements AccountVisitor<number> {
+  private readonly interest = new InterestCalculator();
+}
