@@ -59,4 +59,8 @@ export class PortfolioGroup implements PortfolioComponent {
       return sum;
     }, {});
   }
+
+  accountCount(): number {
+    return this.children.reduce((count, child) => count + child.accountCount(), 0);
+  }
 }
