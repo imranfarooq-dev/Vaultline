@@ -50,4 +50,13 @@ export class PortfolioGroup implements PortfolioComponent {
     this.children.push(...components);
     return this;
   }
+
+  totals(): Record<string, number> {
+    return this.children.reduce<Record<string, number>>((sum, child) => {
+      for (const [currency, amount] of Object.entries(child.totals())) {
+        sum[currency] = (sum[currency] ?? 0) + amount;
+      }
+      return sum;
+    }, {});
+  }
 }
