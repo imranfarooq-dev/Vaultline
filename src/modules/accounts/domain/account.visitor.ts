@@ -76,4 +76,8 @@ export class WithholdingTaxVisitor implements AccountVisitor<number> {
   visitFixedDeposit(a: FixedDepositElement): number {
     return this.tax(a, 20);
   }
+  private tax(a: AccountElement, percent: number): number {
+    const { monthlyInterestMinor } = this.interest.calculate(a.data.type, a.data.balanceMinor, a.data.annualInterestRate);
+    return Math.floor((monthlyInterestMinor * percent) / 100);
+  }
 }
