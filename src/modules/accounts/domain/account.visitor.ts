@@ -66,4 +66,8 @@ export class MaintenanceFeeVisitor implements AccountVisitor<number> {
 /** Visitor 2: withholding tax on this month's profit (rates are illustrative). */
 export class WithholdingTaxVisitor implements AccountVisitor<number> {
   private readonly interest = new InterestCalculator();
+
+  visitSavings(a: SavingsElement): number {
+    return this.tax(a, 15);
+  }
 }
