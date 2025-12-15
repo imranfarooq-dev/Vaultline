@@ -70,4 +70,10 @@ export class WithholdingTaxVisitor implements AccountVisitor<number> {
   visitSavings(a: SavingsElement): number {
     return this.tax(a, 15);
   }
+  visitCurrent(): number {
+    return 0; // no profit, no tax
+  }
+  visitFixedDeposit(a: FixedDepositElement): number {
+    return this.tax(a, 20);
+  }
 }
