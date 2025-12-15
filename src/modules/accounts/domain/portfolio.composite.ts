@@ -63,4 +63,8 @@ export class PortfolioGroup implements PortfolioComponent {
   accountCount(): number {
     return this.children.reduce((count, child) => count + child.accountCount(), 0);
   }
+
+  toJSON() {
+    return { kind: 'group', name: this.name, accounts: this.accountCount(), totals: this.totals(), children: this.children.map((c) => c.toJSON()) };
+  }
 }
