@@ -81,3 +81,16 @@ export class WithholdingTaxVisitor implements AccountVisitor<number> {
     return Math.floor((monthlyInterestMinor * percent) / 100);
   }
 }
+
+/** Visitor 3: a risk label for the compliance dashboard. */
+export class RiskExposureVisitor implements AccountVisitor<'LOW' | 'MEDIUM' | 'HIGH'> {
+  visitSavings(a: SavingsElement) {
+    return a.data.balanceMinor > 500_000_000 ? 'MEDIUM' : 'LOW';
+  }
+  visitCurrent(a: CurrentElement) {
+    return a.data.dailyWithdrawalLimitMinor > 50_000_000 ? 'HIGH' : 'MEDIUM';
+  }
+  visitFixedDeposit() {
+    return 'LOW' as const;
+  }
+}
