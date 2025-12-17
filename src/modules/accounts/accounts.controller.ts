@@ -7,4 +7,10 @@ import { ChangeStatusDto, OpenAccountDto } from './dto/account.dto';
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly service: AccountsService) {}
+
+  @Get('products')
+  @ApiOperation({ summary: 'PROTOTYPE: products cloned from a few base prototypes' })
+  products() {
+    return this.service.products();
+  }
 }
