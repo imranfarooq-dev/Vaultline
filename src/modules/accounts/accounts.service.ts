@@ -25,4 +25,35 @@ export class AccountsService {
     private readonly catalog: AccountProductCatalog,
     private readonly events: DomainEventBus,
   ) {}
+
+  /** FACTORY METHOD + PROTOTYPE + FLYWEIGHT working together. */
+  async open(dto: OpenAccountDto): Promise<AccountEntity> {
+    if (!this.currencies.isSupported(dto.currency)) {
+      throw new BusinessRuleError(`Currency ${dto.currency} is not supported`, { supported: this.currencies.supportedCodes() });
+    }
+
+    const product = dto.productCode ? this.catalog.get(dto.productCode) : undefined;
+    if (dto.productCode && !product) throw new NotFoundError(`Unknown product ${dto.productCode}`);
+
+    const blueprint = accountCreatorFor(dto.type).open({
+      ownerName: dto.ownerName,
+      currency: dto.currency,
+      initialDepositMinor: dto.initialDepositMinor ?? 0,
+      product,
+    });
+
+    const { minimumOpeningBalanceMinor: _minimum, ...columns } = blueprint;
+    const account = await this.accounts.save(this.accounts.create({ ...columns, accountNumber: this.newAccountNumber() }));
+
+    await this.events.publish(
+      createEvent(EventTypes.ACCOUNT_OPENED, {
+        accountId: account.id,
+        accountNumber: account.accountNumber,
+        ownerName: account.ownerName,
+        type: account.type,
+        currency: account.currency,
+      }),
+    );
+    return account;
+  }
 }
