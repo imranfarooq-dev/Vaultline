@@ -11,4 +11,9 @@ export class OpenAccountDto {
   @ApiProperty({ enum: AccountType, example: AccountType.SAVINGS })
   @IsEnum(AccountType)
   type: AccountType;
+
+  @ApiProperty({ example: 'PKR' })
+  @IsString()
+  @Length(3, 3)
+  currency: string;
 }
