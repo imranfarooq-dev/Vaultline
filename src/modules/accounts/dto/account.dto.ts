@@ -7,4 +7,8 @@ export class OpenAccountDto {
   @IsString()
   @Length(2, 120)
   ownerName: string;
+
+  @ApiProperty({ enum: AccountType, example: AccountType.SAVINGS })
+  @IsEnum(AccountType)
+  type: AccountType;
 }
