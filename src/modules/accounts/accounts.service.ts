@@ -18,4 +18,11 @@ import { OpenAccountDto } from './dto/account.dto';
 @Injectable()
 export class AccountsService {
   private readonly interest = new InterestCalculator();
+
+  constructor(
+    @InjectRepository(AccountEntity) private readonly accounts: Repository<AccountEntity>,
+    private readonly currencies: CurrencyRegistry,
+    private readonly catalog: AccountProductCatalog,
+    private readonly events: DomainEventBus,
+  ) {}
 }
