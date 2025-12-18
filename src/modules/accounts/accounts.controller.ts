@@ -13,4 +13,10 @@ export class AccountsController {
   products() {
     return this.service.products();
   }
+
+  @Get('currencies')
+  @ApiOperation({ summary: 'FLYWEIGHT: how many shared Currency objects exist' })
+  currencies() {
+    return this.service.currencyStats();
+  }
 }
