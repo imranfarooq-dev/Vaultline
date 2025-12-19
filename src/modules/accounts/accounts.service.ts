@@ -62,4 +62,8 @@ export class AccountsService {
     if (!account) throw new NotFoundError(`Account ${id} not found`);
     return account;
   }
+
+  list(ownerName?: string): Promise<AccountEntity[]> {
+    return this.accounts.find({ where: ownerName ? { ownerName } : {}, order: { createdAt: 'DESC' }, take: 100 });
+  }
 }
