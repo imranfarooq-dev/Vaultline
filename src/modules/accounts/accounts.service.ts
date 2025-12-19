@@ -56,4 +56,10 @@ export class AccountsService {
     );
     return account;
   }
+
+  async findById(id: string): Promise<AccountEntity> {
+    const account = await this.accounts.findOneBy({ id });
+    if (!account) throw new NotFoundError(`Account ${id} not found`);
+    return account;
+  }
 }
