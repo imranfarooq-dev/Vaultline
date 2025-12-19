@@ -25,4 +25,10 @@ export class AccountsController {
   monthEnd() {
     return this.service.monthEndReport();
   }
+
+  @Get('portfolio/:ownerName')
+  @ApiOperation({ summary: 'COMPOSITE: tree of groups and accounts with rolled-up totals' })
+  portfolio(@Param('ownerName') ownerName: string) {
+    return this.service.portfolio(ownerName);
+  }
 }
