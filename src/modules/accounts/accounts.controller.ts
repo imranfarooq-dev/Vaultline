@@ -19,4 +19,10 @@ export class AccountsController {
   currencies() {
     return this.service.currencyStats();
   }
+
+  @Get('reports/month-end')
+  @ApiOperation({ summary: 'VISITOR: fee, tax and risk reports over all accounts' })
+  monthEnd() {
+    return this.service.monthEndReport();
+  }
 }
