@@ -16,4 +16,9 @@ export class OpenAccountDto {
   @IsString()
   @Length(3, 3)
   currency: string;
+
+  @ApiPropertyOptional({ example: 'FREELANCER_SAVER', description: 'Cloned from a product prototype' })
+  @IsOptional()
+  @IsString()
+  productCode?: string;
 }
