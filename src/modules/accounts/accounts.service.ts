@@ -66,4 +66,18 @@ export class AccountsService {
   list(ownerName?: string): Promise<AccountEntity[]> {
     return this.accounts.find({ where: ownerName ? { ownerName } : {}, order: { createdAt: 'DESC' }, take: 100 });
   }
+
+  /** STATE: the current state object decides whether the transition is legal. */
+  async changeStatus(id: string, action: 'activate' | 'freeze' | 'unfreeze' | 'close'): Promise<AccountEntity> {
+    const account = await this.findById(id);
+    const current = stateOf(account.status);
+    const next = action === 'close' ? current.close(account.balanceMinor) : current[action]();
+
+    const from = account.status;
+    account.status = next.status;
+    const saved = await this.accounts.save(account); // @VersionColumn gives optimistic locking
+
+    await this.events.publish(createEvent(EventTypes.ACCOUNT_STATUS_CHANGED, { accountId: id, from, to: next.status }));
+    return saved;
+  }
 }
