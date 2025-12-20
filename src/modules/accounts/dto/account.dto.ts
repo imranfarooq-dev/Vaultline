@@ -21,4 +21,10 @@ export class OpenAccountDto {
   @IsOptional()
   @IsString()
   productCode?: string;
+
+  @ApiPropertyOptional({ example: 100000, description: 'Checked against the minimum opening balance' })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  initialDepositMinor?: number;
 }
