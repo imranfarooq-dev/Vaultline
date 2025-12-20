@@ -31,4 +31,10 @@ export class AccountsController {
   portfolio(@Param('ownerName') ownerName: string) {
     return this.service.portfolio(ownerName);
   }
+
+  @Post()
+  @ApiOperation({ summary: 'FACTORY METHOD: open an account (status PENDING)' })
+  async open(@Body() dto: OpenAccountDto) {
+    return this.service.present(await this.service.open(dto));
+  }
 }
