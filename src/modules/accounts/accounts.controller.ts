@@ -37,4 +37,10 @@ export class AccountsController {
   async open(@Body() dto: OpenAccountDto) {
     return this.service.present(await this.service.open(dto));
   }
+
+  @Get()
+  @ApiQuery({ name: 'ownerName', required: false })
+  async list(@Query('ownerName') ownerName?: string) {
+    return (await this.service.list(ownerName)).map((a) => this.service.present(a));
+  }
 }
