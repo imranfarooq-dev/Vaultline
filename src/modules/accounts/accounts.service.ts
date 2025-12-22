@@ -145,4 +145,10 @@ export class AccountsService {
   products() {
     return this.catalog.list();
   }
+
+  /** FLYWEIGHT in use: every response formats through shared Currency objects. */
+  present(account: AccountEntity) {
+    const currency = this.currencies.get(account.currency);
+    return { ...account, balanceFormatted: currency.format(account.balanceMinor), dailyLimitFormatted: currency.format(account.dailyWithdrawalLimitMinor) };
+  }
 }
