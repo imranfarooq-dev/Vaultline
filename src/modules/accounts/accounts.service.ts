@@ -151,4 +151,8 @@ export class AccountsService {
     const currency = this.currencies.get(account.currency);
     return { ...account, balanceFormatted: currency.format(account.balanceMinor), dailyLimitFormatted: currency.format(account.dailyWithdrawalLimitMinor) };
   }
+
+  currencyStats() {
+    return { supported: this.currencies.supportedCodes(), sharedCurrencyObjectsInMemory: this.currencies.sharedInstanceCount };
+  }
 }
