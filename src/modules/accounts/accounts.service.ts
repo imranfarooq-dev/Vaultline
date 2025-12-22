@@ -114,4 +114,31 @@ export class AccountsService {
     const currency = this.currencies.get(account.currency);
     return { accountId: id, type: account.type, strategy, annualRate: account.annualInterestRate, monthlyInterestMinor, formatted: currency.format(monthlyInterestMinor) };
   }
+
+  /** VISITOR: three different reports over the same accounts, no changes to account classes. */
+  async monthEndReport() {
+    const accounts = await this.accounts.find({ where: { status: In([AccountStatus.ACTIVE, AccountStatus.FROZEN]) }, take: 1000 });
+    const fee = new MaintenanceFeeVisitor();
+    const tax = new WithholdingTaxVisitor();
+    const risk = new RiskExposureVisitor();
+
+    const rows = accounts.map((account) => {
+      const element = toElement(account);
+      return {
+        accountNumber: account.accountNumber,
+        type: account.type,
+        maintenanceFeeMinor: element.accept(fee),
+        withholdingTaxMinor: element.accept(tax),
+        risk: element.accept(risk),
+      };
+    });
+
+    return {
+      accounts: rows.length,
+      totalFeesMinor: rows.reduce((s, r) => s + r.maintenanceFeeMinor, 0),
+      totalTaxMinor: rows.reduce((s, r) => s + r.withholdingTaxMinor, 0),
+      highRisk: rows.filter((r) => r.risk === 'HIGH').length,
+      rows,
+    };
+  }
 }
