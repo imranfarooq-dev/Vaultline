@@ -106,4 +106,12 @@ export class AccountsService {
       formattedTotals: Object.entries(root.totals()).map(([code, minor]) => this.currencies.get(code).format(minor)),
     };
   }
+
+  /** STRATEGY: the calculator picks an interest algorithm by account type. */
+  async interestPreview(id: string) {
+    const account = await this.findById(id);
+    const { strategy, monthlyInterestMinor } = this.interest.calculate(account.type, account.balanceMinor, account.annualInterestRate);
+    const currency = this.currencies.get(account.currency);
+    return { accountId: id, type: account.type, strategy, annualRate: account.annualInterestRate, monthlyInterestMinor, formatted: currency.format(monthlyInterestMinor) };
+  }
 }
