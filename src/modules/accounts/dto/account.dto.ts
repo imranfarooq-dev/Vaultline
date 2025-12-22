@@ -28,3 +28,9 @@ export class OpenAccountDto {
   @Min(0)
   initialDepositMinor?: number;
 }
+
+export class ChangeStatusDto {
+  @ApiProperty({ enum: ['activate', 'freeze', 'unfreeze', 'close'] })
+  @IsIn(['activate', 'freeze', 'unfreeze', 'close'])
+  action: 'activate' | 'freeze' | 'unfreeze' | 'close';
+}
