@@ -48,4 +48,10 @@ export class AccountsController {
   async get(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.present(await this.service.findById(id));
   }
+
+  @Patch(':id/status')
+  @ApiOperation({ summary: 'STATE: activate / freeze / unfreeze / close' })
+  async changeStatus(@Param('id', ParseUUIDPipe) id: string, @Body() dto: ChangeStatusDto) {
+    return this.service.present(await this.service.changeStatus(id, dto.action));
+  }
 }
