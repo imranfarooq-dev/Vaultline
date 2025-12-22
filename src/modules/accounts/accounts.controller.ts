@@ -43,4 +43,9 @@ export class AccountsController {
   async list(@Query('ownerName') ownerName?: string) {
     return (await this.service.list(ownerName)).map((a) => this.service.present(a));
   }
+
+  @Get(':id')
+  async get(@Param('id', ParseUUIDPipe) id: string) {
+    return this.service.present(await this.service.findById(id));
+  }
 }
