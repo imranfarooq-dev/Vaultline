@@ -80,4 +80,30 @@ export class AccountsService {
     await this.events.publish(createEvent(EventTypes.ACCOUNT_STATUS_CHANGED, { accountId: id, from, to: next.status }));
     return saved;
   }
+
+  /** COMPOSITE: build a tree of groups and accounts, then ask the root for totals. */
+  async portfolio(ownerName: string) {
+    const accounts = await this.accounts.find({ where: { ownerName, status: In([AccountStatus.ACTIVE, AccountStatus.FROZEN, AccountStatus.PENDING]) } });
+    if (accounts.length === 0) throw new NotFoundError(`No accounts for ${ownerName}`);
+
+    const everyday = new PortfolioGroup('Everyday banking');
+    const savings = new PortfolioGroup('Savings');
+    const investments = new PortfolioGroup('Investments');
+
+    for (const account of accounts) {
+      const leaf = new AccountLeaf(account);
+      if (account.type === AccountType.CURRENT) everyday.add(leaf);
+      else if (account.type === AccountType.SAVINGS) savings.add(leaf);
+      else investments.add(leaf);
+    }
+
+    // A group inside a group: "Wealth" contains both savings and investments.
+    const wealth = new PortfolioGroup('Wealth').add(savings, investments);
+    const root = new PortfolioGroup(`${ownerName} - total relationship`).add(everyday, wealth);
+
+    return {
+      ...(root.toJSON() as object),
+      formattedTotals: Object.entries(root.totals()).map(([code, minor]) => this.currencies.get(code).format(minor)),
+    };
+  }
 }
