@@ -54,4 +54,10 @@ export class AccountsController {
   async changeStatus(@Param('id', ParseUUIDPipe) id: string, @Body() dto: ChangeStatusDto) {
     return this.service.present(await this.service.changeStatus(id, dto.action));
   }
+
+  @Get(':id/interest-preview')
+  @ApiOperation({ summary: 'STRATEGY: interest algorithm chosen by account type' })
+  interest(@Param('id', ParseUUIDPipe) id: string) {
+    return this.service.interestPreview(id);
+  }
 }
