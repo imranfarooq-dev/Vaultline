@@ -141,4 +141,8 @@ export class AccountsService {
       rows,
     };
   }
+
+  products() {
+    return this.catalog.list();
+  }
 }
