@@ -27,3 +27,10 @@ export interface LedgerTransferInput {
   feeMinor: number;
   description?: string;
 }
+
+export interface LedgerTransferResult {
+  reference: string;
+  feeMinor: number;
+  fromBalanceAfterMinor: number;
+  toBalanceAfterMinor: number;
+}
