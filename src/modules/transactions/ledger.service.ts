@@ -121,4 +121,41 @@ export class LedgerService {
     );
     return result;
   }
+
+  /** Undo by writing opposite entries (never by deleting history). */
+  async reverse(originalReference: string): Promise<{ reference: string; reversedEntries: number }> {
+    const reversalReference = this.references.next('REV');
+    const reversed = await this.dataSource.transaction(async (manager) => {
+      const alreadyReversed = await manager.exists(LedgerEntryEntity, { where: { description: `${REVERSAL_PREFIX}${originalReference}` } });
+      if (alreadyReversed) throw new BusinessRuleError(`Transaction ${originalReference} was already reversed`);
+
+      const entries = await manager.find(LedgerEntryEntity, { where: { reference: originalReference }, order: { createdAt: 'ASC' } });
+      if (entries.length === 0) throw new NotFoundError(`No transaction with reference ${originalReference}`);
+
+      const accountIds = [...new Set(entries.map((e) => e.accountId))].sort();
+      const accounts = new Map<string, AccountEntity>();
+      for (const id of accountIds) accounts.set(id, await this.lockAccount(manager, id));
+
+      for (const entry of entries) {
+        const account = accounts.get(entry.accountId)!;
+        if (account.balanceMinor - entry.amountMinor < 0) {
+          throw new BusinessRuleError(`Cannot reverse: account ${account.accountNumber} no longer has enough balance`);
+        }
+        await this.post(manager, account, -entry.amountMinor, LedgerEntryType.REVERSAL, reversalReference, `${REVERSAL_PREFIX}${originalReference}`);
+      }
+      return entries;
+    });
+
+    for (const entry of reversed) {
+      await this.emit(
+        createEvent(EventTypes.TRANSACTION_REVERSED, {
+          accountId: entry.accountId,
+          originalReference,
+          reference: reversalReference,
+          amountMinor: -entry.amountMinor,
+        }),
+      );
+    }
+    return { reference: reversalReference, reversedEntries: reversed.length };
+  }
 }
