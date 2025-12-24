@@ -155,4 +155,10 @@ export class AccountsService {
   currencyStats() {
     return { supported: this.currencies.supportedCodes(), sharedCurrencyObjectsInMemory: this.currencies.sharedInstanceCount };
   }
+
+  /** Looks like an IBAN: PK + 2 digits + BANK code + 16 digits = 24 characters. */
+  private newAccountNumber(): string {
+    const digits = Array.from({ length: 16 }, () => randomInt(0, 10)).join('');
+    return `PK${String(randomInt(10, 99))}NBPT${digits}`;
+  }
 }
