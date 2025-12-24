@@ -158,4 +158,10 @@ export class LedgerService {
     }
     return { reference: reversalReference, reversedEntries: reversed.length };
   }
+
+  private async lockAccount(manager: EntityManager, accountId: string): Promise<AccountEntity> {
+    const account = await manager.findOne(AccountEntity, { where: { id: accountId }, lock: { mode: 'pessimistic_write' } });
+    if (!account) throw new NotFoundError(`Account ${accountId} not found`);
+    return account;
+  }
 }
