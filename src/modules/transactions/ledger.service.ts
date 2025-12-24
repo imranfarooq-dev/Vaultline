@@ -82,4 +82,43 @@ export class LedgerService {
     await this.emit(createEvent(EventTypes.MONEY_WITHDRAWN, { ...result, amountMinor }));
     return result;
   }
+
+  async transfer(input: LedgerTransferInput): Promise<LedgerTransferResult> {
+    if (input.fromAccountId === input.toAccountId) throw new BusinessRuleError('Cannot transfer to the same account');
+
+    const reference = this.references.next('TRF');
+    const result = await this.dataSource.transaction(async (manager) => {
+      // Always lock in the same (sorted) order to avoid deadlocks between opposite transfers.
+      const [firstId, secondId] = [input.fromAccountId, input.toAccountId].sort();
+      const first = await this.lockAccount(manager, firstId);
+      const second = await this.lockAccount(manager, secondId);
+      const from = first.id === input.fromAccountId ? first : second;
+      const to = first.id === input.toAccountId ? first : second;
+
+      if (from.currency !== to.currency) throw new BusinessRuleError('Cross-currency transfers must go through FX conversion');
+
+      const totalDebit = input.amountMinor + input.feeMinor;
+      const withdrawnTodayMinor = await this.withdrawnToday(manager, from.id);
+      this.validationChain.validate({ operation: 'WITHDRAWAL', amountMinor: totalDebit, account: from, withdrawnTodayMinor });
+      this.validationChain.validate({ operation: 'DEPOSIT', amountMinor: input.amountMinor, account: to, withdrawnTodayMinor: 0 });
+
+      const description = input.description ?? `Transfer ${from.accountNumber} -> ${to.accountNumber}`;
+      await this.post(manager, from, -input.amountMinor, LedgerEntryType.TRANSFER_OUT, reference, description);
+      if (input.feeMinor > 0) await this.post(manager, from, -input.feeMinor, LedgerEntryType.FEE, reference, 'Transfer fee');
+      const credit = await this.post(manager, to, input.amountMinor, LedgerEntryType.TRANSFER_IN, reference, description);
+
+      return { reference, feeMinor: input.feeMinor, fromBalanceAfterMinor: from.balanceMinor, toBalanceAfterMinor: credit.balanceAfterMinor };
+    });
+
+    await this.emit(
+      createEvent(EventTypes.MONEY_TRANSFERRED, {
+        fromAccountId: input.fromAccountId,
+        toAccountId: input.toAccountId,
+        amountMinor: input.amountMinor,
+        feeMinor: input.feeMinor,
+        reference,
+      }),
+    );
+    return result;
+  }
 }
