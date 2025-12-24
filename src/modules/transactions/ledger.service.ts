@@ -12,3 +12,10 @@ export interface PostingOptions {
   description?: string;
   type?: LedgerEntryType;
 }
+
+export interface PostingResult {
+  reference: string;
+  accountId: string;
+  amountMinor: number;
+  balanceAfterMinor: number;
+}
