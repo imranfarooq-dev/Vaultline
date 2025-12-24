@@ -34,3 +34,25 @@ export interface LedgerTransferResult {
   fromBalanceAfterMinor: number;
   toBalanceAfterMinor: number;
 }
+
+const REVERSAL_PREFIX = 'REVERSAL_OF:';
+
+/**
+ * The only place that changes balances.
+ *
+ * Every operation:
+ *   1. opens a DB transaction
+ *   2. locks the account rows (SELECT ... FOR UPDATE) so two requests cannot
+ *      spend the same money at the same time
+ *   3. runs the validation chain
+ *   4. writes balance + ledger entries
+ *   5. commits, and only THEN publishes events
+ *
+ * Production note: publishing after commit can lose an event if the process
+ * crashes between steps 4 and 5. The "transactional outbox" pattern fixes that
+ * (see docs/ARCHITECTURE.md).
+ */
+@Injectable()
+export class LedgerService {
+  private readonly validationChain = buildTransactionValidationChain();
+}
