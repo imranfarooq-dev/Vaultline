@@ -185,4 +185,14 @@ export class LedgerService {
     });
     return { reference, accountId: account.id, amountMinor: Math.abs(signedAmountMinor), balanceAfterMinor: account.balanceMinor };
   }
+
+  private async withdrawnToday(manager: EntityManager, accountId: string): Promise<number> {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const rows = await manager.find(LedgerEntryEntity, {
+      select: { amountMinor: true },
+      where: { accountId, type: In([LedgerEntryType.WITHDRAWAL, LedgerEntryType.TRANSFER_OUT]), createdAt: MoreThanOrEqual(startOfDay) },
+    });
+    return rows.reduce((sum, row) => sum - row.amountMinor, 0);
+  }
 }
