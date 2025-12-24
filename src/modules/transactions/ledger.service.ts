@@ -71,4 +71,15 @@ export class LedgerService {
     await this.emit(createEvent(EventTypes.MONEY_DEPOSITED, { ...result }));
     return result;
   }
+
+  async withdraw(accountId: string, amountMinor: number, options: PostingOptions = {}): Promise<PostingResult> {
+    const result = await this.dataSource.transaction(async (manager) => {
+      const account = await this.lockAccount(manager, accountId);
+      const withdrawnTodayMinor = await this.withdrawnToday(manager, accountId);
+      this.validationChain.validate({ operation: 'WITHDRAWAL', amountMinor, account, withdrawnTodayMinor });
+      return this.post(manager, account, -amountMinor, options.type ?? LedgerEntryType.WITHDRAWAL, this.references.next('WDL'), options.description);
+    });
+    await this.emit(createEvent(EventTypes.MONEY_WITHDRAWN, { ...result, amountMinor }));
+    return result;
+  }
 }
