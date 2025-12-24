@@ -55,4 +55,10 @@ const REVERSAL_PREFIX = 'REVERSAL_OF:';
 @Injectable()
 export class LedgerService {
   private readonly validationChain = buildTransactionValidationChain();
+
+  constructor(
+    @InjectDataSource() private readonly dataSource: DataSource,
+    private readonly references: ReferenceNumberGenerator,
+    private readonly events: DomainEventBus,
+  ) {}
 }
