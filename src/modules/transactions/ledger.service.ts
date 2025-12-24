@@ -164,4 +164,25 @@ export class LedgerService {
     if (!account) throw new NotFoundError(`Account ${accountId} not found`);
     return account;
   }
+
+  private async post(
+    manager: EntityManager,
+    account: AccountEntity,
+    signedAmountMinor: number,
+    type: LedgerEntryType,
+    reference: string,
+    description = '',
+  ): Promise<PostingResult> {
+    account.balanceMinor += signedAmountMinor;
+    await manager.save(account);
+    await manager.insert(LedgerEntryEntity, {
+      accountId: account.id,
+      type,
+      amountMinor: signedAmountMinor,
+      balanceAfterMinor: account.balanceMinor,
+      reference,
+      description,
+    });
+    return { reference, accountId: account.id, amountMinor: Math.abs(signedAmountMinor), balanceAfterMinor: account.balanceMinor };
+  }
 }
