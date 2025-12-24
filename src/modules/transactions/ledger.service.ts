@@ -61,4 +61,14 @@ export class LedgerService {
     private readonly references: ReferenceNumberGenerator,
     private readonly events: DomainEventBus,
   ) {}
+
+  async deposit(accountId: string, amountMinor: number, options: PostingOptions = {}): Promise<PostingResult> {
+    const result = await this.dataSource.transaction(async (manager) => {
+      const account = await this.lockAccount(manager, accountId);
+      this.validationChain.validate({ operation: 'DEPOSIT', amountMinor, account, withdrawnTodayMinor: 0 });
+      return this.post(manager, account, amountMinor, options.type ?? LedgerEntryType.DEPOSIT, this.references.next('DEP'), options.description);
+    });
+    await this.emit(createEvent(EventTypes.MONEY_DEPOSITED, { ...result }));
+    return result;
+  }
 }
