@@ -19,3 +19,11 @@ export interface PostingResult {
   amountMinor: number;
   balanceAfterMinor: number;
 }
+
+export interface LedgerTransferInput {
+  fromAccountId: string;
+  toAccountId: string;
+  amountMinor: number;
+  feeMinor: number;
+  description?: string;
+}
