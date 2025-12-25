@@ -27,4 +27,10 @@ export interface ValidationContext {
 
 export abstract class ValidationHandler {
   private next?: ValidationHandler;
+
+  /** Returns the handler passed in so calls can be chained: a.setNext(b).setNext(c) */
+  setNext(handler: ValidationHandler): ValidationHandler {
+    this.next = handler;
+    return handler;
+  }
 }
