@@ -195,4 +195,8 @@ export class LedgerService {
     });
     return rows.reduce((sum, row) => sum - row.amountMinor, 0);
   }
+
+  private async emit(event: DomainEvent): Promise<void> {
+    await this.events.publish(event);
+  }
 }
