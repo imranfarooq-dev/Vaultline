@@ -33,4 +33,9 @@ export abstract class ValidationHandler {
     this.next = handler;
     return handler;
   }
+
+  validate(context: ValidationContext): void {
+    this.check(context);
+    this.next?.validate(context);
+  }
 }
