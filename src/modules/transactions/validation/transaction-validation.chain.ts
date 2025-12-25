@@ -38,4 +38,14 @@ export abstract class ValidationHandler {
     this.check(context);
     this.next?.validate(context);
   }
+
+  protected abstract check(context: ValidationContext): void;
+}
+
+export class PositiveAmountHandler extends ValidationHandler {
+  protected check({ amountMinor }: ValidationContext): void {
+    if (!Number.isInteger(amountMinor) || amountMinor <= 0) {
+      throw new BusinessRuleError('Amount must be a positive whole number of minor units');
+    }
+  }
 }
