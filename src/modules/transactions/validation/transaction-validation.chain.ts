@@ -24,3 +24,7 @@ export interface ValidationContext {
   /** Already withdrawn today, needed by the daily-limit handler. */
   withdrawnTodayMinor: number;
 }
+
+export abstract class ValidationHandler {
+  private next?: ValidationHandler;
+}
