@@ -49,3 +49,14 @@ export class PositiveAmountHandler extends ValidationHandler {
     }
   }
 }
+
+/** Uses the STATE pattern to ask "is this operation allowed right now?" */
+export class AccountStatusHandler extends ValidationHandler {
+  protected check({ operation, account }: ValidationContext): void {
+    const state = stateOf(account.status);
+    const allowed = operation === 'DEPOSIT' ? state.canDeposit() : state.canWithdraw();
+    if (!allowed) {
+      throw new InvalidStateTransitionError(`${operation} is not allowed on a ${account.status} account`, { accountId: account.id });
+    }
+  }
+}
