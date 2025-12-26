@@ -24,3 +24,11 @@ export interface BankCommand {
   execute(): Promise<{ reference: string }>;
   undo(reference: string): Promise<object>;
 }
+
+export class DepositCommand implements BankCommand {
+  readonly name = 'deposit';
+  constructor(private readonly ledger: LedgerService, private readonly accountId: string, private readonly amountMinor: number, private readonly description?: string) {}
+  get summary() { return { accountId: this.accountId, amountMinor: this.amountMinor }; }
+  execute() { return this.ledger.deposit(this.accountId, this.amountMinor, { description: this.description }); }
+  undo(reference: string) { return this.ledger.reverse(reference); }
+}
