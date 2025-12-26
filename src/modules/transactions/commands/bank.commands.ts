@@ -40,3 +40,11 @@ export class WithdrawCommand implements BankCommand {
   execute() { return this.ledger.withdraw(this.accountId, this.amountMinor, { description: this.description }); }
   undo(reference: string) { return this.ledger.reverse(reference); }
 }
+
+export class TransferCommand implements BankCommand {
+  readonly name = 'transfer';
+  constructor(private readonly transfers: MoneyTransferService, private readonly ledger: LedgerService, private readonly request: TransferRequest) {}
+  get summary() { return { ...this.request }; }
+  async execute() { return { ...(await this.transfers.transfer(this.request)) }; }
+  undo(reference: string) { return this.ledger.reverse(reference); }
+}
