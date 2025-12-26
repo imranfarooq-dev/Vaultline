@@ -32,3 +32,11 @@ export class DepositCommand implements BankCommand {
   execute() { return this.ledger.deposit(this.accountId, this.amountMinor, { description: this.description }); }
   undo(reference: string) { return this.ledger.reverse(reference); }
 }
+
+export class WithdrawCommand implements BankCommand {
+  readonly name = 'withdraw';
+  constructor(private readonly ledger: LedgerService, private readonly accountId: string, private readonly amountMinor: number, private readonly description?: string) {}
+  get summary() { return { accountId: this.accountId, amountMinor: this.amountMinor }; }
+  execute() { return this.ledger.withdraw(this.accountId, this.amountMinor, { description: this.description }); }
+  undo(reference: string) { return this.ledger.reverse(reference); }
+}
