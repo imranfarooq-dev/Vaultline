@@ -48,3 +48,14 @@ export class TransferCommand implements BankCommand {
   async execute() { return { ...(await this.transfers.transfer(this.request)) }; }
   undo(reference: string) { return this.ledger.reverse(reference); }
 }
+
+export interface CommandRecord {
+  commandId: string;
+  name: string;
+  summary: Record<string, unknown>;
+  status: 'EXECUTED' | 'FAILED' | 'UNDONE';
+  reference?: string;
+  error?: string;
+  executedAt: string;
+  undoneAt?: string;
+}
