@@ -60,3 +60,11 @@ export class AccountStatusHandler extends ValidationHandler {
     }
   }
 }
+
+export class SufficientFundsHandler extends ValidationHandler {
+  protected check({ operation, amountMinor, account }: ValidationContext): void {
+    if (operation === 'WITHDRAWAL' && account.balanceMinor < amountMinor) {
+      throw new BusinessRuleError('Insufficient funds', { balanceMinor: account.balanceMinor, requestedMinor: amountMinor });
+    }
+  }
+}
