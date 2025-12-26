@@ -78,3 +78,10 @@ export class DailyLimitHandler extends ValidationHandler {
     }
   }
 }
+
+/** Builds the default chain. Order matters: cheap checks first. */
+export const buildTransactionValidationChain = (): ValidationHandler => {
+  const head = new PositiveAmountHandler();
+  head.setNext(new AccountStatusHandler()).setNext(new SufficientFundsHandler()).setNext(new DailyLimitHandler());
+  return head;
+};
