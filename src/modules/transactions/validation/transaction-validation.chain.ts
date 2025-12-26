@@ -68,3 +68,13 @@ export class SufficientFundsHandler extends ValidationHandler {
     }
   }
 }
+
+export class DailyLimitHandler extends ValidationHandler {
+  protected check({ operation, amountMinor, account, withdrawnTodayMinor }: ValidationContext): void {
+    if (operation !== 'WITHDRAWAL') return;
+    const limit = account.dailyWithdrawalLimitMinor;
+    if (withdrawnTodayMinor + amountMinor > limit) {
+      throw new BusinessRuleError('Daily withdrawal limit exceeded', { limitMinor: limit, usedTodayMinor: withdrawnTodayMinor });
+    }
+  }
+}
