@@ -59,3 +59,12 @@ export interface CommandRecord {
   executedAt: string;
   undoneAt?: string;
 }
+
+/**
+ * The INVOKER. History lives in memory (per pod) to keep the example small;
+ * a real bank would persist it. Reversals themselves are always persisted.
+ */
+export class CommandInvoker {
+  private readonly history = new Map<string, { command: BankCommand; record: CommandRecord }>();
+  private static readonly MAX_HISTORY = 500;
+}
