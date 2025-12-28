@@ -81,4 +81,16 @@ export class CommandInvoker {
       throw error;
     }
   }
+
+  async undo(commandId: string) {
+    const entry = this.history.get(commandId);
+    if (!entry) throw new NotFoundError(`Command ${commandId} not found on this instance`);
+    if (entry.record.status !== 'EXECUTED' || !entry.record.reference) {
+      throw new BusinessRuleError(`Command ${commandId} is ${entry.record.status} and cannot be undone`);
+    }
+    const result = await entry.command.undo(entry.record.reference);
+    entry.record.status = 'UNDONE';
+    entry.record.undoneAt = new Date().toISOString();
+    return { commandId, ...result };
+  }
 }
