@@ -93,4 +93,8 @@ export class CommandInvoker {
     entry.record.undoneAt = new Date().toISOString();
     return { commandId, ...result };
   }
+
+  list(): CommandRecord[] {
+    return [...this.history.values()].map((h) => h.record).reverse();
+  }
 }
