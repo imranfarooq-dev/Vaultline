@@ -67,4 +67,18 @@ export interface CommandRecord {
 export class CommandInvoker {
   private readonly history = new Map<string, { command: BankCommand; record: CommandRecord }>();
   private static readonly MAX_HISTORY = 500;
+
+  async run(command: BankCommand) {
+    const record: CommandRecord = { commandId: randomUUID(), name: command.name, summary: command.summary, status: 'EXECUTED', executedAt: new Date().toISOString() };
+    this.remember(command, record);
+    try {
+      const result = await command.execute();
+      record.reference = result.reference;
+      return { commandId: record.commandId, ...result };
+    } catch (error) {
+      record.status = 'FAILED';
+      record.error = (error as Error).message;
+      throw error;
+    }
+  }
 }
