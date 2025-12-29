@@ -25,3 +25,13 @@ import { LedgerService } from '../ledger.service';
  * ============================================================================
  */
 export type Channel = 'web' | 'mobile' | 'branch';
+
+export interface TransferRequest {
+  fromAccountId: string;
+  toAccountId: string;
+  amountMinor: number;
+  channel: Channel;
+  description?: string;
+  /** Filled in by decorators, not by the caller. */
+  feeMinor?: number;
+}
