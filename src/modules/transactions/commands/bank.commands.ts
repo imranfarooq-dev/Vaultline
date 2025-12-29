@@ -97,4 +97,12 @@ export class CommandInvoker {
   list(): CommandRecord[] {
     return [...this.history.values()].map((h) => h.record).reverse();
   }
+
+  private remember(command: BankCommand, record: CommandRecord): void {
+    this.history.set(record.commandId, { command, record });
+    if (this.history.size > CommandInvoker.MAX_HISTORY) {
+      const oldest = this.history.keys().next().value as string;
+      this.history.delete(oldest);
+    }
+  }
 }
