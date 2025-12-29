@@ -35,3 +35,13 @@ export interface TransferRequest {
   /** Filled in by decorators, not by the caller. */
   feeMinor?: number;
 }
+
+export interface TransferResult {
+  reference: string;
+  amountMinor: number;
+  feeMinor: number;
+  fromBalanceAfterMinor: number;
+  toBalanceAfterMinor: number;
+  /** Which layers the request passed through, innermost last. Great for learning. */
+  pipeline: string[];
+}
