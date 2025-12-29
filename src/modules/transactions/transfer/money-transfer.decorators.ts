@@ -49,3 +49,10 @@ export interface TransferResult {
 export interface MoneyTransferService {
   transfer(request: TransferRequest): Promise<TransferResult>;
 }
+
+export const MONEY_TRANSFER_SERVICE = Symbol('MONEY_TRANSFER_SERVICE');
+
+/** The core component being decorated. */
+export class LedgerTransferService implements MoneyTransferService {
+  constructor(private readonly ledger: LedgerService) {}
+}
