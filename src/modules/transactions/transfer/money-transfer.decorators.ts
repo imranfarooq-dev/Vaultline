@@ -55,4 +55,15 @@ export const MONEY_TRANSFER_SERVICE = Symbol('MONEY_TRANSFER_SERVICE');
 /** The core component being decorated. */
 export class LedgerTransferService implements MoneyTransferService {
   constructor(private readonly ledger: LedgerService) {}
+
+  async transfer(request: TransferRequest): Promise<TransferResult> {
+    const result = await this.ledger.transfer({
+      fromAccountId: request.fromAccountId,
+      toAccountId: request.toAccountId,
+      amountMinor: request.amountMinor,
+      feeMinor: request.feeMinor ?? 0,
+      description: request.description,
+    });
+    return { ...result, amountMinor: request.amountMinor, pipeline: ['ledger'] };
+  }
 }
