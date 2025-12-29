@@ -45,3 +45,7 @@ export interface TransferResult {
   /** Which layers the request passed through, innermost last. Great for learning. */
   pipeline: string[];
 }
+
+export interface MoneyTransferService {
+  transfer(request: TransferRequest): Promise<TransferResult>;
+}
