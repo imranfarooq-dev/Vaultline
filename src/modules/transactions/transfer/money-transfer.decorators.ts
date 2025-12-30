@@ -94,4 +94,19 @@ export class FraudScreeningDecorator extends TransferServiceDecorator {
   constructor(inner: MoneyTransferService, private readonly fraud: FraudRuleEngine) {
     super(inner);
   }
+
+  override async transfer(request: TransferRequest): Promise<TransferResult> {
+    const now = new Date();
+    const verdict = this.fraud.evaluate({
+      amount: request.amountMinor,
+      channel: request.channel,
+      hour: now.getHours(),
+      dayOfWeek: now.getDay(),
+    });
+    if (verdict.suspicious) {
+      throw new FraudSuspectedError('Transfer blocked by fraud rules', { matchedRules: verdict.matchedRules });
+    }
+    const result = await this.inner.transfer(request);
+    return { ...result, pipeline: ['fraud-screening', ...result.pipeline] };
+  }
 }
