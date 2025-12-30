@@ -89,3 +89,9 @@ export class TransferFeeDecorator extends TransferServiceDecorator {
     return { ...result, pipeline: ['fee', ...result.pipeline] };
   }
 }
+
+export class FraudScreeningDecorator extends TransferServiceDecorator {
+  constructor(inner: MoneyTransferService, private readonly fraud: FraudRuleEngine) {
+    super(inner);
+  }
+}
