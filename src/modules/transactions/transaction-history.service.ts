@@ -7,4 +7,8 @@ import { HistoryOptions, LedgerHistoryIterator, TypeOrmEntryFetcher } from './le
 @Injectable()
 export class TransactionHistoryService {
   private readonly fetcher: TypeOrmEntryFetcher;
+
+  constructor(@InjectRepository(LedgerEntryEntity) private readonly entries: Repository<LedgerEntryEntity>) {
+    this.fetcher = new TypeOrmEntryFetcher(entries);
+  }
 }
