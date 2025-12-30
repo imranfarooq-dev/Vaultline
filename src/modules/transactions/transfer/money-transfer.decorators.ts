@@ -110,3 +110,7 @@ export class FraudScreeningDecorator extends TransferServiceDecorator {
     return { ...result, pipeline: ['fraud-screening', ...result.pipeline] };
   }
 }
+
+export class AuditTimingDecorator extends TransferServiceDecorator {
+  private readonly logger = new Logger('TransferAudit');
+}
