@@ -21,3 +21,8 @@ export interface HistoryOptions {
   from?: Date;
   to?: Date;
 }
+
+export interface EntryFetcher {
+  /** Fetch the next page strictly AFTER the given cursor. */
+  fetchPage(accountId: string, after: { createdAt: Date; id: string } | null, limit: number, options: HistoryOptions): Promise<LedgerEntryEntity[]>;
+}
