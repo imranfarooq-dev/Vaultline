@@ -26,3 +26,10 @@ export interface EntryFetcher {
   /** Fetch the next page strictly AFTER the given cursor. */
   fetchPage(accountId: string, after: { createdAt: Date; id: string } | null, limit: number, options: HistoryOptions): Promise<LedgerEntryEntity[]>;
 }
+
+export class LedgerHistoryIterator implements AsyncIterableIterator<LedgerEntryEntity> {
+  private buffer: LedgerEntryEntity[] = [];
+  private cursor: { createdAt: Date; id: string } | null = null;
+  private exhausted = false;
+  pagesFetched = 0;
+}
