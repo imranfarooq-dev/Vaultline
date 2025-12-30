@@ -113,4 +113,16 @@ export class FraudScreeningDecorator extends TransferServiceDecorator {
 
 export class AuditTimingDecorator extends TransferServiceDecorator {
   private readonly logger = new Logger('TransferAudit');
+
+  override async transfer(request: TransferRequest): Promise<TransferResult> {
+    const started = Date.now();
+    try {
+      const result = await this.inner.transfer(request);
+      this.logger.log(`OK ${result.reference} amount=${request.amountMinor} in ${Date.now() - started}ms`);
+      return { ...result, pipeline: ['audit', ...result.pipeline] };
+    } catch (error) {
+      this.logger.warn(`FAILED transfer amount=${request.amountMinor} after ${Date.now() - started}ms: ${(error as Error).message}`);
+      throw error;
+    }
+  }
 }
