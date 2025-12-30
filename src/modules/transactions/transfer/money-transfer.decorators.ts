@@ -67,3 +67,12 @@ export class LedgerTransferService implements MoneyTransferService {
     return { ...result, amountMinor: request.amountMinor, pipeline: ['ledger'] };
   }
 }
+
+/** Base decorator: forwards everything. Concrete decorators override transfer(). */
+export abstract class TransferServiceDecorator implements MoneyTransferService {
+  constructor(protected readonly inner: MoneyTransferService) {}
+
+  transfer(request: TransferRequest): Promise<TransferResult> {
+    return this.inner.transfer(request);
+  }
+}
