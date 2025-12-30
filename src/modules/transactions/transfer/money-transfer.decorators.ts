@@ -76,3 +76,16 @@ export abstract class TransferServiceDecorator implements MoneyTransferService {
     return this.inner.transfer(request);
   }
 }
+
+export class TransferFeeDecorator extends TransferServiceDecorator {
+  constructor(inner: MoneyTransferService, private readonly feeMinor: number) {
+    super(inner);
+  }
+
+  override async transfer(request: TransferRequest): Promise<TransferResult> {
+    // Branch transfers cost more than digital ones.
+    const fee = request.channel === 'branch' ? this.feeMinor + 10_000 : this.feeMinor;
+    const result = await this.inner.transfer({ ...request, feeMinor: (request.feeMinor ?? 0) + fee });
+    return { ...result, pipeline: ['fee', ...result.pipeline] };
+  }
+}
