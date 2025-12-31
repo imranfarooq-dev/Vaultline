@@ -11,4 +11,8 @@ export class TransactionHistoryService {
   constructor(@InjectRepository(LedgerEntryEntity) private readonly entries: Repository<LedgerEntryEntity>) {
     this.fetcher = new TypeOrmEntryFetcher(entries);
   }
+
+  iterate(accountId: string, options: HistoryOptions = {}): LedgerHistoryIterator {
+    return new LedgerHistoryIterator(this.fetcher, accountId, options);
+  }
 }
