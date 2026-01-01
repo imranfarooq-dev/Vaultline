@@ -15,4 +15,8 @@ export class TransactionHistoryService {
   iterate(accountId: string, options: HistoryOptions = {}): LedgerHistoryIterator {
     return new LedgerHistoryIterator(this.fetcher, accountId, options);
   }
+
+  recent(accountId: string, limit = 20): Promise<LedgerEntryEntity[]> {
+    return this.entries.find({ where: { accountId }, order: { createdAt: 'DESC', id: 'DESC' }, take: Math.min(limit, 100) });
+  }
 }
