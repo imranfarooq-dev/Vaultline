@@ -32,4 +32,10 @@ export class LedgerHistoryIterator implements AsyncIterableIterator<LedgerEntryE
   private cursor: { createdAt: Date; id: string } | null = null;
   private exhausted = false;
   pagesFetched = 0;
+
+  constructor(
+    private readonly fetcher: EntryFetcher,
+    private readonly accountId: string,
+    private readonly options: HistoryOptions = {},
+  ) {}
 }
