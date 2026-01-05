@@ -38,4 +38,10 @@ export class LedgerHistoryIterator implements AsyncIterableIterator<LedgerEntryE
     private readonly accountId: string,
     private readonly options: HistoryOptions = {},
   ) {}
+
+  async next(): Promise<IteratorResult<LedgerEntryEntity>> {
+    if (this.buffer.length === 0 && !this.exhausted) await this.loadNextPage();
+    const entry = this.buffer.shift();
+    return entry ? { value: entry, done: false } : { value: undefined, done: true };
+  }
 }
