@@ -63,4 +63,18 @@ export class LedgerHistoryIterator implements AsyncIterableIterator<LedgerEntryE
 /** Real Postgres implementation of the page fetcher. */
 export class TypeOrmEntryFetcher implements EntryFetcher {
   constructor(private readonly repository: Repository<LedgerEntryEntity>) {}
+
+  fetchPage(accountId: string, after: { createdAt: Date; id: string } | null, limit: number, options: HistoryOptions) {
+    const query = this.repository
+      .createQueryBuilder('e')
+      .where('e.account_id = :accountId', { accountId })
+      .orderBy('e.created_at', 'ASC')
+      .addOrderBy('e.id', 'ASC')
+      .limit(limit);
+
+    if (after) query.andWhere('(e.created_at, e.id) > (:createdAt, :id)', { createdAt: after.createdAt, id: after.id });
+    if (options.from) query.andWhere('e.created_at >= :from', { from: options.from });
+    if (options.to) query.andWhere('e.created_at < :to', { to: options.to });
+    return query.getMany();
+  }
 }
