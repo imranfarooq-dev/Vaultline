@@ -59,3 +59,8 @@ export class LedgerHistoryIterator implements AsyncIterableIterator<LedgerEntryE
     if (last) this.cursor = { createdAt: last.createdAt, id: last.id };
   }
 }
+
+/** Real Postgres implementation of the page fetcher. */
+export class TypeOrmEntryFetcher implements EntryFetcher {
+  constructor(private readonly repository: Repository<LedgerEntryEntity>) {}
+}
