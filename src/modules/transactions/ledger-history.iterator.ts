@@ -48,4 +48,14 @@ export class LedgerHistoryIterator implements AsyncIterableIterator<LedgerEntryE
   [Symbol.asyncIterator](): AsyncIterableIterator<LedgerEntryEntity> {
     return this;
   }
+
+  private async loadNextPage(): Promise<void> {
+    const pageSize = this.options.pageSize ?? 200;
+    const page = await this.fetcher.fetchPage(this.accountId, this.cursor, pageSize, this.options);
+    this.pagesFetched++;
+    this.buffer = page;
+    if (page.length < pageSize) this.exhausted = true;
+    const last = page[page.length - 1];
+    if (last) this.cursor = { createdAt: last.createdAt, id: last.id };
+  }
 }
