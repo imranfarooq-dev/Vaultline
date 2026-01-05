@@ -44,4 +44,8 @@ export class LedgerHistoryIterator implements AsyncIterableIterator<LedgerEntryE
     const entry = this.buffer.shift();
     return entry ? { value: entry, done: false } : { value: undefined, done: true };
   }
+
+  [Symbol.asyncIterator](): AsyncIterableIterator<LedgerEntryEntity> {
+    return this;
+  }
 }
