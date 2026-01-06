@@ -10,4 +10,10 @@ export class MoneyMovementDto {
   @IsInt()
   @IsPositive()
   amountMinor: number;
+
+  @ApiPropertyOptional({ example: 'Salary' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  description?: string;
 }
