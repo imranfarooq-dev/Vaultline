@@ -22,4 +22,10 @@ export class TransactionsController {
   deposit(@Body() dto: MoneyMovementDto) {
     return this.invoker.run(new DepositCommand(this.ledger, dto.accountId, dto.amountMinor, dto.description));
   }
+
+  @Post('withdraw')
+  @ApiOperation({ summary: 'Withdraw (runs as a Command, validated by the Chain)' })
+  withdraw(@Body() dto: MoneyMovementDto) {
+    return this.invoker.run(new WithdrawCommand(this.ledger, dto.accountId, dto.amountMinor, dto.description));
+  }
 }
