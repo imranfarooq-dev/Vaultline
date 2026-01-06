@@ -16,4 +16,10 @@ export class TransactionsController {
     private readonly history: TransactionHistoryService,
     @Inject(MONEY_TRANSFER_SERVICE) private readonly transfers: MoneyTransferService,
   ) {}
+
+  @Post('deposit')
+  @ApiOperation({ summary: 'Deposit (runs as a Command, validated by the Chain)' })
+  deposit(@Body() dto: MoneyMovementDto) {
+    return this.invoker.run(new DepositCommand(this.ledger, dto.accountId, dto.amountMinor, dto.description));
+  }
 }
