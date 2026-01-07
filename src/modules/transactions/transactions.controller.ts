@@ -34,4 +34,10 @@ export class TransactionsController {
   transfer(@Body() dto: TransferDto) {
     return this.invoker.run(new TransferCommand(this.transfers, this.ledger, dto));
   }
+
+  @Get('commands')
+  @ApiOperation({ summary: 'Command history kept by the invoker' })
+  commands() {
+    return this.invoker.list();
+  }
 }
