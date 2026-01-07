@@ -17,3 +17,9 @@ export class MoneyMovementDto {
   @MaxLength(200)
   description?: string;
 }
+
+export class TransferDto {
+  @ApiProperty({ format: 'uuid' })
+  @IsUUID()
+  fromAccountId: string;
+}
