@@ -28,4 +28,10 @@ export class TransactionsController {
   withdraw(@Body() dto: MoneyMovementDto) {
     return this.invoker.run(new WithdrawCommand(this.ledger, dto.accountId, dto.amountMinor, dto.description));
   }
+
+  @Post('transfer')
+  @ApiOperation({ summary: 'Transfer through the decorated service: audit -> fraud -> fee -> ledger' })
+  transfer(@Body() dto: TransferDto) {
+    return this.invoker.run(new TransferCommand(this.transfers, this.ledger, dto));
+  }
 }
