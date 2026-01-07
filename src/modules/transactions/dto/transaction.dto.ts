@@ -22,4 +22,8 @@ export class TransferDto {
   @ApiProperty({ format: 'uuid' })
   @IsUUID()
   fromAccountId: string;
+
+  @ApiProperty({ format: 'uuid' })
+  @IsUUID()
+  toAccountId: string;
 }
