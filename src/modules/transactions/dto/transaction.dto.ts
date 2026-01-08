@@ -26,4 +26,9 @@ export class TransferDto {
   @ApiProperty({ format: 'uuid' })
   @IsUUID()
   toAccountId: string;
+
+  @ApiProperty({ example: 150000 })
+  @IsInt()
+  @IsPositive()
+  amountMinor: number;
 }
