@@ -46,4 +46,10 @@ export class TransactionsController {
   undo(@Param('commandId', ParseUUIDPipe) commandId: string) {
     return this.invoker.undo(commandId);
   }
+
+  @Post(':reference/reverse')
+  @ApiOperation({ summary: 'Reverse any transaction by reference (works from any pod)' })
+  reverse(@Param('reference') reference: string) {
+    return this.ledger.reverse(reference);
+  }
 }
