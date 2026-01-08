@@ -40,4 +40,10 @@ export class TransactionsController {
   commands() {
     return this.invoker.list();
   }
+
+  @Post('commands/:commandId/undo')
+  @ApiOperation({ summary: 'Undo a command (writes reversal entries)' })
+  undo(@Param('commandId', ParseUUIDPipe) commandId: string) {
+    return this.invoker.undo(commandId);
+  }
 }
