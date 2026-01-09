@@ -35,4 +35,10 @@ export class TransferDto {
   @ApiProperty({ enum: ['web', 'mobile', 'branch'], example: 'mobile' })
   @IsIn(['web', 'mobile', 'branch'])
   channel: 'web' | 'mobile' | 'branch';
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  description?: string;
 }
