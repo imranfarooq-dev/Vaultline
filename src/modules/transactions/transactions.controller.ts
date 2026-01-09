@@ -58,4 +58,18 @@ export class TransactionsController {
   recent(@Param('accountId', ParseUUIDPipe) accountId: string, @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number) {
     return this.history.recent(accountId, limit);
   }
+
+  @Get('accounts/:accountId/export.csv')
+  @ApiOperation({ summary: 'Stream full history as CSV using the Iterator (constant memory)' })
+  async exportCsv(@Param('accountId', ParseUUIDPipe) accountId: string, @Res() res: Response) {
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="ledger-${accountId}.csv"`);
+    res.write('created_at,reference,type,amount_minor,balance_after_minor,description\n');
+
+    const iterator = this.history.iterate(accountId, { pageSize: 500 });
+    for await (const e of iterator) {
+      res.write(`${e.createdAt.toISOString()},${e.reference},${e.type},${e.amountMinor},${e.balanceAfterMinor},"${e.description.replace(/"/g, '""')}"\n`);
+    }
+    res.end();
+  }
 }
