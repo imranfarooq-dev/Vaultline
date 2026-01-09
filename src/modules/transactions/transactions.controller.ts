@@ -52,4 +52,10 @@ export class TransactionsController {
   reverse(@Param('reference') reference: string) {
     return this.ledger.reverse(reference);
   }
+
+  @Get('accounts/:accountId')
+  @ApiOperation({ summary: 'Most recent ledger entries' })
+  recent(@Param('accountId', ParseUUIDPipe) accountId: string, @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number) {
+    return this.history.recent(accountId, limit);
+  }
 }
