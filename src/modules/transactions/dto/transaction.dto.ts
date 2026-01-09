@@ -31,4 +31,8 @@ export class TransferDto {
   @IsInt()
   @IsPositive()
   amountMinor: number;
+
+  @ApiProperty({ enum: ['web', 'mobile', 'branch'], example: 'mobile' })
+  @IsIn(['web', 'mobile', 'branch'])
+  channel: 'web' | 'mobile' | 'branch';
 }
