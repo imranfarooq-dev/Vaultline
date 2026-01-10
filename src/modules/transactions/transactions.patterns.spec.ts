@@ -46,4 +46,13 @@ describe('Chain of Responsibility: transaction validation', () => {
   ])('%s handler stops the request', (_name, overrides, message) => {
     expect(() => chain.validate(ctx(overrides as Partial<ValidationContext>))).toThrow(message);
   });
+
+  it('stops at the FIRST failing handler (later handlers never run)', () => {
+    const later = new DailyLimitHandler();
+    const spy = jest.spyOn(later as unknown as { check: () => void }, 'check');
+    const head = new PositiveAmountHandler();
+    head.setNext(later);
+    expect(() => head.validate(ctx({ amountMinor: -1 }))).toThrow(BusinessRuleError);
+    expect(spy).not.toHaveBeenCalled();
+  });
 });
