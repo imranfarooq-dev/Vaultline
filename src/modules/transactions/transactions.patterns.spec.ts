@@ -32,4 +32,8 @@ describe('Chain of Responsibility: transaction validation', () => {
     withdrawnTodayMinor: 0,
     ...overrides,
   });
+
+  it('lets a valid request pass through every handler', () => {
+    expect(() => chain.validate(ctx())).not.toThrow();
+  });
 });
