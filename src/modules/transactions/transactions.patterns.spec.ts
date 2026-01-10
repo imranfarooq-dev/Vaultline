@@ -36,4 +36,14 @@ describe('Chain of Responsibility: transaction validation', () => {
   it('lets a valid request pass through every handler', () => {
     expect(() => chain.validate(ctx())).not.toThrow();
   });
+
+  it.each([
+    ['PositiveAmount', { amountMinor: 0 }, 'positive whole number'],
+    ['PositiveAmount (fractions)', { amountMinor: 10.5 }, 'positive whole number'],
+    ['AccountStatus', { account: anAccount({ status: AccountStatus.FROZEN }) }, 'not allowed on a FROZEN account'],
+    ['SufficientFunds', { amountMinor: 20_000, account: anAccount({ balanceMinor: 10_000, dailyWithdrawalLimitMinor: 50_000 }) }, 'Insufficient funds'],
+    ['DailyLimit', { withdrawnTodayMinor: 4_500 }, 'Daily withdrawal limit exceeded'],
+  ])('%s handler stops the request', (_name, overrides, message) => {
+    expect(() => chain.validate(ctx(overrides as Partial<ValidationContext>))).toThrow(message);
+  });
 });
