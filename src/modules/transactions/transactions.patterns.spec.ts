@@ -63,3 +63,18 @@ describe('Chain of Responsibility: transaction validation', () => {
     expect(() => head.validate(ctx({ operation: 'DEPOSIT', account: anAccount({ status: AccountStatus.CLOSED }) }))).toThrow(InvalidStateTransitionError);
   });
 });
+
+describe('Decorator: layered transfer service', () => {
+  const request: TransferRequest = { fromAccountId: 'a', toAccountId: 'b', amountMinor: 1000, channel: 'web' };
+  const fakeCore = (): MoneyTransferService & { received: TransferRequest[] } => {
+    const received: TransferRequest[] = [];
+    return {
+      received,
+      async transfer(r) {
+        received.push(r);
+        return { reference: 'TRF-1', amountMinor: r.amountMinor, feeMinor: r.feeMinor ?? 0, fromBalanceAfterMinor: 0, toBalanceAfterMinor: 0, pipeline: ['core'] };
+      },
+    };
+  };
+  const engine = (rules: string[]) => new FraudRuleEngine({ fraudRules: rules } as AppConfigService);
+});
