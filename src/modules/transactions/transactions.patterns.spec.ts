@@ -55,4 +55,11 @@ describe('Chain of Responsibility: transaction validation', () => {
     expect(() => head.validate(ctx({ amountMinor: -1 }))).toThrow(BusinessRuleError);
     expect(spy).not.toHaveBeenCalled();
   });
+
+  it('deposits skip withdrawal-only checks', () => {
+    const head = new AccountStatusHandler();
+    head.setNext(new SufficientFundsHandler()).setNext(new DailyLimitHandler());
+    expect(() => head.validate(ctx({ operation: 'DEPOSIT', amountMinor: 999_999, withdrawnTodayMinor: 999_999 }))).not.toThrow();
+    expect(() => head.validate(ctx({ operation: 'DEPOSIT', account: anAccount({ status: AccountStatus.CLOSED }) }))).toThrow(InvalidStateTransitionError);
+  });
 });
