@@ -85,4 +85,10 @@ describe('Decorator: layered transfer service', () => {
     expect(result.pipeline).toEqual(['audit', 'fraud-screening', 'fee', 'core']);
     expect(core.received[0].feeMinor).toBe(500);
   });
+
+  it('branch channel costs an extra Rs 100', async () => {
+    const core = fakeCore();
+    await new TransferFeeDecorator(core, 500).transfer({ ...request, channel: 'branch' });
+    expect(core.received[0].feeMinor).toBe(10_500);
+  });
 });
