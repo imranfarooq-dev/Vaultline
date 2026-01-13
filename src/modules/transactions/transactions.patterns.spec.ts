@@ -106,3 +106,10 @@ describe('Decorator: layered transfer service', () => {
     expect(ledger.transfer).toHaveBeenCalledWith(expect.objectContaining({ feeMinor: 0 }));
   });
 });
+
+describe('Command: invoker with history and undo', () => {
+  const ledgerMock = () => ({
+    deposit: jest.fn().mockResolvedValue({ reference: 'DEP-1', accountId: 'a', amountMinor: 10, balanceAfterMinor: 10 }),
+    reverse: jest.fn().mockResolvedValue({ reference: 'REV-1', reversedEntries: 1 }),
+  });
+});
