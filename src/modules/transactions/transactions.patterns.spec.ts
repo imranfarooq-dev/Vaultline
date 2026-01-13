@@ -120,4 +120,14 @@ describe('Command: invoker with history and undo', () => {
     expect(result).toMatchObject({ reference: 'DEP-1', commandId: expect.any(String) });
     expect(invoker.list()[0]).toMatchObject({ name: 'deposit', status: 'EXECUTED', reference: 'DEP-1' });
   });
+
+  it('undo delegates to the command, which reverses by reference', async () => {
+    const ledger = ledgerMock();
+    const invoker = new CommandInvoker();
+    const { commandId } = await invoker.run(new DepositCommand(ledger as unknown as LedgerService, 'a', 10));
+    await invoker.undo(commandId);
+    expect(ledger.reverse).toHaveBeenCalledWith('DEP-1');
+    expect(invoker.list()[0].status).toBe('UNDONE');
+    await expect(invoker.undo(commandId)).rejects.toThrow('cannot be undone');
+  });
 });
