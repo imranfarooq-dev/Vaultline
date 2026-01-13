@@ -98,4 +98,11 @@ describe('Decorator: layered transfer service', () => {
     await expect(service.transfer(request)).rejects.toBeInstanceOf(FraudSuspectedError);
     expect(core.received).toHaveLength(0);
   });
+
+  it('layers are removable: the core works alone', async () => {
+    const ledger = { transfer: jest.fn().mockResolvedValue({ reference: 'R', feeMinor: 0, fromBalanceAfterMinor: 1, toBalanceAfterMinor: 2 }) };
+    const result = await new LedgerTransferService(ledger as unknown as LedgerService).transfer(request);
+    expect(result.pipeline).toEqual(['ledger']);
+    expect(ledger.transfer).toHaveBeenCalledWith(expect.objectContaining({ feeMinor: 0 }));
+  });
 });
