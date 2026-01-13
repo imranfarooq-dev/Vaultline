@@ -112,4 +112,12 @@ describe('Command: invoker with history and undo', () => {
     deposit: jest.fn().mockResolvedValue({ reference: 'DEP-1', accountId: 'a', amountMinor: 10, balanceAfterMinor: 10 }),
     reverse: jest.fn().mockResolvedValue({ reference: 'REV-1', reversedEntries: 1 }),
   });
+
+  it('executes a command and remembers it', async () => {
+    const ledger = ledgerMock();
+    const invoker = new CommandInvoker();
+    const result = await invoker.run(new DepositCommand(ledger as unknown as LedgerService, 'a', 10));
+    expect(result).toMatchObject({ reference: 'DEP-1', commandId: expect.any(String) });
+    expect(invoker.list()[0]).toMatchObject({ name: 'deposit', status: 'EXECUTED', reference: 'DEP-1' });
+  });
 });
