@@ -91,4 +91,11 @@ describe('Decorator: layered transfer service', () => {
     await new TransferFeeDecorator(core, 500).transfer({ ...request, channel: 'branch' });
     expect(core.received[0].feeMinor).toBe(10_500);
   });
+
+  it('fraud layer blocks before the inner layers are ever called', async () => {
+    const core = fakeCore();
+    const service = new FraudScreeningDecorator(new TransferFeeDecorator(core, 0), engine(['amount > 500']));
+    await expect(service.transfer(request)).rejects.toBeInstanceOf(FraudSuspectedError);
+    expect(core.received).toHaveLength(0);
+  });
 });
