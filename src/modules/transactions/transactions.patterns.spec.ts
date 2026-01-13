@@ -77,4 +77,12 @@ describe('Decorator: layered transfer service', () => {
     };
   };
   const engine = (rules: string[]) => new FraudRuleEngine({ fraudRules: rules } as AppConfigService);
+
+  it('each layer adds its behaviour and records itself in the pipeline', async () => {
+    const core = fakeCore();
+    const service = new AuditTimingDecorator(new FraudScreeningDecorator(new TransferFeeDecorator(core, 500), engine([])));
+    const result = await service.transfer(request);
+    expect(result.pipeline).toEqual(['audit', 'fraud-screening', 'fee', 'core']);
+    expect(core.received[0].feeMinor).toBe(500);
+  });
 });
