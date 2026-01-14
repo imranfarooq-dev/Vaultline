@@ -130,4 +130,13 @@ describe('Command: invoker with history and undo', () => {
     expect(invoker.list()[0].status).toBe('UNDONE');
     await expect(invoker.undo(commandId)).rejects.toThrow('cannot be undone');
   });
+
+  it('records failures and does not allow undoing them', async () => {
+    const transfers = { transfer: jest.fn().mockRejectedValue(new Error('boom')) };
+    const invoker = new CommandInvoker();
+    await expect(invoker.run(new TransferCommand(transfers, {} as LedgerService, { fromAccountId: 'a', toAccountId: 'b', amountMinor: 1, channel: 'web' }))).rejects.toThrow('boom');
+    const [record] = invoker.list();
+    expect(record).toMatchObject({ status: 'FAILED', error: 'boom' });
+    await expect(invoker.undo(record.commandId)).rejects.toThrow('FAILED');
+  });
 });
