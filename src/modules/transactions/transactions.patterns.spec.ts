@@ -157,4 +157,9 @@ describe('Iterator: ledger history', () => {
     expect(seen).toEqual(entries.map((e) => e.reference));
     expect(iterator.pagesFetched).toBe(3);
   });
+
+  it('supports the explicit next() protocol too', async () => {
+    const iterator = new LedgerHistoryIterator(fetcher, 'acc', { pageSize: 100 });
+    expect((await iterator.next()).value?.reference).toBe('REF-1');
+  });
 });
