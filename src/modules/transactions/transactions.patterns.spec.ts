@@ -140,3 +140,13 @@ describe('Command: invoker with history and undo', () => {
     await expect(invoker.undo(record.commandId)).rejects.toThrow('FAILED');
   });
 });
+
+describe('Iterator: ledger history', () => {
+  const entries = Array.from({ length: 25 }, (_, i) => anEntry(i + 1));
+  const fetcher: EntryFetcher = {
+    fetchPage: jest.fn(async (_id, after, limit) => {
+      const start = after ? entries.findIndex((e) => e.id === after.id) + 1 : 0;
+      return entries.slice(start, start + limit);
+    }),
+  };
+});
