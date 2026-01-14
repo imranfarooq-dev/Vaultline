@@ -149,4 +149,12 @@ describe('Iterator: ledger history', () => {
       return entries.slice(start, start + limit);
     }),
   };
+
+  it('yields every entry in order while fetching in pages behind the scenes', async () => {
+    const iterator = new LedgerHistoryIterator(fetcher, 'acc', { pageSize: 10 });
+    const seen: string[] = [];
+    for await (const entry of iterator) seen.push(entry.reference);
+    expect(seen).toEqual(entries.map((e) => e.reference));
+    expect(iterator.pagesFetched).toBe(3);
+  });
 });
