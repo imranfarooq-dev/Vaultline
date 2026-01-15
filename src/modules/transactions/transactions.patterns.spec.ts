@@ -162,4 +162,9 @@ describe('Iterator: ledger history', () => {
     const iterator = new LedgerHistoryIterator(fetcher, 'acc', { pageSize: 100 });
     expect((await iterator.next()).value?.reference).toBe('REF-1');
   });
+
+  it('an empty history finishes immediately', async () => {
+    const iterator = new LedgerHistoryIterator({ fetchPage: async () => [] }, 'acc');
+    expect(await iterator.next()).toEqual({ value: undefined, done: true });
+  });
 });
