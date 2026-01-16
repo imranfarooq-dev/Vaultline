@@ -46,4 +46,9 @@ export async function startTestDatabase(): Promise<TestDatabase> {
     container = await new PostgreSqlContainer('pgvector/pgvector:pg16').withDatabase('bank').withUsername('bank').withPassword('bank_password').start();
     connection = { host: container.getHost(), port: container.getPort(), username: container.getUsername(), password: container.getPassword(), database: container.getDatabase() };
   }
+
+  const migrator = new DataSource(buildDataSourceOptions(connection));
+  await migrator.initialize();
+  await migrator.runMigrations();
+  await migrator.destroy();
 }
