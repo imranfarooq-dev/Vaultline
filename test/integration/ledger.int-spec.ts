@@ -55,4 +55,13 @@ describe('Ledger (PostgreSQL integration)', () => {
     const rows = await dataSource.query('SELECT type, amount_minor::int AS amount FROM ledger_entries WHERE account_id = $1 ORDER BY created_at', [account.id]);
     expect(rows).toEqual([{ type: 'DEPOSIT', amount: 10_000 }, { type: 'WITHDRAWAL', amount: -2_500 }]);
   });
+
+  it('CONCURRENCY: 20 parallel withdrawals never overdraw the account', async () => {
+    const account = await activeAccount(1_000);
+    const results = await Promise.allSettled(Array.from({ length: 20 }, () => ledger.withdraw(account.id, 100)));
+
+    expect(results.filter((r) => r.status === 'fulfilled')).toHaveLength(10);
+    expect(results.filter((r) => r.status === 'rejected')).toHaveLength(10);
+    expect(await balanceOf(account.id)).toBe(0);
+  });
 });
