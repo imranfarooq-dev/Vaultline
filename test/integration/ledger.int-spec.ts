@@ -64,4 +64,14 @@ describe('Ledger (PostgreSQL integration)', () => {
     expect(results.filter((r) => r.status === 'rejected')).toHaveLength(10);
     expect(await balanceOf(account.id)).toBe(0);
   });
+
+  it('CONCURRENCY: opposite transfers at the same time do not deadlock and money is conserved', async () => {
+    const a = await activeAccount(100_000);
+    const b = await activeAccount(100_000);
+    const transfers = Array.from({ length: 10 }, (_, i) =>
+      i % 2 ? ledger.transfer({ fromAccountId: a.id, toAccountId: b.id, amountMinor: 1_000, feeMinor: 0 }) : ledger.transfer({ fromAccountId: b.id, toAccountId: a.id, amountMinor: 1_000, feeMinor: 0 }),
+    );
+    await Promise.all(transfers);
+    expect((await balanceOf(a.id)) + (await balanceOf(b.id))).toBe(200_000);
+  });
 });
