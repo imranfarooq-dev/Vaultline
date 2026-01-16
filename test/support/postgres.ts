@@ -51,4 +51,23 @@ export async function startTestDatabase(): Promise<TestDatabase> {
   await migrator.initialize();
   await migrator.runMigrations();
   await migrator.destroy();
+
+  return {
+    connection,
+    applyToEnv() {
+      Object.assign(process.env, {
+        DB_HOST: connection.host,
+        DB_PORT: String(connection.port),
+        DB_USER: connection.username,
+        DB_PASSWORD: connection.password,
+        DB_NAME: connection.database,
+        DB_RUN_MIGRATIONS: 'false',
+        DB_SSL: 'false',
+      });
+    },
+    async stop() {
+      await dropDatabase();
+      await container?.stop();
+    },
+  };
 }
