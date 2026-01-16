@@ -46,4 +46,13 @@ describe('Ledger (PostgreSQL integration)', () => {
   };
 
   const balanceOf = async (id: string) => (await accounts.findById(id)).balanceMinor;
+
+  it('deposit and withdrawal update the balance and write ledger entries', async () => {
+    const account = await activeAccount(10_000);
+    await ledger.withdraw(account.id, 2_500);
+
+    expect(await balanceOf(account.id)).toBe(7_500);
+    const rows = await dataSource.query('SELECT type, amount_minor::int AS amount FROM ledger_entries WHERE account_id = $1 ORDER BY created_at', [account.id]);
+    expect(rows).toEqual([{ type: 'DEPOSIT', amount: 10_000 }, { type: 'WITHDRAWAL', amount: -2_500 }]);
+  });
 });
