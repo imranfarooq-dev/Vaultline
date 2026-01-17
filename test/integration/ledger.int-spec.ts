@@ -74,4 +74,15 @@ describe('Ledger (PostgreSQL integration)', () => {
     await Promise.all(transfers);
     expect((await balanceOf(a.id)) + (await balanceOf(b.id))).toBe(200_000);
   });
+
+  it('a transfer with a fee writes three entries sharing one reference, atomically', async () => {
+    const from = await activeAccount(50_000);
+    const to = await activeAccount(0);
+    const { reference } = await ledger.transfer({ fromAccountId: from.id, toAccountId: to.id, amountMinor: 10_000, feeMinor: 500 });
+
+    const rows = await dataSource.query('SELECT type FROM ledger_entries WHERE reference = $1 ORDER BY type', [reference]);
+    expect(rows.map((r: { type: string }) => r.type)).toEqual(['FEE', 'TRANSFER_IN', 'TRANSFER_OUT']);
+    expect(await balanceOf(from.id)).toBe(39_500);
+    expect(await balanceOf(to.id)).toBe(10_000);
+  });
 });
