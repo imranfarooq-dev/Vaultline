@@ -93,4 +93,12 @@ describe('Ledger (PostgreSQL integration)', () => {
     expect(await balanceOf(from.id)).toBe(1_000);
     expect(await balanceOf(to.id)).toBe(0);
   });
+
+  it('reversal restores balances exactly once', async () => {
+    const account = await activeAccount(5_000);
+    const { reference } = await ledger.deposit(account.id, 2_000);
+    await ledger.reverse(reference);
+    expect(await balanceOf(account.id)).toBe(5_000);
+    await expect(ledger.reverse(reference)).rejects.toThrow('already reversed');
+  });
 });
