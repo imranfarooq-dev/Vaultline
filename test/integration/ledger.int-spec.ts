@@ -101,4 +101,9 @@ describe('Ledger (PostgreSQL integration)', () => {
     expect(await balanceOf(account.id)).toBe(5_000);
     await expect(ledger.reverse(reference)).rejects.toThrow('already reversed');
   });
+
+  it('the database CHECK constraint is the last line of defence against negative balances', async () => {
+    const account = await activeAccount(100);
+    await expect(dataSource.query('UPDATE accounts SET balance_minor = -1 WHERE id = $1', [account.id])).rejects.toThrow(/check constraint/i);
+  });
 });
