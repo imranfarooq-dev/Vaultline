@@ -85,4 +85,12 @@ describe('Ledger (PostgreSQL integration)', () => {
     expect(await balanceOf(from.id)).toBe(39_500);
     expect(await balanceOf(to.id)).toBe(10_000);
   });
+
+  it('a failed transfer rolls back completely', async () => {
+    const from = await activeAccount(1_000);
+    const to = await activeAccount(0);
+    await expect(ledger.transfer({ fromAccountId: from.id, toAccountId: to.id, amountMinor: 5_000, feeMinor: 0 })).rejects.toThrow('Insufficient funds');
+    expect(await balanceOf(from.id)).toBe(1_000);
+    expect(await balanceOf(to.id)).toBe(0);
+  });
 });
