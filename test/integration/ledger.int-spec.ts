@@ -106,4 +106,13 @@ describe('Ledger (PostgreSQL integration)', () => {
     const account = await activeAccount(100);
     await expect(dataSource.query('UPDATE accounts SET balance_minor = -1 WHERE id = $1', [account.id])).rejects.toThrow(/check constraint/i);
   });
+
+  it('events are published only after the transaction commits', async () => {
+    const account = await activeAccount(1_000);
+    const before = publisher.published.length;
+    await expect(ledger.withdraw(account.id, 999_999)).rejects.toThrow();
+    expect(publisher.published.length).toBe(before); // failed -> no event
+    await ledger.withdraw(account.id, 100);
+    expect(publisher.published.at(-1)?.eventType).toBe('transaction.withdrawn');
+  });
 });
