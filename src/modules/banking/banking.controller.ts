@@ -7,4 +7,10 @@ import { BankingFacade } from './banking.facade';
 @Controller('banking')
 export class BankingController {
   constructor(private readonly facade: BankingFacade) {}
+
+  @Post('onboard')
+  @ApiOperation({ summary: 'One call: open + deposit + activate + events (with rollback)' })
+  onboard(@Body() dto: OpenAccountDto) {
+    return this.facade.onboardCustomer({ ...dto, initialDepositMinor: dto.initialDepositMinor ?? 0 });
+  }
 }
