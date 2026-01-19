@@ -29,3 +29,8 @@ export interface OnboardCustomerInput {
   initialDepositMinor: number;
   productCode?: string;
 }
+
+@Injectable()
+export class BankingFacade {
+  private readonly logger = new Logger(BankingFacade.name);
+}
