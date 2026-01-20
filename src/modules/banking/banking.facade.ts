@@ -40,4 +40,31 @@ export class BankingFacade {
     private readonly history: TransactionHistoryService,
     private readonly events: DomainEventBus,
   ) {}
+
+  async onboardCustomer(input: OnboardCustomerInput) {
+    const account = await this.accounts.open(input);
+
+    let depositReference: string | null = null;
+    try {
+      if (input.initialDepositMinor > 0) {
+        depositReference = (await this.ledger.deposit(account.id, input.initialDepositMinor, { description: 'Initial deposit' })).reference;
+      }
+      await this.accounts.changeStatus(account.id, 'activate');
+    } catch (error) {
+      // Compensation: don't leave a half-onboarded account behind.
+      this.logger.warn(`Onboarding failed for ${account.accountNumber}, rolling back: ${(error as Error).message}`);
+      if (depositReference) await this.ledger.reverse(depositReference);
+      await this.accounts.changeStatus(account.id, 'close').catch(() => undefined);
+      throw error;
+    }
+
+    await this.events.publish(createEvent(EventTypes.CUSTOMER_ONBOARDED, { accountId: account.id, ownerName: account.ownerName, initialDepositMinor: input.initialDepositMinor }));
+
+    const fresh = await this.accounts.findById(account.id);
+    return {
+      account: this.accounts.present(fresh),
+      initialDepositReference: depositReference,
+      nextSteps: ['Download the mobile app', 'Set up RAAST ID', 'Order a debit card'],
+    };
+  }
 }
