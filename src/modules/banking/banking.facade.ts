@@ -67,4 +67,13 @@ export class BankingFacade {
       nextSteps: ['Download the mobile app', 'Set up RAAST ID', 'Order a debit card'],
     };
   }
+
+  /** A second facade method: one call for a "customer 360" screen. */
+  async customerOverview(ownerName: string) {
+    const [portfolio, accounts] = await Promise.all([this.accounts.portfolio(ownerName), this.accounts.list(ownerName)]);
+    const recentActivity = await Promise.all(
+      accounts.map(async (a) => ({ accountNumber: a.accountNumber, recent: await this.history.recent(a.id, 5) })),
+    );
+    return { portfolio, recentActivity };
+  }
 }
