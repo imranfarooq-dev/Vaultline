@@ -33,4 +33,11 @@ export interface OnboardCustomerInput {
 @Injectable()
 export class BankingFacade {
   private readonly logger = new Logger(BankingFacade.name);
+
+  constructor(
+    private readonly accounts: AccountsService,
+    private readonly ledger: LedgerService,
+    private readonly history: TransactionHistoryService,
+    private readonly events: DomainEventBus,
+  ) {}
 }
