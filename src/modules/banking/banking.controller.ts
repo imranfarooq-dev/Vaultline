@@ -13,4 +13,10 @@ export class BankingController {
   onboard(@Body() dto: OpenAccountDto) {
     return this.facade.onboardCustomer({ ...dto, initialDepositMinor: dto.initialDepositMinor ?? 0 });
   }
+
+  @Get('customers/:ownerName/overview')
+  @ApiOperation({ summary: 'Customer 360: portfolio + recent activity in one call' })
+  overview(@Param('ownerName') ownerName: string) {
+    return this.facade.customerOverview(ownerName);
+  }
 }
