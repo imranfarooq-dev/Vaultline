@@ -26,3 +26,9 @@ export interface DomainEventObserver {
   interestedIn(event: DomainEvent): boolean;
   onEvent(event: DomainEvent): Promise<void> | void;
 }
+
+@Injectable()
+export class DomainEventBus {
+  private readonly logger = new Logger(DomainEventBus.name);
+  private readonly observers = new Set<DomainEventObserver>();
+}
