@@ -8,4 +8,8 @@ import { EVENT_PUBLISHER, EventPublisher } from './event-publisher.port';
 export class AuditLogObserver implements DomainEventObserver {
   readonly name = 'audit-log';
   private readonly logger = new Logger('Audit');
+
+  interestedIn(): boolean {
+    return true;
+  }
 }
