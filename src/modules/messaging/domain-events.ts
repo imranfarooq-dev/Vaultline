@@ -15,3 +15,13 @@ export const EventTypes = {
   LOAN_DECIDED: 'loan.decided',
   CUSTOMER_ONBOARDED: 'customer.onboarded',
 } as const;
+
+export type EventType = (typeof EventTypes)[keyof typeof EventTypes];
+
+export interface DomainEvent<TPayload = Record<string, unknown>> {
+  eventId: string;
+  eventType: EventType;
+  occurredAt: string;
+  schemaVersion: 1;
+  payload: TPayload;
+}
