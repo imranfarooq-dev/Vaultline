@@ -33,3 +33,8 @@ export const createEvent = <T extends Record<string, unknown>>(eventType: EventT
   schemaVersion: 1,
   payload,
 });
+
+/** "transaction.deposited" -> "banking.transaction-events" */
+export const topicFor = (eventType: string): string => `banking.${eventType.split('.')[0]}-events`;
+
+export const ALL_TOPICS = [...new Set(Object.values(EventTypes).map(topicFor))];
