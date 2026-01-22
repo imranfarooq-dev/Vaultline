@@ -25,3 +25,11 @@ export interface DomainEvent<TPayload = Record<string, unknown>> {
   schemaVersion: 1;
   payload: TPayload;
 }
+
+export const createEvent = <T extends Record<string, unknown>>(eventType: EventType, payload: T): DomainEvent<T> => ({
+  eventId: randomUUID(),
+  eventType,
+  occurredAt: new Date().toISOString(),
+  schemaVersion: 1,
+  payload,
+});
