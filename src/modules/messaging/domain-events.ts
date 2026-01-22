@@ -38,3 +38,8 @@ export const createEvent = <T extends Record<string, unknown>>(eventType: EventT
 export const topicFor = (eventType: string): string => `banking.${eventType.split('.')[0]}-events`;
 
 export const ALL_TOPICS = [...new Set(Object.values(EventTypes).map(topicFor))];
+export const DEAD_LETTER_TOPIC = 'banking.dead-letter';
+
+/** Kafka key: events for the same account land in the same partition, so they stay in order. */
+export const partitionKeyFor = (event: DomainEvent): string =>
+  String(event.payload.accountId ?? event.payload.fromAccountId ?? event.eventId);
