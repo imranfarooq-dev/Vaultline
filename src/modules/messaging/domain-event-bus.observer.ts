@@ -36,4 +36,18 @@ export class DomainEventBus {
     this.observers.add(observer);
     return () => this.observers.delete(observer); // call to unsubscribe
   }
+
+  async publish(event: DomainEvent): Promise<void> {
+    const deliveries = [...this.observers]
+      .filter((observer) => observer.interestedIn(event))
+      .map(async (observer) => {
+        try {
+          await observer.onEvent(event);
+        } catch (error) {
+          // One broken observer must never break the others or the business operation.
+          this.logger.error(`Observer "${observer.name}" failed for ${event.eventType}: ${(error as Error).message}`);
+        }
+      });
+    await Promise.all(deliveries);
+  }
 }
