@@ -17,3 +17,9 @@ export class AuditLogObserver implements DomainEventObserver {
     this.logger.log(`${event.eventType} ${JSON.stringify(event.payload)}`);
   }
 }
+
+/** Observer #2: forwards events to Kafka (or the in-memory publisher). */
+@Injectable()
+export class EventForwardingObserver implements DomainEventObserver {
+  readonly name = 'event-forwarder';
+}
