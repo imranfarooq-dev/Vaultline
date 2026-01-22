@@ -31,4 +31,9 @@ export interface DomainEventObserver {
 export class DomainEventBus {
   private readonly logger = new Logger(DomainEventBus.name);
   private readonly observers = new Set<DomainEventObserver>();
+
+  subscribe(observer: DomainEventObserver): () => void {
+    this.observers.add(observer);
+    return () => this.observers.delete(observer); // call to unsubscribe
+  }
 }
