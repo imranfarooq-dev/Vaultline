@@ -12,4 +12,8 @@ export class AuditLogObserver implements DomainEventObserver {
   interestedIn(): boolean {
     return true;
   }
+
+  onEvent(event: DomainEvent): void {
+    this.logger.log(`${event.eventType} ${JSON.stringify(event.payload)}`);
+  }
 }
