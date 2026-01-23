@@ -50,4 +50,8 @@ export class DomainEventBus {
       });
     await Promise.all(deliveries);
   }
+
+  get observerNames(): string[] {
+    return [...this.observers].map((o) => o.name);
+  }
 }
