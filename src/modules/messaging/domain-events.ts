@@ -43,3 +43,17 @@ export const DEAD_LETTER_TOPIC = 'banking.dead-letter';
 /** Kafka key: events for the same account land in the same partition, so they stay in order. */
 export const partitionKeyFor = (event: DomainEvent): string =>
   String(event.payload.accountId ?? event.payload.fromAccountId ?? event.eventId);
+
+const uuid = Joi.string().uuid();
+const minor = Joi.number().integer();
+
+export const payloadSchemas: Record<EventType, Joi.ObjectSchema> = {
+  [EventTypes.ACCOUNT_OPENED]: Joi.object({ accountId: uuid.required(), accountNumber: Joi.string().required(), ownerName: Joi.string().required(), type: Joi.string().required(), currency: Joi.string().length(3).required() }),
+  [EventTypes.ACCOUNT_STATUS_CHANGED]: Joi.object({ accountId: uuid.required(), from: Joi.string().required(), to: Joi.string().required() }),
+  [EventTypes.MONEY_DEPOSITED]: Joi.object({ accountId: uuid.required(), amountMinor: minor.positive().required(), balanceAfterMinor: minor.required(), reference: Joi.string().required() }),
+  [EventTypes.MONEY_WITHDRAWN]: Joi.object({ accountId: uuid.required(), amountMinor: minor.positive().required(), balanceAfterMinor: minor.required(), reference: Joi.string().required() }),
+  [EventTypes.MONEY_TRANSFERRED]: Joi.object({ fromAccountId: uuid.required(), toAccountId: uuid.required(), amountMinor: minor.positive().required(), feeMinor: minor.min(0).required(), reference: Joi.string().required() }),
+  [EventTypes.TRANSACTION_REVERSED]: Joi.object({ accountId: uuid.required(), originalReference: Joi.string().required(), reference: Joi.string().required(), amountMinor: minor.required() }),
+  [EventTypes.LOAN_DECIDED]: Joi.object({ loanId: uuid.required(), accountId: uuid.required(), status: Joi.string().required(), amountMinor: minor.positive().required() }),
+  [EventTypes.CUSTOMER_ONBOARDED]: Joi.object({ accountId: uuid.required(), ownerName: Joi.string().required(), initialDepositMinor: minor.min(0).required() }),
+};
