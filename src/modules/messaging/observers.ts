@@ -33,3 +33,10 @@ export class EventForwardingObserver implements DomainEventObserver {
     await this.publisher.publish(event);
   }
 }
+
+/** Observer #3: counts events per type (exposed at GET /api/events/stats). */
+@Injectable()
+export class EventMetricsObserver implements DomainEventObserver {
+  readonly name = 'event-metrics';
+  private readonly counts = new Map<string, number>();
+}
