@@ -57,3 +57,11 @@ export const payloadSchemas: Record<EventType, Joi.ObjectSchema> = {
   [EventTypes.LOAN_DECIDED]: Joi.object({ loanId: uuid.required(), accountId: uuid.required(), status: Joi.string().required(), amountMinor: minor.positive().required() }),
   [EventTypes.CUSTOMER_ONBOARDED]: Joi.object({ accountId: uuid.required(), ownerName: Joi.string().required(), initialDepositMinor: minor.min(0).required() }),
 };
+
+export const envelopeSchema = Joi.object({
+  eventId: uuid.required(),
+  eventType: Joi.string().valid(...Object.values(EventTypes)).required(),
+  occurredAt: Joi.string().isoDate().required(),
+  schemaVersion: Joi.number().valid(1).required(),
+  payload: Joi.object().required(),
+});
