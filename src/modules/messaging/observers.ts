@@ -22,4 +22,10 @@ export class AuditLogObserver implements DomainEventObserver {
 @Injectable()
 export class EventForwardingObserver implements DomainEventObserver {
   readonly name = 'event-forwarder';
+
+  constructor(@Inject(EVENT_PUBLISHER) private readonly publisher: EventPublisher) {}
+
+  interestedIn(): boolean {
+    return true;
+  }
 }
