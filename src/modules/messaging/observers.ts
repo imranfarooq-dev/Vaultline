@@ -28,4 +28,8 @@ export class EventForwardingObserver implements DomainEventObserver {
   interestedIn(): boolean {
     return true;
   }
+
+  async onEvent(event: DomainEvent): Promise<void> {
+    await this.publisher.publish(event);
+  }
 }
