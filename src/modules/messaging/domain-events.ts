@@ -65,3 +65,11 @@ export const envelopeSchema = Joi.object({
   schemaVersion: Joi.number().valid(1).required(),
   payload: Joi.object().required(),
 });
+
+export const validateEvent = (event: unknown): { valid: boolean; error?: string } => {
+  const envelope = envelopeSchema.validate(event);
+  if (envelope.error) return { valid: false, error: envelope.error.message };
+  const typed = event as DomainEvent;
+  const payload = payloadSchemas[typed.eventType].validate(typed.payload);
+  return payload.error ? { valid: false, error: payload.error.message } : { valid: true };
+};
