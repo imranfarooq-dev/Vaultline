@@ -43,4 +43,8 @@ export class EventMetricsObserver implements DomainEventObserver {
   interestedIn(): boolean {
     return true;
   }
+
+  onEvent(event: DomainEvent): void {
+    this.counts.set(event.eventType, (this.counts.get(event.eventType) ?? 0) + 1);
+  }
 }
