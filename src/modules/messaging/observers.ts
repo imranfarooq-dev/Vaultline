@@ -39,4 +39,8 @@ export class EventForwardingObserver implements DomainEventObserver {
 export class EventMetricsObserver implements DomainEventObserver {
   readonly name = 'event-metrics';
   private readonly counts = new Map<string, number>();
+
+  interestedIn(): boolean {
+    return true;
+  }
 }
