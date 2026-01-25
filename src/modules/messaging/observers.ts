@@ -47,4 +47,8 @@ export class EventMetricsObserver implements DomainEventObserver {
   onEvent(event: DomainEvent): void {
     this.counts.set(event.eventType, (this.counts.get(event.eventType) ?? 0) + 1);
   }
+
+  snapshot(): Record<string, number> {
+    return Object.fromEntries(this.counts);
+  }
 }
