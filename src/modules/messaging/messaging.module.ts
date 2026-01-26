@@ -30,4 +30,8 @@ export class MessagingModule implements OnModuleInit {
     private readonly forwarder: EventForwardingObserver,
     private readonly metrics: EventMetricsObserver,
   ) {}
+
+  onModuleInit(): void {
+    [this.audit, this.forwarder, this.metrics].forEach((observer) => this.bus.subscribe(observer));
+  }
 }
