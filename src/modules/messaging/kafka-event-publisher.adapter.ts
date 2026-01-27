@@ -38,4 +38,9 @@ export class KafkaEventPublisherAdapter implements EventPublisher, OnModuleInit,
     this.replicationFactor = config.kafka.replicationFactor;
     this.producer = this.kafka.producer({ idempotent: true, maxInFlightRequests: 1 });
   }
+
+  /** Connect in the background so a slow Kafka never blocks the HTTP server. */
+  onModuleInit(): void {
+    void this.connectWithRetry();
+  }
 }
