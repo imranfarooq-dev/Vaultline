@@ -26,4 +26,16 @@ export class KafkaEventPublisherAdapter implements EventPublisher, OnModuleInit,
   private readonly producer: Producer;
   private connected = false;
   private readonly replicationFactor: number;
+
+  constructor(config: AppConfigService) {
+    this.kafka = new Kafka({
+      clientId: config.kafka.clientId,
+      brokers: config.kafka.brokers,
+      ssl: config.kafka.ssl,
+      logLevel: logLevel.WARN,
+      retry: { retries: 8, initialRetryTime: 500 },
+    });
+    this.replicationFactor = config.kafka.replicationFactor;
+    this.producer = this.kafka.producer({ idempotent: true, maxInFlightRequests: 1 });
+  }
 }
