@@ -27,4 +27,13 @@ describe('Observer: domain event bus', () => {
     await expect(bus.publish(deposit())).resolves.toBeUndefined();
     expect(healthy.onEvent).toHaveBeenCalled();
   });
+
+  it('unsubscribe stops notifications', async () => {
+    const bus = new DomainEventBus();
+    const observer = { name: 'x', interestedIn: () => true, onEvent: jest.fn() };
+    const unsubscribe = bus.subscribe(observer);
+    unsubscribe();
+    await bus.publish(deposit());
+    expect(observer.onEvent).not.toHaveBeenCalled();
+  });
 });
