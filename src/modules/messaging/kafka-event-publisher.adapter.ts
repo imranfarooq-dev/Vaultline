@@ -47,4 +47,8 @@ export class KafkaEventPublisherAdapter implements EventPublisher, OnModuleInit,
   async onModuleDestroy(): Promise<void> {
     if (this.connected) await this.producer.disconnect();
   }
+
+  get isConnected(): boolean {
+    return this.connected;
+  }
 }
