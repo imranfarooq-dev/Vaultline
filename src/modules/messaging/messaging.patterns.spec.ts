@@ -17,4 +17,14 @@ describe('Observer: domain event bus', () => {
     expect(a.onEvent).toHaveBeenCalledTimes(1);
     expect(b.onEvent).not.toHaveBeenCalled();
   });
+
+  it('a failing observer does not stop the others', async () => {
+    const bus = new DomainEventBus();
+    const broken: DomainEventObserver = { name: 'broken', interestedIn: () => true, onEvent: () => { throw new Error('boom'); } };
+    const healthy = { name: 'healthy', interestedIn: () => true, onEvent: jest.fn() };
+    bus.subscribe(broken);
+    bus.subscribe(healthy);
+    await expect(bus.publish(deposit())).resolves.toBeUndefined();
+    expect(healthy.onEvent).toHaveBeenCalled();
+  });
 });
