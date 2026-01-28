@@ -43,4 +43,8 @@ export class KafkaEventPublisherAdapter implements EventPublisher, OnModuleInit,
   onModuleInit(): void {
     void this.connectWithRetry();
   }
+
+  async onModuleDestroy(): Promise<void> {
+    if (this.connected) await this.producer.disconnect();
+  }
 }
