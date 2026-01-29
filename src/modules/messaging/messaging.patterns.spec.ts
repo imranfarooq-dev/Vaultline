@@ -36,4 +36,16 @@ describe('Observer: domain event bus', () => {
     await bus.publish(deposit());
     expect(observer.onEvent).not.toHaveBeenCalled();
   });
+
+  it('forwarding and metrics observers do their jobs', async () => {
+    const publisher = new InMemoryEventPublisher();
+    const metrics = new EventMetricsObserver();
+    const bus = new DomainEventBus();
+    bus.subscribe(new EventForwardingObserver(publisher));
+    bus.subscribe(metrics);
+    await bus.publish(deposit());
+    await bus.publish(deposit());
+    expect(publisher.published).toHaveLength(2);
+    expect(metrics.snapshot()).toEqual({ 'transaction.deposited': 2 });
+  });
 });
