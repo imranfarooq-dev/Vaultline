@@ -49,3 +49,10 @@ describe('Observer: domain event bus', () => {
     expect(metrics.snapshot()).toEqual({ 'transaction.deposited': 2 });
   });
 });
+
+describe('Messaging helpers', () => {
+  it('routes events to topics by their prefix', () => {
+    expect(topicFor('transaction.deposited')).toBe('banking.transaction-events');
+    expect(topicFor('loan.decided')).toBe('banking.loan-events');
+  });
+});
