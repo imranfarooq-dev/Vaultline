@@ -51,4 +51,20 @@ export class KafkaEventPublisherAdapter implements EventPublisher, OnModuleInit,
   get isConnected(): boolean {
     return this.connected;
   }
+
+  async publish(event: DomainEvent): Promise<void> {
+    if (!this.connected) throw new Error('Kafka producer is not connected yet');
+
+    // --- the actual "adaptation" ---
+    await this.producer.send({
+      topic: topicFor(event.eventType),
+      messages: [
+        {
+          key: partitionKeyFor(event),
+          value: JSON.stringify(event),
+          headers: { 'event-type': event.eventType, 'schema-version': String(event.schemaVersion) },
+        },
+      ],
+    });
+  }
 }
