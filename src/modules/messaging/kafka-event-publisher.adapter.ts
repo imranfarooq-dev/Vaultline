@@ -67,4 +67,19 @@ export class KafkaEventPublisherAdapter implements EventPublisher, OnModuleInit,
       ],
     });
   }
+
+  private async connectWithRetry(): Promise<void> {
+    for (let attempt = 1; !this.connected; attempt++) {
+      try {
+        await this.ensureTopics();
+        await this.producer.connect();
+        this.connected = true;
+        this.logger.log(`Connected to Kafka, topics: ${ALL_TOPICS.join(', ')}`);
+      } catch (error) {
+        const delay = Math.min(30_000, 1000 * attempt);
+        this.logger.warn(`Kafka not reachable (${(error as Error).message}); retrying in ${delay}ms`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
 }
