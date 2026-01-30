@@ -55,4 +55,8 @@ describe('Messaging helpers', () => {
     expect(topicFor('transaction.deposited')).toBe('banking.transaction-events');
     expect(topicFor('loan.decided')).toBe('banking.loan-events');
   });
+
+  it('uses the account id as partition key so per-account order is preserved', () => {
+    expect(partitionKeyFor(deposit())).toBe('11111111-1111-4111-8111-111111111111');
+  });
 });
