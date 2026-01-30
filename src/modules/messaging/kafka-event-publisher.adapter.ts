@@ -82,4 +82,17 @@ export class KafkaEventPublisherAdapter implements EventPublisher, OnModuleInit,
       }
     }
   }
+
+  private async ensureTopics(): Promise<void> {
+    const admin: Admin = this.kafka.admin();
+    await admin.connect();
+    try {
+      await admin.createTopics({
+        waitForLeaders: true,
+        topics: [...ALL_TOPICS, DEAD_LETTER_TOPIC].map((topic) => ({ topic, numPartitions: 3, replicationFactor: this.replicationFactor })),
+      });
+    } finally {
+      await admin.disconnect();
+    }
+  }
 }
