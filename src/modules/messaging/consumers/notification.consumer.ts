@@ -21,4 +21,13 @@ export class NotificationConsumer implements OnApplicationBootstrap, OnApplicati
   private readonly logger = new Logger(NotificationConsumer.name);
   private readonly consumer: Consumer;
   private readonly dlqProducer: Producer;
+
+  constructor(
+    config: AppConfigService,
+    @InjectRepository(NotificationEntity) private readonly notifications: Repository<NotificationEntity>,
+  ) {
+    const kafka = new Kafka({ clientId: `${config.kafka.clientId}-worker`, brokers: config.kafka.brokers, ssl: config.kafka.ssl, logLevel: logLevel.WARN, retry: { retries: 10 } });
+    this.consumer = kafka.consumer({ groupId: config.kafka.consumerGroup });
+    this.dlqProducer = kafka.producer();
+  }
 }
