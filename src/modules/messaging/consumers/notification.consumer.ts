@@ -30,4 +30,8 @@ export class NotificationConsumer implements OnApplicationBootstrap, OnApplicati
     this.consumer = kafka.consumer({ groupId: config.kafka.consumerGroup });
     this.dlqProducer = kafka.producer();
   }
+
+  async onApplicationBootstrap(): Promise<void> {
+    await this.startWithRetry();
+  }
 }
