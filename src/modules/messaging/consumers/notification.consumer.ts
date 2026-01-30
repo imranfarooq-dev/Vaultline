@@ -34,4 +34,9 @@ export class NotificationConsumer implements OnApplicationBootstrap, OnApplicati
   async onApplicationBootstrap(): Promise<void> {
     await this.startWithRetry();
   }
+
+  async onApplicationShutdown(): Promise<void> {
+    await this.consumer.disconnect().catch(() => undefined);
+    await this.dlqProducer.disconnect().catch(() => undefined);
+  }
 }
