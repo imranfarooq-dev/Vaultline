@@ -59,4 +59,8 @@ describe('Messaging helpers', () => {
   it('uses the account id as partition key so per-account order is preserved', () => {
     expect(partitionKeyFor(deposit())).toBe('11111111-1111-4111-8111-111111111111');
   });
+
+  it('formats a human readable notification', () => {
+    expect(formatNotification(deposit())).toBe('Deposit of 50.00 received. New balance 90.00. Ref DEP-1.');
+  });
 });
