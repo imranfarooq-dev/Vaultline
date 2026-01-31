@@ -39,4 +39,27 @@ export class NotificationConsumer implements OnApplicationBootstrap, OnApplicati
     await this.consumer.disconnect().catch(() => undefined);
     await this.dlqProducer.disconnect().catch(() => undefined);
   }
+
+  /** Public so the integration test can call it directly. */
+  async handle({ topic, partition, message }: Pick<EachMessagePayload, 'topic' | 'partition' | 'message'>): Promise<void> {
+    const raw = message.value?.toString() ?? '';
+    try {
+      const event = JSON.parse(raw) as DomainEvent;
+      const check = validateEvent(event);
+      if (!check.valid) throw new Error(`Invalid event: ${check.error}`);
+
+      await this.notifications
+        .createQueryBuilder()
+        .insert()
+        .values({ eventId: event.eventId, eventType: event.eventType, message: formatNotification(event), payload: event.payload as NotificationEntity["payload"] })
+        .orIgnore() // ON CONFLICT DO NOTHING -> idempotent
+        .execute();
+    } catch (error) {
+      this.logger.error(`Sending message from ${topic}[${partition}] to dead-letter: ${(error as Error).message}`);
+      await this.dlqProducer.send({
+        topic: DEAD_LETTER_TOPIC,
+        messages: [{ value: raw, headers: { 'original-topic': topic, error: (error as Error).message } }],
+      });
+    }
+  }
 }
