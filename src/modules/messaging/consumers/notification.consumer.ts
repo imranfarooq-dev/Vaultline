@@ -62,4 +62,21 @@ export class NotificationConsumer implements OnApplicationBootstrap, OnApplicati
       });
     }
   }
+
+  private async startWithRetry(): Promise<void> {
+    for (let attempt = 1; ; attempt++) {
+      try {
+        await this.dlqProducer.connect();
+        await this.consumer.connect();
+        await this.consumer.subscribe({ topics: ALL_TOPICS, fromBeginning: true });
+        await this.consumer.run({ eachMessage: (payload) => this.handle(payload) });
+        this.logger.log(`Consuming ${ALL_TOPICS.join(', ')}`);
+        return;
+      } catch (error) {
+        const delay = Math.min(30_000, 2000 * attempt);
+        this.logger.warn(`Consumer start failed (${(error as Error).message}); retrying in ${delay}ms`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
 }
