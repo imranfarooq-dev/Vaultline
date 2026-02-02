@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Contract: domain events on Kafka event type names are frozen 1`] = `
+[
+  "account.opened",
+  "account.status-changed",
+  "customer.onboarded",
+  "loan.decided",
+  "transaction.deposited",
+  "transaction.reversed",
+  "transaction.transferred",
+  "transaction.withdrawn",
+]
+`;
