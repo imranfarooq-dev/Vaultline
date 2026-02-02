@@ -17,4 +17,10 @@ export class NotificationsController {
     private readonly bus: DomainEventBus,
     @Inject(EVENT_PUBLISHER) private readonly publisher: EventPublisher,
   ) {}
+
+  @Get('notifications')
+  @ApiOperation({ summary: 'Written by the Kafka WORKER after consuming events (empty if Kafka is disabled)' })
+  latest() {
+    return this.notifications.find({ order: { createdAt: 'DESC' }, take: 50 });
+  }
 }
