@@ -23,4 +23,14 @@ export class NotificationsController {
   latest() {
     return this.notifications.find({ order: { createdAt: 'DESC' }, take: 50 });
   }
+
+  @Get('events/stats')
+  @ApiOperation({ summary: 'Observers registered on the in-process event bus and event counts' })
+  stats() {
+    return {
+      observers: this.bus.observerNames,
+      countsSinceStartup: this.metrics.snapshot(),
+      transport: this.publisher instanceof InMemoryEventPublisher ? `in-memory (${this.publisher.published.length} events held)` : 'kafka',
+    };
+  }
 }
