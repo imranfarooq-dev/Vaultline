@@ -39,5 +39,9 @@ describe('Contract: domain events on Kafka', () => {
 
   describe.each(Object.entries(VALID_PAYLOADS))('%s', (type, payload) => {
     const event = createEvent(type as EventType, payload);
+
+    it('valid envelope + payload is accepted', () => {
+      expect(validateEvent(event)).toEqual({ valid: true });
+    });
   });
 });
