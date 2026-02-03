@@ -31,4 +31,9 @@ describe('Contract: domain events on Kafka', () => {
   it('event type names are frozen', () => {
     expect(Object.values(EventTypes).sort()).toMatchSnapshot();
   });
+
+  it('every event type has a payload schema and a sample', () => {
+    expect(Object.keys(payloadSchemas).sort()).toEqual(Object.values(EventTypes).sort());
+    expect(Object.keys(VALID_PAYLOADS).sort()).toEqual(Object.values(EventTypes).sort());
+  });
 });
