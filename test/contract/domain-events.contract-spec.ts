@@ -21,3 +21,10 @@ const VALID_PAYLOADS: Record<EventType, Record<string, unknown>> = {
   [EventTypes.LOAN_DECIDED]: { loanId: ID2, accountId: ID, status: 'APPROVED', amountMinor: 50_000_000 },
   [EventTypes.CUSTOMER_ONBOARDED]: { accountId: ID, ownerName: 'Ayesha', initialDepositMinor: 0 },
 };
+
+describe('Contract: domain events on Kafka', () => {
+  it('topic names are frozen (consumers subscribe by name)', () => {
+    expect(ALL_TOPICS.sort()).toEqual(['banking.account-events', 'banking.customer-events', 'banking.loan-events', 'banking.transaction-events']);
+    expect(DEAD_LETTER_TOPIC).toBe('banking.dead-letter');
+  });
+});
