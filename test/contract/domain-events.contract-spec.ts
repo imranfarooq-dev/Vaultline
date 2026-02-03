@@ -27,4 +27,8 @@ describe('Contract: domain events on Kafka', () => {
     expect(ALL_TOPICS.sort()).toEqual(['banking.account-events', 'banking.customer-events', 'banking.loan-events', 'banking.transaction-events']);
     expect(DEAD_LETTER_TOPIC).toBe('banking.dead-letter');
   });
+
+  it('event type names are frozen', () => {
+    expect(Object.values(EventTypes).sort()).toMatchSnapshot();
+  });
 });
