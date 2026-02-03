@@ -36,4 +36,8 @@ describe('Contract: domain events on Kafka', () => {
     expect(Object.keys(payloadSchemas).sort()).toEqual(Object.values(EventTypes).sort());
     expect(Object.keys(VALID_PAYLOADS).sort()).toEqual(Object.values(EventTypes).sort());
   });
+
+  describe.each(Object.entries(VALID_PAYLOADS))('%s', (type, payload) => {
+    const event = createEvent(type as EventType, payload);
+  });
 });
