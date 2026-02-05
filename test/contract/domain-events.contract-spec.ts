@@ -64,4 +64,10 @@ describe('Contract: domain events on Kafka', () => {
       expect(ALL_TOPICS).toContain(topicFor(type));
     });
   });
+
+  it('rejects unknown event types and schema versions', () => {
+    const event = createEvent(EventTypes.MONEY_DEPOSITED, VALID_PAYLOADS[EventTypes.MONEY_DEPOSITED]);
+    expect(validateEvent({ ...event, eventType: 'transaction.teleported' }).valid).toBe(false);
+    expect(validateEvent({ ...event, schemaVersion: 2 }).valid).toBe(false);
+  });
 });
