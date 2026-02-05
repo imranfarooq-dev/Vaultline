@@ -59,5 +59,9 @@ describe('Contract: domain events on Kafka', () => {
     it('the consumer can turn it into a notification', () => {
       expect(formatNotification(event)).not.toMatch(/undefined|NaN/);
     });
+
+    it('is routed to its topic', () => {
+      expect(ALL_TOPICS).toContain(topicFor(type));
+    });
   });
 });
