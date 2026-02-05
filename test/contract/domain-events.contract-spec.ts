@@ -55,5 +55,9 @@ describe('Contract: domain events on Kafka', () => {
         expect(validateEvent({ ...event, payload: broken }).valid).toBe(false);
       }
     });
+
+    it('the consumer can turn it into a notification', () => {
+      expect(formatNotification(event)).not.toMatch(/undefined|NaN/);
+    });
   });
 });
