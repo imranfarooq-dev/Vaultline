@@ -43,5 +43,9 @@ describe('Contract: domain events on Kafka', () => {
     it('valid envelope + payload is accepted', () => {
       expect(validateEvent(event)).toEqual({ valid: true });
     });
+
+    it('survives JSON serialisation (what Kafka actually carries)', () => {
+      expect(validateEvent(JSON.parse(JSON.stringify(event)))).toEqual({ valid: true });
+    });
   });
 });
