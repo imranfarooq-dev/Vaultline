@@ -47,5 +47,13 @@ describe('Contract: domain events on Kafka', () => {
     it('survives JSON serialisation (what Kafka actually carries)', () => {
       expect(validateEvent(JSON.parse(JSON.stringify(event)))).toEqual({ valid: true });
     });
+
+    it('removing any required field is rejected', () => {
+      for (const field of Object.keys(payload)) {
+        const broken = { ...payload };
+        delete broken[field];
+        expect(validateEvent({ ...event, payload: broken }).valid).toBe(false);
+      }
+    });
   });
 });
