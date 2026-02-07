@@ -59,4 +59,16 @@ describeKafka('Event pipeline: API -> Kafka -> worker (integration)', () => {
     await kafka?.stop();
     await db?.stop();
   });
+
+  it('a deposit in the API becomes a notification written by the worker', async () => {
+    const { BankingFacade } = require('../../src/modules/banking/banking.facade') as typeof import('../../src/modules/banking/banking.facade');
+    const { account } = await api.get(BankingFacade).onboardCustomer({ ownerName: 'Kafka Kamran', type: 'CURRENT' as never, currency: 'PKR', initialDepositMinor: 75_000 });
+
+    const rows = await waitFor(async () => {
+      const r: { event_type: string; message: string }[] = await dataSource.query(`SELECT event_type, message FROM notifications WHERE payload->>'accountId' = $1`, [account.id]);
+      return r.length >= 4 ? r : undefined; // opened, deposited, status-changed, onboarded
+    });
+    expect(rows.map((r) => r.event_type).sort()).toEqual(['account.opened', 'account.status-changed', 'customer.onboarded', 'transaction.deposited']);
+    expect(rows.find((r) => r.event_type === 'transaction.deposited')?.message).toContain('Deposit of 750.00');
+  });
 });
