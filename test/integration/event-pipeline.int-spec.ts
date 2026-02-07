@@ -71,4 +71,18 @@ describeKafka('Event pipeline: API -> Kafka -> worker (integration)', () => {
     expect(rows.map((r) => r.event_type).sort()).toEqual(['account.opened', 'account.status-changed', 'customer.onboarded', 'transaction.deposited']);
     expect(rows.find((r) => r.event_type === 'transaction.deposited')?.message).toContain('Deposit of 750.00');
   });
+
+  it('duplicate delivery is ignored (idempotent consumer)', async () => {
+    const { createEvent, EventTypes, topicFor } = require('../../src/modules/messaging/domain-events') as typeof import('../../src/modules/messaging/domain-events');
+    const event = createEvent(EventTypes.ACCOUNT_STATUS_CHANGED, { accountId: '3f9c2a4e-8d1b-4c7a-9e2f-1a2b3c4d5e6f', from: 'ACTIVE', to: 'FROZEN' });
+    const producer = new Kafka({ brokers: [brokers] }).producer();
+    await producer.connect();
+    for (let i = 0; i < 3; i++) await producer.send({ topic: topicFor(event.eventType), messages: [{ key: 'x', value: JSON.stringify(event) }] });
+    await producer.disconnect();
+
+    await waitFor(async () => ((await dataSource.query('SELECT 1 FROM notifications WHERE event_id = $1', [event.eventId])).length ? true : undefined));
+    await new Promise((r) => setTimeout(r, 2000)); // give duplicates time to arrive
+    const [{ count }] = await dataSource.query('SELECT COUNT(*)::int AS count FROM notifications WHERE event_id = $1', [event.eventId]);
+    expect(count).toBe(1);
+  });
 });
