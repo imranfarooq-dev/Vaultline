@@ -24,3 +24,9 @@
  * ============================================================================
  */
 export type RuleContext = Record<string, string | number | boolean | undefined>;
+
+/** Every node of the syntax tree implements this one method. */
+export interface Expression {
+  interpret(context: RuleContext): boolean;
+  toString(): string;
+}
