@@ -11,4 +11,16 @@ describe('Interpreter: fraud rule language', () => {
     expect(tree.interpret({ amount: 500, channel: 'mobile' })).toBe(true);
     expect(tree.interpret({ amount: 500, channel: 'web' })).toBe(false);
   });
+
+  it.each([
+    ['amount > 100', { amount: 101 }, true],
+    ['amount >= 100', { amount: 100 }, true],
+    ['amount < 100', { amount: 100 }, false],
+    ["channel == 'mobile'", { channel: 'mobile' }, true],
+    ["channel != 'mobile'", { channel: 'web' }, true],
+    ['international == true', { international: true }, true],
+    ['amount > -5', { amount: 0 }, true],
+  ])('%s with %j -> %s', (rule, ctx, expected) => {
+    expect(evaluate(rule, ctx)).toBe(expected);
+  });
 });
