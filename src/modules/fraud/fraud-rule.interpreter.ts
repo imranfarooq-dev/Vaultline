@@ -30,3 +30,14 @@ export interface Expression {
   interpret(context: RuleContext): boolean;
   toString(): string;
 }
+
+// ---------- Terminal expression ----------
+type Operator = '>' | '>=' | '<' | '<=' | '==' | '!=';
+
+export class ComparisonExpression implements Expression {
+  constructor(
+    private readonly variable: string,
+    private readonly operator: Operator,
+    private readonly value: string | number | boolean,
+  ) {}
+}
