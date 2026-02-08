@@ -85,4 +85,21 @@ describeKafka('Event pipeline: API -> Kafka -> worker (integration)', () => {
     const [{ count }] = await dataSource.query('SELECT COUNT(*)::int AS count FROM notifications WHERE event_id = $1', [event.eventId]);
     expect(count).toBe(1);
   });
+
+  it('a poison message goes to the dead-letter topic instead of blocking the partition', async () => {
+    const client = new Kafka({ brokers: [brokers] });
+    const producer = client.producer();
+    await producer.connect();
+    await producer.send({ topic: 'banking.transaction-events', messages: [{ value: 'this is not json {' }] });
+    await producer.disconnect();
+
+    const consumer = client.consumer({ groupId: `dlq-reader-${Date.now()}` });
+    await consumer.connect();
+    await consumer.subscribe({ topic: 'banking.dead-letter', fromBeginning: true });
+    const received = await new Promise<string>((resolve) => {
+      void consumer.run({ eachMessage: async ({ message }) => resolve(message.value?.toString() ?? '') });
+    });
+    await consumer.disconnect();
+    expect(received).toBe('this is not json {');
+  });
 });
