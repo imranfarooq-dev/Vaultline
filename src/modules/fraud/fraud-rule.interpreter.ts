@@ -40,4 +40,17 @@ export class ComparisonExpression implements Expression {
     private readonly operator: Operator,
     private readonly value: string | number | boolean,
   ) {}
+
+  interpret(context: RuleContext): boolean {
+    const actual = context[this.variable];
+    if (actual === undefined) return false; // unknown data never triggers a rule
+    switch (this.operator) {
+      case '==': return actual === this.value;
+      case '!=': return actual !== this.value;
+      case '>': return Number(actual) > Number(this.value);
+      case '>=': return Number(actual) >= Number(this.value);
+      case '<': return Number(actual) < Number(this.value);
+      case '<=': return Number(actual) <= Number(this.value);
+    }
+  }
 }
