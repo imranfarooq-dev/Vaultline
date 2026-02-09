@@ -29,4 +29,8 @@ describe('Interpreter: fraud rule language', () => {
     expect(evaluate('amount > 10 OR hour < 5 AND amount > 1000', { amount: 50, hour: 12 })).toBe(true);
     expect(evaluate('(amount > 10 OR hour < 5) AND amount > 1000', { amount: 50, hour: 12 })).toBe(false);
   });
+
+  it('supports NOT and nested parentheses', () => {
+    expect(evaluate("NOT (channel == 'web' OR (hour < 5 AND amount > 1))", { channel: 'mobile', hour: 3, amount: 0 })).toBe(true);
+  });
 });
