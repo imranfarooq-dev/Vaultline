@@ -65,3 +65,9 @@ export class AndExpression implements Expression {
   interpret(context: RuleContext): boolean { return this.left.interpret(context) && this.right.interpret(context); }
   toString(): string { return `(${this.left} AND ${this.right})`; }
 }
+
+export class OrExpression implements Expression {
+  constructor(private readonly left: Expression, private readonly right: Expression) {}
+  interpret(context: RuleContext): boolean { return this.left.interpret(context) || this.right.interpret(context); }
+  toString(): string { return `(${this.left} OR ${this.right})`; }
+}
