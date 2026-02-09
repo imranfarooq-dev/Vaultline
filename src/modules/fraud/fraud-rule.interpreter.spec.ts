@@ -23,4 +23,10 @@ describe('Interpreter: fraud rule language', () => {
   ])('%s with %j -> %s', (rule, ctx, expected) => {
     expect(evaluate(rule, ctx)).toBe(expected);
   });
+
+  it('AND binds tighter than OR', () => {
+    // a OR (b AND c)
+    expect(evaluate('amount > 10 OR hour < 5 AND amount > 1000', { amount: 50, hour: 12 })).toBe(true);
+    expect(evaluate('(amount > 10 OR hour < 5) AND amount > 1000', { amount: 50, hour: 12 })).toBe(false);
+  });
 });
