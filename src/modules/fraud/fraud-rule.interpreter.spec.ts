@@ -33,4 +33,8 @@ describe('Interpreter: fraud rule language', () => {
   it('supports NOT and nested parentheses', () => {
     expect(evaluate("NOT (channel == 'web' OR (hour < 5 AND amount > 1))", { channel: 'mobile', hour: 3, amount: 0 })).toBe(true);
   });
+
+  it('keywords are case-insensitive and toString shows the parsed structure', () => {
+    expect(parser.parse('a > 1 and b < 2 or not c == 3').toString()).toBe('((a > 1 AND b < 2) OR NOT c == 3)');
+  });
 });
