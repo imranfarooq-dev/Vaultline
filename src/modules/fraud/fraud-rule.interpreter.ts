@@ -53,4 +53,8 @@ export class ComparisonExpression implements Expression {
       case '<=': return Number(actual) <= Number(this.value);
     }
   }
+
+  toString(): string {
+    return `${this.variable} ${this.operator} ${typeof this.value === 'string' ? `'${this.value}'` : this.value}`;
+  }
 }
