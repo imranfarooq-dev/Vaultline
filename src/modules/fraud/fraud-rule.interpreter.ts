@@ -58,3 +58,10 @@ export class ComparisonExpression implements Expression {
     return `${this.variable} ${this.operator} ${typeof this.value === 'string' ? `'${this.value}'` : this.value}`;
   }
 }
+
+// ---------- Non-terminal expressions ----------
+export class AndExpression implements Expression {
+  constructor(private readonly left: Expression, private readonly right: Expression) {}
+  interpret(context: RuleContext): boolean { return this.left.interpret(context) && this.right.interpret(context); }
+  toString(): string { return `(${this.left} AND ${this.right})`; }
+}
