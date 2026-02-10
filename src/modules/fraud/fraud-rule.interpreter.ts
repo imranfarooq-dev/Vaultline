@@ -77,3 +77,8 @@ export class NotExpression implements Expression {
   interpret(context: RuleContext): boolean { return !this.inner.interpret(context); }
   toString(): string { return `NOT ${this.inner}`; }
 }
+
+// ---------- Tokenizer + parser: text -> expression tree ----------
+type Token = { kind: 'ident' | 'number' | 'string' | 'bool' | 'op' | 'and' | 'or' | 'not' | 'lparen' | 'rparen'; text: string };
+
+export class RuleSyntaxError extends Error {}
