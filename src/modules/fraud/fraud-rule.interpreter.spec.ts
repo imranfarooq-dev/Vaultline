@@ -41,4 +41,8 @@ describe('Interpreter: fraud rule language', () => {
   it('missing variables never trigger a rule', () => {
     expect(evaluate('amount > 0', {})).toBe(false);
   });
+
+  it.each(['', 'amount >', 'amount 5', '(amount > 5', 'amount > 5 )', 'amount > 5 AND', 'amount $ 5'])('rejects invalid syntax: "%s"', (rule) => {
+    expect(() => parser.parse(rule)).toThrow(RuleSyntaxError);
+  });
 });
