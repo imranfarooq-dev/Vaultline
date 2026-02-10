@@ -82,3 +82,28 @@ export class NotExpression implements Expression {
 type Token = { kind: 'ident' | 'number' | 'string' | 'bool' | 'op' | 'and' | 'or' | 'not' | 'lparen' | 'rparen'; text: string };
 
 export class RuleSyntaxError extends Error {}
+
+const tokenize = (source: string): Token[] => {
+  const pattern = /\s*(>=|<=|==|!=|>|<|\(|\)|'[^']*'|-?\d+(?:\.\d+)?|[A-Za-z_][A-Za-z0-9_]*)/y;
+  const tokens: Token[] = [];
+  let index = 0;
+
+  while (index < source.length) {
+    if (/^\s*$/.test(source.slice(index))) break;
+    pattern.lastIndex = index;
+    const match = pattern.exec(source);
+    if (!match) throw new RuleSyntaxError(`Unexpected character at position ${index}: "${source.slice(index, index + 10)}"`);
+    index = pattern.lastIndex;
+    const text = match[1];
+
+    if (text === '(') tokens.push({ kind: 'lparen', text });
+    else if (text === ')') tokens.push({ kind: 'rparen', text });
+    else if (/^(>=|<=|==|!=|>|<)$/.test(text)) tokens.push({ kind: 'op', text });
+    else if (text.startsWith("'")) tokens.push({ kind: 'string', text: text.slice(1, -1) });
+    else if (/^-?\d/.test(text)) tokens.push({ kind: 'number', text });
+    else if (/^(AND|OR|NOT)$/i.test(text)) tokens.push({ kind: text.toLowerCase() as 'and' | 'or' | 'not', text });
+    else if (/^(true|false)$/i.test(text)) tokens.push({ kind: 'bool', text: text.toLowerCase() });
+    else tokens.push({ kind: 'ident', text });
+  }
+  return tokens;
+};
