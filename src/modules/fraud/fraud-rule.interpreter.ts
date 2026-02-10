@@ -71,3 +71,9 @@ export class OrExpression implements Expression {
   interpret(context: RuleContext): boolean { return this.left.interpret(context) || this.right.interpret(context); }
   toString(): string { return `(${this.left} OR ${this.right})`; }
 }
+
+export class NotExpression implements Expression {
+  constructor(private readonly inner: Expression) {}
+  interpret(context: RuleContext): boolean { return !this.inner.interpret(context); }
+  toString(): string { return `NOT ${this.inner}`; }
+}
