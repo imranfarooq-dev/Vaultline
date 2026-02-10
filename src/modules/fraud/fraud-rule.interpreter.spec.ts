@@ -37,4 +37,8 @@ describe('Interpreter: fraud rule language', () => {
   it('keywords are case-insensitive and toString shows the parsed structure', () => {
     expect(parser.parse('a > 1 and b < 2 or not c == 3').toString()).toBe('((a > 1 AND b < 2) OR NOT c == 3)');
   });
+
+  it('missing variables never trigger a rule', () => {
+    expect(evaluate('amount > 0', {})).toBe(false);
+  });
 });
