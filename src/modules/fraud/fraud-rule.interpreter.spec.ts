@@ -45,4 +45,11 @@ describe('Interpreter: fraud rule language', () => {
   it.each(['', 'amount >', 'amount 5', '(amount > 5', 'amount > 5 )', 'amount > 5 AND', 'amount $ 5'])('rejects invalid syntax: "%s"', (rule) => {
     expect(() => parser.parse(rule)).toThrow(RuleSyntaxError);
   });
+
+  it('engine evaluates all configured rules and reports matches', () => {
+    const config = { fraudRules: ["amount > 5000000 AND channel == 'mobile'", 'hour < 5 AND amount > 1000000'] } as AppConfigService;
+    const engine = new FraudRuleEngine(config);
+    expect(engine.evaluate({ amount: 6_000_000, channel: 'mobile', hour: 12 })).toEqual({ suspicious: true, matchedRules: ["amount > 5000000 AND channel == 'mobile'"] });
+    expect(engine.evaluate({ amount: 6_000_000, channel: 'web', hour: 12 }).suspicious).toBe(false);
+  });
 });
