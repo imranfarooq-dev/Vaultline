@@ -107,3 +107,8 @@ const tokenize = (source: string): Token[] => {
   }
   return tokens;
 };
+
+export class FraudRuleParser {
+  private tokens: Token[] = [];
+  private position = 0;
+}
