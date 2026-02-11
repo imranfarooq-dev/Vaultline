@@ -111,4 +111,13 @@ const tokenize = (source: string): Token[] => {
 export class FraudRuleParser {
   private tokens: Token[] = [];
   private position = 0;
+
+  parse(source: string): Expression {
+    this.tokens = tokenize(source);
+    this.position = 0;
+    if (this.tokens.length === 0) throw new RuleSyntaxError('Rule is empty');
+    const expression = this.parseOr();
+    if (this.position < this.tokens.length) throw new RuleSyntaxError(`Unexpected token "${this.tokens[this.position].text}"`);
+    return expression;
+  }
 }
