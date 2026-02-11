@@ -120,4 +120,13 @@ export class FraudRuleParser {
     if (this.position < this.tokens.length) throw new RuleSyntaxError(`Unexpected token "${this.tokens[this.position].text}"`);
     return expression;
   }
+
+  private parseOr(): Expression {
+    let left = this.parseAnd();
+    while (this.peek()?.kind === 'or') {
+      this.position++;
+      left = new OrExpression(left, this.parseAnd());
+    }
+    return left;
+  }
 }
