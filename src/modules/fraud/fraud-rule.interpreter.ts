@@ -146,4 +146,24 @@ export class FraudRuleParser {
     }
     return this.parsePrimary();
   }
+
+  private parsePrimary(): Expression {
+    if (this.peek()?.kind === 'lparen') {
+      this.position++;
+      const inner = this.parseOr();
+      this.expect('rparen');
+      return inner;
+    }
+    const variable = this.expect('ident').text;
+    const operator = this.expect('op').text as Operator;
+    const valueToken = this.advance();
+    if (!valueToken) throw new RuleSyntaxError(`Missing value after "${variable} ${operator}"`);
+
+    switch (valueToken.kind) {
+      case 'number': return new ComparisonExpression(variable, operator, Number(valueToken.text));
+      case 'string': return new ComparisonExpression(variable, operator, valueToken.text);
+      case 'bool': return new ComparisonExpression(variable, operator, valueToken.text === 'true');
+      default: throw new RuleSyntaxError(`Expected a value but found "${valueToken.text}"`);
+    }
+  }
 }
