@@ -129,4 +129,13 @@ export class FraudRuleParser {
     }
     return left;
   }
+
+  private parseAnd(): Expression {
+    let left = this.parseNot();
+    while (this.peek()?.kind === 'and') {
+      this.position++;
+      left = new AndExpression(left, this.parseNot());
+    }
+    return left;
+  }
 }
