@@ -166,4 +166,12 @@ export class FraudRuleParser {
       default: throw new RuleSyntaxError(`Expected a value but found "${valueToken.text}"`);
     }
   }
+
+  private peek(): Token | undefined { return this.tokens[this.position]; }
+  private advance(): Token | undefined { return this.tokens[this.position++]; }
+  private expect(kind: Token['kind']): Token {
+    const token = this.advance();
+    if (!token || token.kind !== kind) throw new RuleSyntaxError(`Expected ${kind} but found "${token?.text ?? 'end of rule'}"`);
+    return token;
+  }
 }
