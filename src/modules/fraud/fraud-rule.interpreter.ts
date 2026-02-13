@@ -138,4 +138,12 @@ export class FraudRuleParser {
     }
     return left;
   }
+
+  private parseNot(): Expression {
+    if (this.peek()?.kind === 'not') {
+      this.position++;
+      return new NotExpression(this.parseNot());
+    }
+    return this.parsePrimary();
+  }
 }
