@@ -14,3 +14,9 @@ class EvaluateRuleDto {
   @IsObject()
   context: Record<string, string | number | boolean>;
 }
+
+@ApiTags('Fraud (Interpreter)')
+@Controller('fraud')
+export class FraudController {
+  constructor(private readonly engine: FraudRuleEngine) {}
+}
