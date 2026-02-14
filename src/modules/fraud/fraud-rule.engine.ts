@@ -13,4 +13,9 @@ export class FraudRuleEngine {
   private readonly logger = new Logger(FraudRuleEngine.name);
   private readonly parser = new FraudRuleParser();
   private readonly rules: { source: string; expression: Expression }[];
+
+  constructor(config: AppConfigService) {
+    this.rules = config.fraudRules.map((source) => ({ source, expression: this.parser.parse(source) }));
+    this.logger.log(`Loaded ${this.rules.length} fraud rule(s)`);
+  }
 }
