@@ -23,4 +23,10 @@ export class FraudRuleEngine {
     const matchedRules = this.rules.filter((rule) => rule.expression.interpret(context)).map((rule) => rule.source);
     return { suspicious: matchedRules.length > 0, matchedRules };
   }
+
+  /** Try an ad-hoc rule without saving it (used by POST /api/fraud/evaluate). */
+  tryRule(source: string, context: RuleContext) {
+    const expression = this.parser.parse(source);
+    return { rule: source, parsedAs: expression.toString(), matched: expression.interpret(context) };
+  }
 }
