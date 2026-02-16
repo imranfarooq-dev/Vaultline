@@ -25,4 +25,15 @@ export class FraudController {
   rules() {
     return { rules: this.engine.activeRules };
   }
+
+  @Post('evaluate')
+  @ApiOperation({ summary: 'Parse and interpret any rule against a sample context' })
+  evaluate(@Body() dto: EvaluateRuleDto) {
+    try {
+      return this.engine.tryRule(dto.rule, dto.context);
+    } catch (error) {
+      if (error instanceof RuleSyntaxError) throw new BusinessRuleError(error.message);
+      throw error;
+    }
+  }
 }
