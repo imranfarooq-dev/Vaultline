@@ -19,4 +19,10 @@ class EvaluateRuleDto {
 @Controller('fraud')
 export class FraudController {
   constructor(private readonly engine: FraudRuleEngine) {}
+
+  @Get('rules')
+  @ApiOperation({ summary: 'Rules currently loaded from FRAUD_RULES' })
+  rules() {
+    return { rules: this.engine.activeRules };
+  }
 }
