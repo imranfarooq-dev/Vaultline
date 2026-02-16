@@ -18,4 +18,9 @@ export class FraudRuleEngine {
     this.rules = config.fraudRules.map((source) => ({ source, expression: this.parser.parse(source) }));
     this.logger.log(`Loaded ${this.rules.length} fraud rule(s)`);
   }
+
+  evaluate(context: RuleContext): FraudVerdict {
+    const matchedRules = this.rules.filter((rule) => rule.expression.interpret(context)).map((rule) => rule.source);
+    return { suspicious: matchedRules.length > 0, matchedRules };
+  }
 }
