@@ -29,4 +29,8 @@ export class FraudRuleEngine {
     const expression = this.parser.parse(source);
     return { rule: source, parsedAs: expression.toString(), matched: expression.interpret(context) };
   }
+
+  get activeRules(): string[] {
+    return this.rules.map((rule) => rule.source);
+  }
 }
