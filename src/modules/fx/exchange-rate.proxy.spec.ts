@@ -9,4 +9,13 @@ describe('Proxy: caching exchange-rate provider', () => {
     const viaProxy = await proxy.getRate('USD', 'PKR');
     expect(viaProxy.rate).toBe(direct.rate);
   });
+
+  it('serves repeat lookups from cache without calling the provider', async () => {
+    const real = new ExternalExchangeRateService(0);
+    const proxy = new CachingExchangeRateProxy(real);
+    expect((await proxy.getRate('USD', 'PKR')).source).toBe('provider');
+    expect((await proxy.getRate('USD', 'PKR')).source).toBe('cache');
+    expect(real.calls).toBe(1);
+    expect(proxy.stats).toMatchObject({ hits: 1, misses: 1 });
+  });
 });
