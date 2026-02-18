@@ -31,3 +31,9 @@ export interface Rate {
 export interface ExchangeRateProvider {
   getRate(from: string, to: string): Promise<Rate>;
 }
+
+/** The "real subject": simulates a slow, rate-limited third-party API. */
+export class ExternalExchangeRateService implements ExchangeRateProvider {
+  calls = 0;
+  private static readonly PKR_PER_UNIT: Record<string, number> = { PKR: 1, USD: 281.5, EUR: 305.2, GBP: 356.8, AED: 76.6, SAR: 75.0 };
+}
