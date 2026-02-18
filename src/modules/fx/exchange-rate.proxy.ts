@@ -27,3 +27,7 @@ export interface Rate {
   rate: number;
   asOf: string;
 }
+
+export interface ExchangeRateProvider {
+  getRate(from: string, to: string): Promise<Rate>;
+}
