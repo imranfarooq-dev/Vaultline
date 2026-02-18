@@ -36,4 +36,15 @@ export interface ExchangeRateProvider {
 export class ExternalExchangeRateService implements ExchangeRateProvider {
   calls = 0;
   private static readonly PKR_PER_UNIT: Record<string, number> = { PKR: 1, USD: 281.5, EUR: 305.2, GBP: 356.8, AED: 76.6, SAR: 75.0 };
+
+  constructor(private readonly latencyMs = 300) {}
+
+  async getRate(from: string, to: string): Promise<Rate> {
+    this.calls++;
+    await new Promise((resolve) => setTimeout(resolve, this.latencyMs));
+    const f = ExternalExchangeRateService.PKR_PER_UNIT[from];
+    const t = ExternalExchangeRateService.PKR_PER_UNIT[to];
+    if (!f || !t) throw new BusinessRuleError(`No rate for ${from}/${to}`);
+    return { from, to, rate: Number((f / t).toFixed(6)), asOf: new Date().toISOString() };
+  }
 }
