@@ -18,4 +18,15 @@ describe('Proxy: caching exchange-rate provider', () => {
     expect(real.calls).toBe(1);
     expect(proxy.stats).toMatchObject({ hits: 1, misses: 1 });
   });
+
+  it('expires entries after the TTL', async () => {
+    jest.useFakeTimers({ now: 0, doNotFake: ['setTimeout'] });
+    const real = new ExternalExchangeRateService(0);
+    const proxy = new CachingExchangeRateProxy(real, 1000);
+    await proxy.getRate('EUR', 'PKR');
+    jest.setSystemTime(1500);
+    await proxy.getRate('EUR', 'PKR');
+    expect(real.calls).toBe(2);
+    jest.useRealTimers();
+  });
 });
