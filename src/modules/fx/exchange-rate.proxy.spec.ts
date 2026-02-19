@@ -29,4 +29,18 @@ describe('Proxy: caching exchange-rate provider', () => {
     expect(real.calls).toBe(2);
     jest.useRealTimers();
   });
+
+  it('serves a stale rate when the provider fails', async () => {
+    let fail = false;
+    const flaky: ExchangeRateProvider = {
+      getRate: async (from, to) => {
+        if (fail) throw new Error('timeout');
+        return { from, to, rate: 2, asOf: 'x' };
+      },
+    };
+    const proxy = new CachingExchangeRateProxy(flaky, -1); // TTL -1: every call is a miss
+    await proxy.getRate('A', 'B');
+    fail = true;
+    expect(await proxy.getRate('A', 'B')).toMatchObject({ rate: 2, source: 'stale-cache' });
+  });
 });
