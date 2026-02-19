@@ -55,4 +55,10 @@ export class CachingExchangeRateProxy implements ExchangeRateProvider {
   private readonly cache = new Map<string, { rate: Rate; storedAt: number }>();
   private recentCalls: number[] = [];
   stats = { hits: 0, misses: 0, staleServed: 0 };
+
+  constructor(
+    private readonly real: ExchangeRateProvider = new ExternalExchangeRateService(),
+    private readonly ttlMs = 60_000,
+    private readonly maxCallsPerMinute = 30,
+  ) {}
 }
