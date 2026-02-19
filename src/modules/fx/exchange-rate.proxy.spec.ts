@@ -43,4 +43,11 @@ describe('Proxy: caching exchange-rate provider', () => {
     fail = true;
     expect(await proxy.getRate('A', 'B')).toMatchObject({ rate: 2, source: 'stale-cache' });
   });
+
+  it('rate-limits calls to the provider', async () => {
+    const proxy = new CachingExchangeRateProxy(new ExternalExchangeRateService(0), 60_000, 2);
+    await proxy.getRate('USD', 'PKR');
+    await proxy.getRate('EUR', 'PKR');
+    await expect(proxy.getRate('GBP', 'PKR')).rejects.toBeInstanceOf(DependencyUnavailableError);
+  });
 });
