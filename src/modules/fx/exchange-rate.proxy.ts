@@ -48,3 +48,11 @@ export class ExternalExchangeRateService implements ExchangeRateProvider {
     return { from, to, rate: Number((f / t).toFixed(6)), asOf: new Date().toISOString() };
   }
 }
+
+@Injectable()
+export class CachingExchangeRateProxy implements ExchangeRateProvider {
+  private readonly logger = new Logger(CachingExchangeRateProxy.name);
+  private readonly cache = new Map<string, { rate: Rate; storedAt: number }>();
+  private recentCalls: number[] = [];
+  stats = { hits: 0, misses: 0, staleServed: 0 };
+}
