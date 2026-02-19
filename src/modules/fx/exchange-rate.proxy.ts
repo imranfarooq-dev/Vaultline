@@ -61,4 +61,30 @@ export class CachingExchangeRateProxy implements ExchangeRateProvider {
     private readonly ttlMs = 60_000,
     private readonly maxCallsPerMinute = 30,
   ) {}
+
+  async getRate(from: string, to: string): Promise<Rate & { source: 'cache' | 'provider' | 'stale-cache' }> {
+    const key = `${from}/${to}`;
+    const cached = this.cache.get(key);
+
+    if (cached && Date.now() - cached.storedAt < this.ttlMs) {
+      this.stats.hits++;
+      return { ...cached.rate, source: 'cache' };
+    }
+
+    this.stats.misses++;
+    try {
+      this.enforceRateLimit();
+      const rate = await this.real.getRate(from, to);
+      this.cache.set(key, { rate, storedAt: Date.now() });
+      return { ...rate, source: 'provider' };
+    } catch (error) {
+      if (error instanceof BusinessRuleError) throw error;
+      if (cached) {
+        this.stats.staleServed++;
+        this.logger.warn(`Provider unavailable, serving stale ${key}: ${(error as Error).message}`);
+        return { ...cached.rate, source: 'stale-cache' };
+      }
+      throw new DependencyUnavailableError('Exchange rate provider unavailable');
+    }
+  }
 }
