@@ -87,4 +87,11 @@ export class CachingExchangeRateProxy implements ExchangeRateProvider {
       throw new DependencyUnavailableError('Exchange rate provider unavailable');
     }
   }
+
+  private enforceRateLimit(): void {
+    const oneMinuteAgo = Date.now() - 60_000;
+    this.recentCalls = this.recentCalls.filter((t) => t > oneMinuteAgo);
+    if (this.recentCalls.length >= this.maxCallsPerMinute) throw new Error('Rate limit reached');
+    this.recentCalls.push(Date.now());
+  }
 }
