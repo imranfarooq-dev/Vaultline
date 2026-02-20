@@ -37,3 +37,12 @@ export interface FeeCalculator {
 export interface PaymentMessageFormatter {
   format(payment: OutboundPayment, reference: string): string;
 }
+
+// ----- Abstract factory -----
+export interface PaymentRailFactory {
+  readonly rail: 'RAAST' | 'SWIFT';
+  readonly settlementTime: string;
+  createValidator(): PaymentValidator;
+  createFeeCalculator(): FeeCalculator;
+  createMessageFormatter(): PaymentMessageFormatter;
+}
