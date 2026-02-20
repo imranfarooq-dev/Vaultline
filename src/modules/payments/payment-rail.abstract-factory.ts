@@ -31,3 +31,9 @@ export interface OutboundPayment {
 export interface PaymentValidator {
   validate(payment: OutboundPayment): string[];
 }
+export interface FeeCalculator {
+  feeMinor(payment: OutboundPayment): number;
+}
+export interface PaymentMessageFormatter {
+  format(payment: OutboundPayment, reference: string): string;
+}
