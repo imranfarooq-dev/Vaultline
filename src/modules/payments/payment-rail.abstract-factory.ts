@@ -26,3 +26,8 @@ export interface OutboundPayment {
   beneficiaryBic?: string;
   purpose?: string;
 }
+
+// ----- Abstract products -----
+export interface PaymentValidator {
+  validate(payment: OutboundPayment): string[];
+}
