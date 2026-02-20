@@ -8,4 +8,10 @@ describe('Abstract Factory: payment rails', () => {
     expect(railFactoryFor('RAAST')).toBeInstanceOf(RaastPaymentFactory);
     expect(railFactoryFor('SWIFT')).toBeInstanceOf(SwiftPaymentFactory);
   });
+
+  it('RAAST family: free, instant, JSON message', () => {
+    const quote = quotePayment(new RaastPaymentFactory(), domestic, 'PAY-1');
+    expect(quote).toMatchObject({ rail: 'RAAST', valid: true, feeMinor: 0, settlementTime: 'Instant (seconds)' });
+    expect(JSON.parse((quote as { message: string }).message)).toMatchObject({ scheme: 'RAAST', msgId: 'PAY-1', amount: '50000.00' });
+  });
 });
