@@ -14,4 +14,11 @@ describe('Abstract Factory: payment rails', () => {
     expect(quote).toMatchObject({ rail: 'RAAST', valid: true, feeMinor: 0, settlementTime: 'Instant (seconds)' });
     expect(JSON.parse((quote as { message: string }).message)).toMatchObject({ scheme: 'RAAST', msgId: 'PAY-1', amount: '50000.00' });
   });
+
+  it('SWIFT family: flat + percentage fee, MT103-style message', () => {
+    const quote = quotePayment(new SwiftPaymentFactory(), international, 'PAY-2') as { feeMinor: number; message: string };
+    expect(quote.feeMinor).toBe(250_000 + 10_000);
+    expect(quote.message).toContain(':20:PAY-2');
+    expect(quote.message).toContain(':57A:DEUTDEFF');
+  });
 });
