@@ -62,3 +62,8 @@ class RaastFeeCalculator implements FeeCalculator {
     return 0; // instant domestic payments are free for customers
   }
 }
+class RaastMessageFormatter implements PaymentMessageFormatter {
+  format(p: OutboundPayment, reference: string): string {
+    return JSON.stringify({ scheme: 'RAAST', msgId: reference, amount: (p.amountMinor / 100).toFixed(2), cdtrIban: p.beneficiaryIban, cdtrName: p.beneficiaryName });
+  }
+}
