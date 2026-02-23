@@ -57,3 +57,8 @@ class RaastValidator implements PaymentValidator {
     return errors;
   }
 }
+class RaastFeeCalculator implements FeeCalculator {
+  feeMinor(): number {
+    return 0; // instant domestic payments are free for customers
+  }
+}
