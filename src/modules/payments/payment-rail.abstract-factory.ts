@@ -67,3 +67,10 @@ class RaastMessageFormatter implements PaymentMessageFormatter {
     return JSON.stringify({ scheme: 'RAAST', msgId: reference, amount: (p.amountMinor / 100).toFixed(2), cdtrIban: p.beneficiaryIban, cdtrName: p.beneficiaryName });
   }
 }
+export class RaastPaymentFactory implements PaymentRailFactory {
+  readonly rail = 'RAAST' as const;
+  readonly settlementTime = 'Instant (seconds)';
+  createValidator() { return new RaastValidator(); }
+  createFeeCalculator() { return new RaastFeeCalculator(); }
+  createMessageFormatter() { return new RaastMessageFormatter(); }
+}
