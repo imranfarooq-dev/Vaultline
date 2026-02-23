@@ -21,4 +21,9 @@ describe('Abstract Factory: payment rails', () => {
     expect(quote.message).toContain(':20:PAY-2');
     expect(quote.message).toContain(':57A:DEUTDEFF');
   });
+
+  it('each family validates with its own rules', () => {
+    expect(quotePayment(new RaastPaymentFactory(), international, 'X')).toMatchObject({ valid: false, errors: expect.arrayContaining(['RAAST only supports PKR']) });
+    expect(quotePayment(new SwiftPaymentFactory(), domestic, 'X')).toMatchObject({ valid: false, errors: expect.arrayContaining(['A valid BIC/SWIFT code is required']) });
+  });
 });
