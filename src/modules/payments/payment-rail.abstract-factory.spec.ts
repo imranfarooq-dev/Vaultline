@@ -26,4 +26,12 @@ describe('Abstract Factory: payment rails', () => {
     expect(quotePayment(new RaastPaymentFactory(), international, 'X')).toMatchObject({ valid: false, errors: expect.arrayContaining(['RAAST only supports PKR']) });
     expect(quotePayment(new SwiftPaymentFactory(), domestic, 'X')).toMatchObject({ valid: false, errors: expect.arrayContaining(['A valid BIC/SWIFT code is required']) });
   });
+
+  it('client code works with any factory through the interfaces only', () => {
+    for (const factory of [new RaastPaymentFactory(), new SwiftPaymentFactory()]) {
+      expect(typeof factory.createValidator().validate).toBe('function');
+      expect(typeof factory.createFeeCalculator().feeMinor).toBe('function');
+      expect(typeof factory.createMessageFormatter().format).toBe('function');
+    }
+  });
 });
