@@ -46,3 +46,14 @@ export interface PaymentRailFactory {
   createFeeCalculator(): FeeCalculator;
   createMessageFormatter(): PaymentMessageFormatter;
 }
+
+// ===== Family 1: RAAST (Pakistan's instant domestic payment system) =====
+class RaastValidator implements PaymentValidator {
+  validate(p: OutboundPayment): string[] {
+    const errors: string[] = [];
+    if (p.currency !== 'PKR') errors.push('RAAST only supports PKR');
+    if (!/^PK\d{2}[A-Z]{4}\d{16}$/.test(p.beneficiaryIban)) errors.push('Beneficiary must be a valid Pakistani IBAN (24 characters)');
+    if (p.amountMinor > 100_000_000) errors.push('RAAST limit is Rs 1,000,000 per payment');
+    return errors;
+  }
+}
