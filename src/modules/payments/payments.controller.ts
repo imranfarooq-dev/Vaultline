@@ -13,3 +13,16 @@ class PaymentQuoteDto {
   @ApiPropertyOptional({ example: 'DEUTDEFF' }) @IsOptional() @IsString() beneficiaryBic?: string;
   @ApiPropertyOptional({ example: 'Family support' }) @IsOptional() @IsString() purpose?: string;
 }
+
+@ApiTags('Payments (Abstract Factory, Singleton)')
+@Controller('payments')
+export class PaymentsController {
+  constructor(private readonly references: ReferenceNumberGenerator) {}
+
+  @Post('quote')
+  @ApiOperation({ summary: 'Validate, price and format an outbound payment with a matching family of objects' })
+  quote(@Body() dto: PaymentQuoteDto) {
+    const { rail, ...payment } = dto;
+    return quotePayment(railFactoryFor(rail), payment, this.references.next('PAY'));
+  }
+}
