@@ -1,0 +1,28 @@
+import { Currency } from '../core/currency.flyweight';
+
+/**
+ * ============================================================================
+ * PATTERN: BRIDGE (Structural)
+ * ============================================================================
+ * Problem : We have 2 kinds of statement (Mini, Detailed) and 3 output formats
+ *           (CSV, JSON, Text). With inheritance that's 6 classes
+ *           (MiniCsvStatement, DetailedJsonStatement, ...). Add a PDF format and
+ *           an Annual statement and it's 12. The classes multiply.
+ * Solution: Split the two dimensions into two separate hierarchies and connect
+ *           them with a reference (the "bridge"):
+ *             ABSTRACTION     Statement  -> WHAT goes in the statement
+ *             IMPLEMENTATION  Renderer   -> HOW it is written out
+ *           2 statements + 3 renderers = 5 classes, combinable freely.
+ *
+ * Analogy : One TV remote design that works with Samsung, LG or Sony TVs.
+ *           New remotes and new TV brands can be added independently.
+ * ============================================================================
+ */
+export interface StatementLine {
+  date: string;
+  reference: string;
+  type: string;
+  description: string;
+  amountMinor: number;
+  balanceAfterMinor: number;
+}
