@@ -103,3 +103,18 @@ export class SwiftPaymentFactory implements PaymentRailFactory {
   createFeeCalculator() { return new SwiftFeeCalculator(); }
   createMessageFormatter() { return new SwiftMessageFormatter(); }
 }
+
+/** Client code: works with ANY factory and never names a concrete class. */
+export const quotePayment = (factory: PaymentRailFactory, payment: OutboundPayment, reference: string) => {
+  const errors = factory.createValidator().validate(payment);
+  if (errors.length) return { rail: factory.rail, valid: false, errors };
+  return {
+    rail: factory.rail,
+    valid: true,
+    feeMinor: factory.createFeeCalculator().feeMinor(payment),
+    settlementTime: factory.settlementTime,
+    message: factory.createMessageFormatter().format(payment, reference),
+  };
+};
+
+export const railFactoryFor = (rail: 'RAAST' | 'SWIFT'): PaymentRailFactory => (rail === 'RAAST' ? new RaastPaymentFactory() : new SwiftPaymentFactory());
