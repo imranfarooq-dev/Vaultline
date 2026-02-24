@@ -26,3 +26,11 @@ export interface StatementLine {
   amountMinor: number;
   balanceAfterMinor: number;
 }
+
+export interface StatementData {
+  accountNumber: string;
+  ownerName: string;
+  currency: Currency;
+  currentBalanceMinor: number;
+  lines: StatementLine[]; // oldest first
+}
