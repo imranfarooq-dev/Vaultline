@@ -96,3 +96,10 @@ class SwiftMessageFormatter implements PaymentMessageFormatter {
     return [`:20:${reference}`, `:32A:${new Date().toISOString().slice(2, 10).replace(/-/g, '')}${p.currency}${(p.amountMinor / 100).toFixed(2).replace('.', ',')}`, `:57A:${p.beneficiaryBic}`, `:59:/${p.beneficiaryIban}`, p.beneficiaryName, `:70:${p.purpose}`].join('\n');
   }
 }
+export class SwiftPaymentFactory implements PaymentRailFactory {
+  readonly rail = 'SWIFT' as const;
+  readonly settlementTime = '1-3 business days';
+  createValidator() { return new SwiftValidator(); }
+  createFeeCalculator() { return new SwiftFeeCalculator(); }
+  createMessageFormatter() { return new SwiftMessageFormatter(); }
+}
