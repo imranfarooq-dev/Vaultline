@@ -90,3 +90,9 @@ class SwiftFeeCalculator implements FeeCalculator {
     return 250_000 + Math.round(p.amountMinor * 0.001); // flat Rs 2,500 + 0.1%
   }
 }
+/** Simplified MT103-style text message. */
+class SwiftMessageFormatter implements PaymentMessageFormatter {
+  format(p: OutboundPayment, reference: string): string {
+    return [`:20:${reference}`, `:32A:${new Date().toISOString().slice(2, 10).replace(/-/g, '')}${p.currency}${(p.amountMinor / 100).toFixed(2).replace('.', ',')}`, `:57A:${p.beneficiaryBic}`, `:59:/${p.beneficiaryIban}`, p.beneficiaryName, `:70:${p.purpose}`].join('\n');
+  }
+}
