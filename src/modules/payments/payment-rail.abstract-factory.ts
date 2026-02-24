@@ -74,3 +74,14 @@ export class RaastPaymentFactory implements PaymentRailFactory {
   createFeeCalculator() { return new RaastFeeCalculator(); }
   createMessageFormatter() { return new RaastMessageFormatter(); }
 }
+
+// ===== Family 2: SWIFT (international wire) =====
+class SwiftValidator implements PaymentValidator {
+  validate(p: OutboundPayment): string[] {
+    const errors: string[] = [];
+    if (!p.beneficiaryBic || !/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(p.beneficiaryBic)) errors.push('A valid BIC/SWIFT code is required');
+    if (!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(p.beneficiaryIban)) errors.push('Beneficiary IBAN format is invalid');
+    if (!p.purpose) errors.push('Purpose of payment is mandatory for international transfers');
+    return errors;
+  }
+}
