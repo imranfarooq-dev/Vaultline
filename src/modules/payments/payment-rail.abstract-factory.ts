@@ -85,3 +85,8 @@ class SwiftValidator implements PaymentValidator {
     return errors;
   }
 }
+class SwiftFeeCalculator implements FeeCalculator {
+  feeMinor(p: OutboundPayment): number {
+    return 250_000 + Math.round(p.amountMinor * 0.001); // flat Rs 2,500 + 0.1%
+  }
+}
