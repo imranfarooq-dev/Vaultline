@@ -34,3 +34,12 @@ export interface StatementData {
   currentBalanceMinor: number;
   lines: StatementLine[]; // oldest first
 }
+
+/** Format-independent document produced by the abstraction. */
+export interface StatementDocument {
+  title: string;
+  header: Record<string, string>;
+  columns: string[];
+  rows: string[][];
+  summary: Record<string, string>;
+}
