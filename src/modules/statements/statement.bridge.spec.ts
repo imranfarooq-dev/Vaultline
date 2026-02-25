@@ -16,4 +16,13 @@ describe('Bridge: statements x renderers', () => {
       balanceAfterMinor: 0,
     })),
   };
+
+  it('every statement works with every renderer (2 x 3 = 6 combinations, 5 classes)', () => {
+    for (const StatementClass of Object.values(STATEMENTS)) {
+      for (const makeRenderer of Object.values(RENDERERS)) {
+        const out = new StatementClass(makeRenderer()).generate(data);
+        expect(out.body.length).toBeGreaterThan(0);
+      }
+    }
+  });
 });
