@@ -43,3 +43,9 @@ export interface StatementDocument {
   rows: string[][];
   summary: Record<string, string>;
 }
+
+// ===================== IMPLEMENTATION hierarchy =====================
+export interface StatementRenderer {
+  readonly contentType: string;
+  render(document: StatementDocument): string;
+}
