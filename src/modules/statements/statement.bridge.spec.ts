@@ -25,4 +25,10 @@ describe('Bridge: statements x renderers', () => {
       }
     }
   });
+
+  it('mini statement keeps only the last 10 lines', () => {
+    const json = JSON.parse(new MiniStatement(new JsonStatementRenderer()).generate(data).body);
+    expect(json.rows).toHaveLength(10);
+    expect(json.rows[0].reference).toBe('REF-3');
+  });
 });
