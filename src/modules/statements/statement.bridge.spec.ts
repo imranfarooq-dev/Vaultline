@@ -31,4 +31,9 @@ describe('Bridge: statements x renderers', () => {
     expect(json.rows).toHaveLength(10);
     expect(json.rows[0].reference).toBe('REF-3');
   });
+
+  it('detailed statement computes totals', () => {
+    const json = JSON.parse(new DetailedStatement(new JsonStatementRenderer()).generate(data).body);
+    expect(json.summary).toMatchObject({ 'Total credits': 'Rs 2,100.00', 'Total debits': 'Rs -600.00', Transactions: '12' });
+  });
 });
