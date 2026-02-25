@@ -49,3 +49,11 @@ export interface StatementRenderer {
   readonly contentType: string;
   render(document: StatementDocument): string;
 }
+
+export class CsvStatementRenderer implements StatementRenderer {
+  readonly contentType = 'text/csv';
+  render(d: StatementDocument): string {
+    const escape = (v: string) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
+    return [d.columns, ...d.rows].map((row) => row.map(escape).join(',')).join('\n');
+  }
+}
