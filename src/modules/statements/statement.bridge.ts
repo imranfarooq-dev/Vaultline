@@ -65,3 +65,7 @@ export class JsonStatementRenderer implements StatementRenderer {
     return JSON.stringify({ title: d.title, header: d.header, summary: d.summary, rows }, null, 2);
   }
 }
+
+export class PlainTextStatementRenderer implements StatementRenderer {
+  readonly contentType = 'text/plain';
+}
