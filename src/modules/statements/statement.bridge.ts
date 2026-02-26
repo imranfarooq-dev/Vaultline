@@ -88,4 +88,8 @@ export class PlainTextStatementRenderer implements StatementRenderer {
 export abstract class Statement {
   /** The bridge: the abstraction HAS-A renderer instead of IS-A format. */
   constructor(protected readonly renderer: StatementRenderer) {}
+
+  generate(data: StatementData): { contentType: string; body: string } {
+    return { contentType: this.renderer.contentType, body: this.renderer.render(this.compose(data)) };
+  }
 }
