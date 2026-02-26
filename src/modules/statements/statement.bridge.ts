@@ -57,3 +57,11 @@ export class CsvStatementRenderer implements StatementRenderer {
     return [d.columns, ...d.rows].map((row) => row.map(escape).join(',')).join('\n');
   }
 }
+
+export class JsonStatementRenderer implements StatementRenderer {
+  readonly contentType = 'application/json';
+  render(d: StatementDocument): string {
+    const rows = d.rows.map((row) => Object.fromEntries(d.columns.map((c, i) => [c, row[i]])));
+    return JSON.stringify({ title: d.title, header: d.header, summary: d.summary, rows }, null, 2);
+  }
+}
