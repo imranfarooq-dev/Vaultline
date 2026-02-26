@@ -83,3 +83,9 @@ export class PlainTextStatementRenderer implements StatementRenderer {
     ].join('\n');
   }
 }
+
+// ===================== ABSTRACTION hierarchy =====================
+export abstract class Statement {
+  /** The bridge: the abstraction HAS-A renderer instead of IS-A format. */
+  constructor(protected readonly renderer: StatementRenderer) {}
+}
