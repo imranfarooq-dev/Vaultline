@@ -36,4 +36,10 @@ describe('Bridge: statements x renderers', () => {
     const json = JSON.parse(new DetailedStatement(new JsonStatementRenderer()).generate(data).body);
     expect(json.summary).toMatchObject({ 'Total credits': 'Rs 2,100.00', 'Total debits': 'Rs -600.00', Transactions: '12' });
   });
+
+  it('CSV renderer escapes commas and quotes', () => {
+    const csv = new DetailedStatement(new CsvStatementRenderer()).generate(data);
+    expect(csv.contentType).toBe('text/csv');
+    expect(csv.body).toContain('"Salary, January"');
+  });
 });
