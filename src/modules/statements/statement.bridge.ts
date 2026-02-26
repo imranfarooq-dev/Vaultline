@@ -68,4 +68,18 @@ export class JsonStatementRenderer implements StatementRenderer {
 
 export class PlainTextStatementRenderer implements StatementRenderer {
   readonly contentType = 'text/plain';
+  render(d: StatementDocument): string {
+    const widths = d.columns.map((c, i) => Math.max(c.length, ...d.rows.map((r) => r[i].length)));
+    const line = (cells: string[]) => cells.map((cell, i) => cell.padEnd(widths[i])).join('  ');
+    return [
+      d.title.toUpperCase(),
+      ...Object.entries(d.header).map(([k, v]) => `${k}: ${v}`),
+      '',
+      line(d.columns),
+      widths.map((w) => '-'.repeat(w)).join('  '),
+      ...d.rows.map(line),
+      '',
+      ...Object.entries(d.summary).map(([k, v]) => `${k}: ${v}`),
+    ].join('\n');
+  }
 }
