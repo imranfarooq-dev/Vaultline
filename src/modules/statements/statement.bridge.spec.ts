@@ -42,4 +42,10 @@ describe('Bridge: statements x renderers', () => {
     expect(csv.contentType).toBe('text/csv');
     expect(csv.body).toContain('"Salary, January"');
   });
+
+  it('text renderer lays out aligned columns', () => {
+    const text = new MiniStatement(new PlainTextStatementRenderer()).generate(data).body;
+    expect(text.split('\n')[0]).toBe('MINI STATEMENT');
+    expect(text).toContain('Available balance: Rs 1,500.00');
+  });
 });
