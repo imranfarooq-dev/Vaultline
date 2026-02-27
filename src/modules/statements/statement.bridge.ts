@@ -144,3 +144,8 @@ export const RENDERERS: Record<'csv' | 'json' | 'text', () => StatementRenderer>
   json: () => new JsonStatementRenderer(),
   text: () => new PlainTextStatementRenderer(),
 };
+
+export const STATEMENTS: Record<'mini' | 'detailed', new (renderer: StatementRenderer) => Statement> = {
+  mini: MiniStatement,
+  detailed: DetailedStatement,
+};
