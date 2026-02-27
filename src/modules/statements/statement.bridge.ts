@@ -99,3 +99,17 @@ export abstract class Statement {
     return { Account: data.accountNumber, Owner: data.ownerName, Currency: data.currency.code, Generated: new Date().toISOString() };
   }
 }
+
+/** Last 10 transactions, no summary maths. */
+export class MiniStatement extends Statement {
+  protected compose(data: StatementData): StatementDocument {
+    const lines = data.lines.slice(-10);
+    return {
+      title: 'Mini statement',
+      header: this.header(data),
+      columns: ['date', 'reference', 'amount'],
+      rows: lines.map((l) => [l.date.slice(0, 10), l.reference, data.currency.format(l.amountMinor)]),
+      summary: { 'Available balance': data.currency.format(data.currentBalanceMinor) },
+    };
+  }
+}
