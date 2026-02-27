@@ -92,4 +92,10 @@ export abstract class Statement {
   generate(data: StatementData): { contentType: string; body: string } {
     return { contentType: this.renderer.contentType, body: this.renderer.render(this.compose(data)) };
   }
+
+  protected abstract compose(data: StatementData): StatementDocument;
+
+  protected header(data: StatementData): Record<string, string> {
+    return { Account: data.accountNumber, Owner: data.ownerName, Currency: data.currency.code, Generated: new Date().toISOString() };
+  }
 }
