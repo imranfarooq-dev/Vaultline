@@ -113,3 +113,28 @@ export class MiniStatement extends Statement {
     };
   }
 }
+
+/** Every line plus opening/closing balance and totals. */
+export class DetailedStatement extends Statement {
+  protected compose(data: StatementData): StatementDocument {
+    const credits = data.lines.filter((l) => l.amountMinor > 0).reduce((s, l) => s + l.amountMinor, 0);
+    const debits = data.lines.filter((l) => l.amountMinor < 0).reduce((s, l) => s + l.amountMinor, 0);
+    const first = data.lines[0];
+    const opening = first ? first.balanceAfterMinor - first.amountMinor : data.currentBalanceMinor;
+    const c = data.currency;
+
+    return {
+      title: 'Detailed statement',
+      header: this.header(data),
+      columns: ['date', 'reference', 'type', 'description', 'amount', 'balance'],
+      rows: data.lines.map((l) => [l.date, l.reference, l.type, l.description, c.format(l.amountMinor), c.format(l.balanceAfterMinor)]),
+      summary: {
+        'Opening balance': c.format(opening),
+        'Total credits': c.format(credits),
+        'Total debits': c.format(debits),
+        'Closing balance': c.format(data.currentBalanceMinor),
+        Transactions: String(data.lines.length),
+      },
+    };
+  }
+}
