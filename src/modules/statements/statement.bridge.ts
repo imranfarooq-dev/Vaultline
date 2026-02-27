@@ -138,3 +138,9 @@ export class DetailedStatement extends Statement {
     };
   }
 }
+
+export const RENDERERS: Record<'csv' | 'json' | 'text', () => StatementRenderer> = {
+  csv: () => new CsvStatementRenderer(),
+  json: () => new JsonStatementRenderer(),
+  text: () => new PlainTextStatementRenderer(),
+};
