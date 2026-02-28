@@ -36,3 +36,14 @@ export class LoanApplication {
     Object.freeze(this);
   }
 }
+
+export class LoanApplicationBuilder {
+  private applicantName?: string;
+  private accountId?: string;
+  private amountMinor?: number;
+  private termMonths = 12;
+  private purpose = 'personal';
+  private monthlyIncomeMinor?: number;
+  private collateral?: Collateral;
+  private coApplicantName?: string;
+}
