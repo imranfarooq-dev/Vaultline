@@ -26,3 +26,15 @@ export interface LoanDraftFields {
   collateralDescription?: string;
   collateralValueMinor?: number;
 }
+
+/** MEMENTO: frozen; only the originator knows what's inside. */
+export class LoanDraftMemento {
+  readonly takenAt = new Date().toISOString();
+  constructor(private readonly state: Readonly<LoanDraftFields>) {
+    Object.freeze(this.state);
+  }
+  /** Package-private in spirit: used only by LoanDraft.restore(). */
+  getState(): Readonly<LoanDraftFields> {
+    return this.state;
+  }
+}
