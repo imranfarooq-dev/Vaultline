@@ -21,3 +21,18 @@ export interface Collateral {
   description: string;
   valueMinor: number;
 }
+
+export class LoanApplication {
+  constructor(
+    readonly applicantName: string,
+    readonly accountId: string,
+    readonly amountMinor: number,
+    readonly termMonths: number,
+    readonly purpose: string,
+    readonly monthlyIncomeMinor: number,
+    readonly collateral?: Collateral,
+    readonly coApplicantName?: string,
+  ) {
+    Object.freeze(this);
+  }
+}
