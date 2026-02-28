@@ -38,3 +38,9 @@ export class LoanDraftMemento {
     return this.state;
   }
 }
+
+/** ORIGINATOR */
+export class LoanDraft {
+  readonly id = randomUUID();
+  private fields: LoanDraftFields;
+}
