@@ -15,4 +15,42 @@ export class StatementsController {
     private readonly history: TransactionHistoryService,
     private readonly currencies: CurrencyRegistry,
   ) {}
+
+  @Get(':accountId')
+  @ApiOperation({ summary: 'Any statement type x any format: 2 x 3 combinations from 5 classes' })
+  @ApiQuery({ name: 'type', enum: ['mini', 'detailed'], required: false })
+  @ApiQuery({ name: 'format', enum: ['csv', 'json', 'text'], required: false })
+  async statement(
+    @Param('accountId', ParseUUIDPipe) accountId: string,
+    @Res() res: Response,
+    @Query('type') type: 'mini' | 'detailed' = 'mini',
+    @Query('format') format: 'csv' | 'json' | 'text' = 'text',
+  ) {
+    const StatementClass = STATEMENTS[type];
+    const rendererFactory = RENDERERS[format];
+    if (!StatementClass || !rendererFactory) throw new BusinessRuleError('type must be mini|detailed and format csv|json|text');
+
+    const account = await this.accounts.findById(accountId);
+    const lines: StatementLine[] = [];
+    for await (const entry of this.history.iterate(accountId, { pageSize: 500 })) {
+      lines.push({
+        date: entry.createdAt.toISOString(),
+        reference: entry.reference,
+        type: entry.type,
+        description: entry.description,
+        amountMinor: entry.amountMinor,
+        balanceAfterMinor: entry.balanceAfterMinor,
+      });
+    }
+
+    const statement = new StatementClass(rendererFactory()); // <-- the bridge is assembled here
+    const { contentType, body } = statement.generate({
+      accountNumber: account.accountNumber,
+      ownerName: account.ownerName,
+      currency: this.currencies.get(account.currency),
+      currentBalanceMinor: account.balanceMinor,
+      lines,
+    });
+    res.type(contentType).send(body);
+  }
 }
