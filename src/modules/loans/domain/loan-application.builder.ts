@@ -46,4 +46,8 @@ export class LoanApplicationBuilder {
   private monthlyIncomeMinor?: number;
   private collateral?: Collateral;
   private coApplicantName?: string;
+
+  forApplicant(name: string): this { this.applicantName = name.trim(); return this; }
+  disbursedTo(accountId: string): this { this.accountId = accountId; return this; }
+  borrowing(amountMinor: number): this { this.amountMinor = amountMinor; return this; }
 }
