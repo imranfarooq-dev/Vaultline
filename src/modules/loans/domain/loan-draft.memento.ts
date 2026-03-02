@@ -43,4 +43,8 @@ export class LoanDraftMemento {
 export class LoanDraft {
   readonly id = randomUUID();
   private fields: LoanDraftFields;
+
+  constructor(initial: LoanDraftFields = {}) {
+    this.fields = { ...initial };
+  }
 }
