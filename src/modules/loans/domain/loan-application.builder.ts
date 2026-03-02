@@ -50,4 +50,8 @@ export class LoanApplicationBuilder {
   forApplicant(name: string): this { this.applicantName = name.trim(); return this; }
   disbursedTo(accountId: string): this { this.accountId = accountId; return this; }
   borrowing(amountMinor: number): this { this.amountMinor = amountMinor; return this; }
+  overMonths(termMonths: number): this { this.termMonths = termMonths; return this; }
+  for(purpose: string): this { this.purpose = purpose; return this; }
+  earningMonthly(incomeMinor: number): this { this.monthlyIncomeMinor = incomeMinor; return this; }
+  securedBy(description: string, valueMinor: number): this { this.collateral = { description, valueMinor }; return this; }
 }
