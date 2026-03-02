@@ -51,4 +51,8 @@ export class LoanDraft {
   update(changes: LoanDraftFields): void {
     this.fields = { ...this.fields, ...changes };
   }
+
+  save(): LoanDraftMemento {
+    return new LoanDraftMemento({ ...this.fields });
+  }
 }
