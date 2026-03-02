@@ -54,4 +54,24 @@ export class LoanApplicationBuilder {
   for(purpose: string): this { this.purpose = purpose; return this; }
   earningMonthly(incomeMinor: number): this { this.monthlyIncomeMinor = incomeMinor; return this; }
   securedBy(description: string, valueMinor: number): this { this.collateral = { description, valueMinor }; return this; }
+  withCoApplicant(name: string): this { this.coApplicantName = name; return this; }
+
+  build(): LoanApplication {
+    const errors: string[] = [];
+    if (!this.applicantName) errors.push('applicant name is required');
+    if (!this.accountId) errors.push('disbursement account is required');
+    if (!this.amountMinor || this.amountMinor <= 0) errors.push('amount must be positive');
+    if (!this.monthlyIncomeMinor || this.monthlyIncomeMinor <= 0) errors.push('monthly income is required');
+    if (this.termMonths < 3 || this.termMonths > 84) errors.push('term must be between 3 and 84 months');
+
+    // Rule across several fields: large loans need collateral worth at least half the amount.
+    const LARGE_LOAN_MINOR = 200_000_000; // Rs 2,000,000
+    if ((this.amountMinor ?? 0) > LARGE_LOAN_MINOR && (!this.collateral || this.collateral.valueMinor < (this.amountMinor ?? 0) / 2)) {
+      errors.push('loans above Rs 2,000,000 need collateral worth at least 50% of the amount');
+    }
+
+    if (errors.length) throw new BusinessRuleError(`Invalid loan application: ${errors.join('; ')}`, { errors });
+
+    return new LoanApplication(this.applicantName!, this.accountId!, this.amountMinor!, this.termMonths, this.purpose, this.monthlyIncomeMinor!, this.collateral, this.coApplicantName);
+  }
 }
