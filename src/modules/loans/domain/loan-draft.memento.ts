@@ -47,4 +47,8 @@ export class LoanDraft {
   constructor(initial: LoanDraftFields = {}) {
     this.fields = { ...initial };
   }
+
+  update(changes: LoanDraftFields): void {
+    this.fields = { ...this.fields, ...changes };
+  }
 }
