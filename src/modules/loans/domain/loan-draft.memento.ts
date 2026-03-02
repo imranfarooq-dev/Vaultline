@@ -55,4 +55,8 @@ export class LoanDraft {
   save(): LoanDraftMemento {
     return new LoanDraftMemento({ ...this.fields });
   }
+
+  restore(memento: LoanDraftMemento): void {
+    this.fields = { ...memento.getState() };
+  }
 }
