@@ -64,3 +64,8 @@ export class LoanDraft {
     return { ...this.fields };
   }
 }
+
+/** CARETAKER: keeps an undo stack per draft. In memory to keep the example focused. */
+export class LoanDraftCaretaker {
+  private readonly drafts = new Map<string, { draft: LoanDraft; history: LoanDraftMemento[] }>();
+}
