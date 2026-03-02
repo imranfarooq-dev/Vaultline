@@ -59,4 +59,8 @@ export class LoanDraft {
   restore(memento: LoanDraftMemento): void {
     this.fields = { ...memento.getState() };
   }
+
+  get values(): Readonly<LoanDraftFields> {
+    return { ...this.fields };
+  }
 }
