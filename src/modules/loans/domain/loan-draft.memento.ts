@@ -68,4 +68,10 @@ export class LoanDraft {
 /** CARETAKER: keeps an undo stack per draft. In memory to keep the example focused. */
 export class LoanDraftCaretaker {
   private readonly drafts = new Map<string, { draft: LoanDraft; history: LoanDraftMemento[] }>();
+
+  create(initial: LoanDraftFields): LoanDraft {
+    const draft = new LoanDraft(initial);
+    this.drafts.set(draft.id, { draft, history: [] });
+    return draft;
+  }
 }
