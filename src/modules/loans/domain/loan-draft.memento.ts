@@ -74,4 +74,12 @@ export class LoanDraftCaretaker {
     this.drafts.set(draft.id, { draft, history: [] });
     return draft;
   }
+
+  /** Snapshot BEFORE changing, so undo returns to the previous version. */
+  change(id: string, changes: LoanDraftFields): LoanDraft {
+    const entry = this.entry(id);
+    entry.history.push(entry.draft.save());
+    entry.draft.update(changes);
+    return entry.draft;
+  }
 }
