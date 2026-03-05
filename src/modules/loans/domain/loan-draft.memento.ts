@@ -95,4 +95,8 @@ export class LoanDraftCaretaker {
     const entry = this.entry(id);
     return { draft: entry.draft, undoSteps: entry.history.length };
   }
+
+  remove(id: string): void {
+    this.drafts.delete(id);
+  }
 }
