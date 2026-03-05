@@ -90,4 +90,9 @@ export class LoanDraftCaretaker {
     entry.draft.restore(previous);
     return entry.draft;
   }
+
+  get(id: string): { draft: LoanDraft; undoSteps: number } {
+    const entry = this.entry(id);
+    return { draft: entry.draft, undoSteps: entry.history.length };
+  }
 }
