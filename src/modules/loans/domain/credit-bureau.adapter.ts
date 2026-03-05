@@ -15,3 +15,16 @@ export interface CreditReport {
   hasDefaults: boolean;
   recentEnquiries: number;
 }
+export interface CreditReportProvider {
+  getReport(applicantName: string): Promise<CreditReport>;
+}
+
+/** Adaptee: the legacy client we cannot change (simulated, deterministic by name). */
+export class LegacyCreditBureauClient {
+  async FETCH_RPT(customerName: string): Promise<string> {
+    const hash = [...customerName.toUpperCase()].reduce((sum, ch) => (sum * 31 + ch.charCodeAt(0)) % 100_000, 7);
+    const score = 550 + (hash % 300);
+    const defaulted = /default/i.test(customerName) ? 'Y' : 'N';
+    return `CUST=${customerName.toUpperCase()}|SCR=${String(score).padStart(4, '0')}|DFLT=${defaulted}|ENQ=${String(hash % 6).padStart(2, '0')}`;
+  }
+}
