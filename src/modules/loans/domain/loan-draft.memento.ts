@@ -99,4 +99,10 @@ export class LoanDraftCaretaker {
   remove(id: string): void {
     this.drafts.delete(id);
   }
+
+  private entry(id: string) {
+    const entry = this.drafts.get(id);
+    if (!entry) throw new NotFoundError(`Loan draft ${id} not found`);
+    return entry;
+  }
 }
