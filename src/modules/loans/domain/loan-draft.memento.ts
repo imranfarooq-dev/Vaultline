@@ -82,4 +82,12 @@ export class LoanDraftCaretaker {
     entry.draft.update(changes);
     return entry.draft;
   }
+
+  undo(id: string): LoanDraft {
+    const entry = this.entry(id);
+    const previous = entry.history.pop();
+    if (!previous) throw new BusinessRuleError('Nothing to undo');
+    entry.draft.restore(previous);
+    return entry.draft;
+  }
 }
