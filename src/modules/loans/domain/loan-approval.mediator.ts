@@ -22,3 +22,7 @@ export type DeskEvent =
   | 'credit.passed' | 'credit.borderline' | 'credit.rejected'
   | 'affordability.passed' | 'affordability.failed'
   | 'compliance.passed' | 'compliance.manual-review';
+
+export interface LoanMediator {
+  notify(sender: LoanDesk, event: DeskEvent, detail: string): Promise<void>;
+}
