@@ -28,3 +28,8 @@ export class LegacyCreditBureauClient {
     return `CUST=${customerName.toUpperCase()}|SCR=${String(score).padStart(4, '0')}|DFLT=${defaulted}|ENQ=${String(hash % 6).padStart(2, '0')}`;
   }
 }
+
+/** The adapter. */
+export class LegacyCreditBureauAdapter implements CreditReportProvider {
+  constructor(private readonly legacy: LegacyCreditBureauClient = new LegacyCreditBureauClient()) {}
+}
