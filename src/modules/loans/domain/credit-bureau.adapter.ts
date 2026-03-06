@@ -32,4 +32,14 @@ export class LegacyCreditBureauClient {
 /** The adapter. */
 export class LegacyCreditBureauAdapter implements CreditReportProvider {
   constructor(private readonly legacy: LegacyCreditBureauClient = new LegacyCreditBureauClient()) {}
+
+  async getReport(applicantName: string): Promise<CreditReport> {
+    const raw = await this.legacy.FETCH_RPT(applicantName);
+    const fields = Object.fromEntries(raw.split('|').map((pair) => pair.split('=') as [string, string]));
+    return {
+      score: Number.parseInt(fields.SCR, 10),
+      hasDefaults: fields.DFLT === 'Y',
+      recentEnquiries: Number.parseInt(fields.ENQ, 10),
+    };
+  }
 }
