@@ -26,3 +26,14 @@ export type DeskEvent =
 export interface LoanMediator {
   notify(sender: LoanDesk, event: DeskEvent, detail: string): Promise<void>;
 }
+
+export abstract class LoanDesk {
+  abstract readonly name: string;
+  protected mediator!: LoanMediator;
+
+  setMediator(mediator: LoanMediator): void {
+    this.mediator = mediator;
+  }
+
+  abstract review(application: LoanApplication): Promise<void>;
+}
