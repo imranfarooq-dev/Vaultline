@@ -37,3 +37,16 @@ export abstract class LoanDesk {
 
   abstract review(application: LoanApplication): Promise<void>;
 }
+
+export class CreditCheckDesk extends LoanDesk {
+  readonly name = 'Credit desk';
+  constructor(private readonly bureau: CreditReportProvider) { super(); }
+
+  async review(application: LoanApplication): Promise<void> {
+    const report = await this.bureau.getReport(application.applicantName);
+    const detail = `score ${report.score}, defaults ${report.hasDefaults ? 'yes' : 'no'}, enquiries ${report.recentEnquiries}`;
+    if (report.hasDefaults || report.score < 600) return this.mediator.notify(this, 'credit.rejected', detail);
+    if (report.score < 680) return this.mediator.notify(this, 'credit.borderline', detail);
+    return this.mediator.notify(this, 'credit.passed', detail);
+  }
+}
