@@ -15,4 +15,14 @@ describe('Builder: loan application', () => {
     expect(app).toMatchObject({ applicantName: 'Ali Raza', amountMinor: 50_000_000, termMonths: 24, coApplicantName: 'Sara Raza' });
     expect(Object.isFrozen(app)).toBe(true);
   });
+
+  it('collects ALL validation problems in one error', () => {
+    try {
+      new LoanApplicationBuilder().overMonths(1).build();
+      fail('should have thrown');
+    } catch (error) {
+      expect(error).toBeInstanceOf(BusinessRuleError);
+      expect((error as BusinessRuleError).details?.errors).toHaveLength(5);
+    }
+  });
 });
