@@ -25,4 +25,11 @@ describe('Builder: loan application', () => {
       expect((error as BusinessRuleError).details?.errors).toHaveLength(5);
     }
   });
+
+  it('validates rules that span several fields (large loans need collateral)', () => {
+    const big = () => validBuilder().borrowing(300_000_000);
+    expect(() => big().build()).toThrow('collateral');
+    expect(() => big().securedBy('House', 100_000_000).build()).toThrow('collateral');
+    expect(big().securedBy('House', 200_000_000).build().collateral).toEqual({ description: 'House', valueMinor: 200_000_000 });
+  });
 });
