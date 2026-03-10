@@ -53,5 +53,11 @@ export class CreditCheckDesk extends LoanDesk {
 
 export class AffordabilityDesk extends LoanDesk {
   readonly name = 'Affordability desk';
-  private static readonly ANNUAL_RATE = 0.2;
+  private static readonly ANNUAL_RATE = 0.2; // 20% illustrative
+
+  /** Standard amortised instalment formula. */
+  static monthlyInstalmentMinor(amountMinor: number, termMonths: number): number {
+    const r = AffordabilityDesk.ANNUAL_RATE / 12;
+    return Math.round((amountMinor * r) / (1 - Math.pow(1 + r, -termMonths)));
+  }
 }
