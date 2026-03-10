@@ -49,4 +49,16 @@ describe('Memento: loan drafts', () => {
       (snapshot.getState() as { amountMinor: number }).amountMinor = 99;
     }).toThrow();
   });
+
+  it('caretaker keeps an undo stack per draft', () => {
+    const caretaker = new LoanDraftCaretaker();
+    const { id } = caretaker.create({ amountMinor: 100 });
+    caretaker.change(id, { amountMinor: 200 });
+    caretaker.change(id, { termMonths: 36 });
+    expect(caretaker.get(id).undoSteps).toBe(2);
+
+    expect(caretaker.undo(id).values).toEqual({ amountMinor: 200 });
+    expect(caretaker.undo(id).values).toEqual({ amountMinor: 100 });
+    expect(() => caretaker.undo(id)).toThrow('Nothing to undo');
+  });
 });
