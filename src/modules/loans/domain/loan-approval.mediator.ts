@@ -50,3 +50,8 @@ export class CreditCheckDesk extends LoanDesk {
     return this.mediator.notify(this, 'credit.passed', detail);
   }
 }
+
+export class AffordabilityDesk extends LoanDesk {
+  readonly name = 'Affordability desk';
+  private static readonly ANNUAL_RATE = 0.2;
+}
