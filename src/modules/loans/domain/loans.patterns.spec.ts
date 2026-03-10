@@ -42,4 +42,11 @@ describe('Memento: loan drafts', () => {
     draft.restore(snapshot);
     expect(draft.values.amountMinor).toBe(1);
   });
+
+  it('snapshots are immutable', () => {
+    const snapshot = new LoanDraft({ amountMinor: 1 }).save();
+    expect(() => {
+      (snapshot.getState() as { amountMinor: number }).amountMinor = 99;
+    }).toThrow();
+  });
 });
