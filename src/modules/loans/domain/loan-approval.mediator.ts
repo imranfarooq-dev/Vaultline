@@ -60,4 +60,11 @@ export class AffordabilityDesk extends LoanDesk {
     const r = AffordabilityDesk.ANNUAL_RATE / 12;
     return Math.round((amountMinor * r) / (1 - Math.pow(1 + r, -termMonths)));
   }
+
+  async review(application: LoanApplication): Promise<void> {
+    const instalment = AffordabilityDesk.monthlyInstalmentMinor(application.amountMinor, application.termMonths);
+    const ratio = instalment / application.monthlyIncomeMinor;
+    const detail = `instalment ${(instalment / 100).toFixed(0)} = ${(ratio * 100).toFixed(1)}% of income`;
+    return this.mediator.notify(this, ratio > 0.4 ? 'affordability.failed' : 'affordability.passed', detail);
+  }
 }
