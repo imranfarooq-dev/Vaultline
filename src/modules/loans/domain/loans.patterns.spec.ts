@@ -33,3 +33,13 @@ describe('Builder: loan application', () => {
     expect(big().securedBy('House', 200_000_000).build().collateral).toEqual({ description: 'House', valueMinor: 200_000_000 });
   });
 });
+
+describe('Memento: loan drafts', () => {
+  it('originator saves and restores its own snapshots', () => {
+    const draft = new LoanDraft({ amountMinor: 1 });
+    const snapshot = draft.save();
+    draft.update({ amountMinor: 2 });
+    draft.restore(snapshot);
+    expect(draft.values.amountMinor).toBe(1);
+  });
+});
