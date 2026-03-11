@@ -68,3 +68,8 @@ export class AffordabilityDesk extends LoanDesk {
     return this.mediator.notify(this, ratio > 0.4 ? 'affordability.failed' : 'affordability.passed', detail);
   }
 }
+
+export class ComplianceDesk extends LoanDesk {
+  readonly name = 'Compliance desk';
+  private static readonly RESTRICTED_PURPOSES = ['crypto', 'gambling', 'speculation'];
+}
