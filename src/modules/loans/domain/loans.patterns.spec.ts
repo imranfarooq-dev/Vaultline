@@ -92,4 +92,10 @@ describe('Mediator: loan approval workflow', () => {
     expect(decision.status).toBe(LoanStatus.REJECTED);
     expect(decision.log).toHaveLength(1);
   });
+
+  it('borderline credit that passes everything else goes to manual review', async () => {
+    const decision = await mediatorWith({ ...good, score: 650 }).decide(validBuilder().build());
+    expect(decision.status).toBe(LoanStatus.MANUAL_REVIEW);
+    expect(decision.log).toHaveLength(3);
+  });
 });
