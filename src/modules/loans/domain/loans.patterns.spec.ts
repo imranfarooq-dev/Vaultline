@@ -109,4 +109,9 @@ describe('Mediator: loan approval workflow', () => {
     const decision = await mediatorWith(good).decide(validBuilder().for('crypto trading').build());
     expect(decision.status).toBe(LoanStatus.MANUAL_REVIEW);
   });
+
+  it('instalment formula matches a known value', () => {
+    // Rs 500,000 over 24 months at 20%/yr ~= Rs 25,448
+    expect(AffordabilityDesk.monthlyInstalmentMinor(50_000_000, 24)).toBeCloseTo(2_544_800, -3);
+  });
 });
