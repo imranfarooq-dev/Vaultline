@@ -89,3 +89,11 @@ export interface LoanDecision {
   status: LoanStatus;
   log: string[];
 }
+
+/** The concrete mediator. One instance per application (it holds workflow state). */
+export class LoanApprovalMediator implements LoanMediator {
+  private application!: LoanApplication;
+  private status: LoanStatus = LoanStatus.MANUAL_REVIEW;
+  private borderline = false;
+  private readonly log: string[] = [];
+}
