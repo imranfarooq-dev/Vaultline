@@ -84,3 +84,8 @@ export class ComplianceDesk extends LoanDesk {
     return this.mediator.notify(this, 'compliance.passed', 'no issues');
   }
 }
+
+export interface LoanDecision {
+  status: LoanStatus;
+  log: string[];
+}
