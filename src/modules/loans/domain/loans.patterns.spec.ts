@@ -86,4 +86,10 @@ describe('Mediator: loan approval workflow', () => {
     expect(decision.status).toBe(LoanStatus.APPROVED);
     expect(decision.log.map((l) => l.split(':')[1].trim().split(' ')[0])).toEqual(['credit.passed', 'affordability.passed', 'compliance.passed']);
   });
+
+  it('stops early: a credit rejection means other desks never review', async () => {
+    const decision = await mediatorWith({ ...good, hasDefaults: true }).decide(validBuilder().build());
+    expect(decision.status).toBe(LoanStatus.REJECTED);
+    expect(decision.log).toHaveLength(1);
+  });
 });
