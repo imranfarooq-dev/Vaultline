@@ -96,4 +96,12 @@ export class LoanApprovalMediator implements LoanMediator {
   private status: LoanStatus = LoanStatus.MANUAL_REVIEW;
   private borderline = false;
   private readonly log: string[] = [];
+
+  constructor(
+    private readonly credit: LoanDesk,
+    private readonly affordability: LoanDesk,
+    private readonly compliance: LoanDesk,
+  ) {
+    [credit, affordability, compliance].forEach((desk) => desk.setMediator(this));
+  }
 }
