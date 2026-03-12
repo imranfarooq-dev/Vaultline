@@ -104,4 +104,10 @@ export class LoanApprovalMediator implements LoanMediator {
   ) {
     [credit, affordability, compliance].forEach((desk) => desk.setMediator(this));
   }
+
+  async decide(application: LoanApplication): Promise<LoanDecision> {
+    this.application = application;
+    await this.credit.review(application); // kick off; desks drive the flow through notify()
+    return { status: this.status, log: [...this.log] };
+  }
 }
