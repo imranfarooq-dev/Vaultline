@@ -104,4 +104,9 @@ describe('Mediator: loan approval workflow', () => {
     expect(decision.status).toBe(LoanStatus.REJECTED);
     expect(decision.log[1]).toContain('affordability.failed');
   });
+
+  it('restricted purposes go to compliance manual review', async () => {
+    const decision = await mediatorWith(good).decide(validBuilder().for('crypto trading').build());
+    expect(decision.status).toBe(LoanStatus.MANUAL_REVIEW);
+  });
 });
