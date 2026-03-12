@@ -80,4 +80,10 @@ describe('Mediator: loan approval workflow', () => {
   const bureau = (report: CreditReport): CreditReportProvider => ({ getReport: async () => report });
   const mediatorWith = (report: CreditReport) => new LoanApprovalMediator(new CreditCheckDesk(bureau(report)), new AffordabilityDesk(), new ComplianceDesk());
   const good: CreditReport = { score: 750, hasDefaults: false, recentEnquiries: 0 };
+
+  it('approves when every desk passes, in the order the mediator decides', async () => {
+    const decision = await mediatorWith(good).decide(validBuilder().build());
+    expect(decision.status).toBe(LoanStatus.APPROVED);
+    expect(decision.log.map((l) => l.split(':')[1].trim().split(' ')[0])).toEqual(['credit.passed', 'affordability.passed', 'compliance.passed']);
+  });
 });
