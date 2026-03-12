@@ -72,4 +72,15 @@ export class AffordabilityDesk extends LoanDesk {
 export class ComplianceDesk extends LoanDesk {
   readonly name = 'Compliance desk';
   private static readonly RESTRICTED_PURPOSES = ['crypto', 'gambling', 'speculation'];
+
+  async review(application: LoanApplication): Promise<void> {
+    const purpose = application.purpose.toLowerCase();
+    if (ComplianceDesk.RESTRICTED_PURPOSES.some((p) => purpose.includes(p))) {
+      return this.mediator.notify(this, 'compliance.manual-review', `restricted purpose "${application.purpose}"`);
+    }
+    if (application.amountMinor > 500_000_000) {
+      return this.mediator.notify(this, 'compliance.manual-review', 'amount above Rs 5,000,000 requires a senior officer');
+    }
+    return this.mediator.notify(this, 'compliance.passed', 'no issues');
+  }
 }
