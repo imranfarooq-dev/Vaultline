@@ -62,3 +62,16 @@ describe('Memento: loan drafts', () => {
     expect(() => caretaker.undo(id)).toThrow('Nothing to undo');
   });
 });
+
+describe('Adapter: legacy credit bureau', () => {
+  it('translates the pipe-delimited legacy format into a clean object', async () => {
+    const legacy = { FETCH_RPT: jest.fn().mockResolvedValue('CUST=ALI|SCR=0712|DFLT=N|ENQ=03') } as unknown as LegacyCreditBureauClient;
+    await expect(new LegacyCreditBureauAdapter(legacy).getReport('Ali')).resolves.toEqual({ score: 712, hasDefaults: false, recentEnquiries: 3 });
+  });
+
+  it('works with the simulated legacy client end to end', async () => {
+    const report = await new LegacyCreditBureauAdapter().getReport('Known Defaulter');
+    expect(report.hasDefaults).toBe(true);
+    expect(report.score).toBeGreaterThanOrEqual(550);
+  });
+});
