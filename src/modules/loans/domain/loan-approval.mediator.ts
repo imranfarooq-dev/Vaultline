@@ -110,4 +110,28 @@ export class LoanApprovalMediator implements LoanMediator {
     await this.credit.review(application); // kick off; desks drive the flow through notify()
     return { status: this.status, log: [...this.log] };
   }
+
+  async notify(sender: LoanDesk, event: DeskEvent, detail: string): Promise<void> {
+    this.log.push(`${sender.name}: ${event} (${detail})`);
+
+    switch (event) {
+      case 'credit.borderline':
+        this.borderline = true;
+        return this.affordability.review(this.application);
+      case 'credit.passed':
+        return this.affordability.review(this.application);
+      case 'affordability.passed':
+        return this.compliance.review(this.application);
+      case 'credit.rejected':
+      case 'affordability.failed':
+        this.status = LoanStatus.REJECTED;
+        return;
+      case 'compliance.manual-review':
+        this.status = LoanStatus.MANUAL_REVIEW;
+        return;
+      case 'compliance.passed':
+        this.status = this.borderline ? LoanStatus.MANUAL_REVIEW : LoanStatus.APPROVED;
+        return;
+    }
+  }
 }
