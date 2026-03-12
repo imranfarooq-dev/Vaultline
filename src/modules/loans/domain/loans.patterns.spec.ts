@@ -75,3 +75,9 @@ describe('Adapter: legacy credit bureau', () => {
     expect(report.score).toBeGreaterThanOrEqual(550);
   });
 });
+
+describe('Mediator: loan approval workflow', () => {
+  const bureau = (report: CreditReport): CreditReportProvider => ({ getReport: async () => report });
+  const mediatorWith = (report: CreditReport) => new LoanApprovalMediator(new CreditCheckDesk(bureau(report)), new AffordabilityDesk(), new ComplianceDesk());
+  const good: CreditReport = { score: 750, hasDefaults: false, recentEnquiries: 0 };
+});
