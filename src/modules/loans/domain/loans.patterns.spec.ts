@@ -98,4 +98,10 @@ describe('Mediator: loan approval workflow', () => {
     expect(decision.status).toBe(LoanStatus.MANUAL_REVIEW);
     expect(decision.log).toHaveLength(3);
   });
+
+  it('rejects unaffordable loans (instalment above 40% of income)', async () => {
+    const decision = await mediatorWith(good).decide(validBuilder().earningMonthly(2_000_000).build());
+    expect(decision.status).toBe(LoanStatus.REJECTED);
+    expect(decision.log[1]).toContain('affordability.failed');
+  });
 });
