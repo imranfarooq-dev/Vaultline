@@ -7,4 +7,10 @@ import { LoansService } from './loans.service';
 @Controller('loans')
 export class LoansController {
   constructor(private readonly loans: LoansService) {}
+
+  @Post('drafts')
+  @ApiOperation({ summary: 'Start a loan draft' })
+  create(@Body() dto: LoanDraftDto) {
+    return this.loans.createDraft(dto);
+  }
 }
