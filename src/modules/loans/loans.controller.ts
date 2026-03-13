@@ -13,4 +13,9 @@ export class LoansController {
   create(@Body() dto: LoanDraftDto) {
     return this.loans.createDraft(dto);
   }
+
+  @Get('drafts/:id')
+  get(@Param('id', ParseUUIDPipe) id: string) {
+    return this.loans.getDraft(id);
+  }
 }
