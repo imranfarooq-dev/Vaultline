@@ -15,4 +15,10 @@ import { LoanDraftCaretaker, LoanDraftFields } from './domain/loan-draft.memento
 export class LoansService {
   private readonly drafts = new LoanDraftCaretaker();
   private readonly bureau = new LegacyCreditBureauAdapter();
+
+  constructor(
+    @InjectRepository(LoanApplicationEntity) private readonly loans: Repository<LoanApplicationEntity>,
+    private readonly accounts: AccountsService,
+    private readonly events: DomainEventBus,
+  ) {}
 }
