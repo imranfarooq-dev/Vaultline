@@ -30,4 +30,9 @@ export class LoansService {
     this.drafts.change(id, changes); // MEMENTO: snapshot taken before the change
     return this.present(id);
   }
+
+  undoDraft(id: string) {
+    this.drafts.undo(id);
+    return this.present(id);
+  }
 }
