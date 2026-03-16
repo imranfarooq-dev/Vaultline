@@ -18,4 +18,10 @@ export class LoansController {
   get(@Param('id', ParseUUIDPipe) id: string) {
     return this.loans.getDraft(id);
   }
+
+  @Patch('drafts/:id')
+  @ApiOperation({ summary: 'MEMENTO: change fields (a snapshot is saved first)' })
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: LoanDraftDto) {
+    return this.loans.updateDraft(id, dto);
+  }
 }
