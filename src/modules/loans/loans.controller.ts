@@ -30,4 +30,10 @@ export class LoansController {
   undo(@Param('id', ParseUUIDPipe) id: string) {
     return this.loans.undoDraft(id);
   }
+
+  @Post('drafts/:id/submit')
+  @ApiOperation({ summary: 'BUILDER validates, MEDIATOR coordinates credit/affordability/compliance desks' })
+  submit(@Param('id', ParseUUIDPipe) id: string) {
+    return this.loans.submit(id);
+  }
 }
