@@ -21,4 +21,8 @@ export class LoansService {
     private readonly accounts: AccountsService,
     private readonly events: DomainEventBus,
   ) {}
+
+  createDraft(fields: LoanDraftFields) {
+    return this.present(this.drafts.create(fields).id);
+  }
 }
