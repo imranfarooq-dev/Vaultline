@@ -25,4 +25,9 @@ export class LoansService {
   createDraft(fields: LoanDraftFields) {
     return this.present(this.drafts.create(fields).id);
   }
+
+  updateDraft(id: string, changes: LoanDraftFields) {
+    this.drafts.change(id, changes); // MEMENTO: snapshot taken before the change
+    return this.present(id);
+  }
 }
