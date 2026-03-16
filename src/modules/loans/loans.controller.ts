@@ -24,4 +24,10 @@ export class LoansController {
   update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: LoanDraftDto) {
     return this.loans.updateDraft(id, dto);
   }
+
+  @Post('drafts/:id/undo')
+  @ApiOperation({ summary: 'MEMENTO: restore the previous snapshot' })
+  undo(@Param('id', ParseUUIDPipe) id: string) {
+    return this.loans.undoDraft(id);
+  }
 }
