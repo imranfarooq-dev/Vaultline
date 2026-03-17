@@ -36,4 +36,10 @@ export class LoansController {
   submit(@Param('id', ParseUUIDPipe) id: string) {
     return this.loans.submit(id);
   }
+
+  @Get('credit-report/:name')
+  @ApiOperation({ summary: 'ADAPTER: legacy bureau string -> clean CreditReport object' })
+  creditReport(@Param('name') name: string) {
+    return this.loans.creditReport(name);
+  }
 }
