@@ -28,3 +28,8 @@ export interface JobReport {
   details: string[];
   errors: string[];
 }
+
+export abstract class EndOfDayJob {
+  protected readonly logger = new Logger(this.constructor.name);
+  abstract readonly name: string;
+}
