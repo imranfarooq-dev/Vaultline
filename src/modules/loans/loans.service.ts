@@ -90,4 +90,9 @@ export class LoansService {
   creditReport(name: string) {
     return this.bureau.getReport(name);
   }
+
+  private present(id: string) {
+    const { draft, undoSteps } = this.drafts.get(id);
+    return { draftId: draft.id, fields: draft.values, undoSteps };
+  }
 }
