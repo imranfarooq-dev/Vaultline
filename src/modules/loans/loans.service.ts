@@ -39,4 +39,45 @@ export class LoansService {
   getDraft(id: string) {
     return this.present(id);
   }
+
+  /** BUILDER -> MEDIATOR -> persist -> OBSERVER (event). */
+  async submit(id: string) {
+    const { draft } = this.drafts.get(id);
+    const f = draft.values;
+
+    const builder = new LoanApplicationBuilder()
+      .forApplicant(f.applicantName ?? '')
+      .disbursedTo(f.accountId ?? '')
+      .borrowing(f.amountMinor ?? 0)
+      .overMonths(f.termMonths ?? 12)
+      .for(f.purpose ?? 'personal')
+      .earningMonthly(f.monthlyIncomeMinor ?? 0);
+    if (f.collateralDescription && f.collateralValueMinor) builder.securedBy(f.collateralDescription, f.collateralValueMinor);
+    const application = builder.build();
+
+    await this.accounts.findById(application.accountId); // must exist
+
+    const mediator = new LoanApprovalMediator(new CreditCheckDesk(this.bureau), new AffordabilityDesk(), new ComplianceDesk());
+    const decision = await mediator.decide(application);
+
+    const saved = await this.loans.save(
+      this.loans.create({
+        applicantName: application.applicantName,
+        accountId: application.accountId,
+        amountMinor: application.amountMinor,
+        termMonths: application.termMonths,
+        purpose: application.purpose,
+        monthlyIncomeMinor: application.monthlyIncomeMinor,
+        status: decision.status,
+        decisionLog: decision.log,
+      }),
+    );
+    this.drafts.remove(id);
+
+    await this.events.publish(createEvent(EventTypes.LOAN_DECIDED, { loanId: saved.id, accountId: saved.accountId, status: saved.status, amountMinor: saved.amountMinor }));
+    return {
+      ...saved,
+      monthlyInstalmentMinor: AffordabilityDesk.monthlyInstalmentMinor(saved.amountMinor, saved.termMonths),
+    };
+  }
 }
