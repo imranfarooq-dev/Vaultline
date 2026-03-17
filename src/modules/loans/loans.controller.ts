@@ -42,4 +42,9 @@ export class LoansController {
   creditReport(@Param('name') name: string) {
     return this.loans.creditReport(name);
   }
+
+  @Get(':id')
+  find(@Param('id', ParseUUIDPipe) id: string) {
+    return this.loans.findById(id);
+  }
 }
