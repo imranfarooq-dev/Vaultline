@@ -80,4 +80,10 @@ export class LoansService {
       monthlyInstalmentMinor: AffordabilityDesk.monthlyInstalmentMinor(saved.amountMinor, saved.termMonths),
     };
   }
+
+  async findById(id: string) {
+    const loan = await this.loans.findOneBy({ id });
+    if (!loan) throw new NotFoundError(`Loan ${id} not found`);
+    return loan;
+  }
 }
