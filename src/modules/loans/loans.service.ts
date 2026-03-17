@@ -86,4 +86,8 @@ export class LoansService {
     if (!loan) throw new NotFoundError(`Loan ${id} not found`);
     return loan;
   }
+
+  creditReport(name: string) {
+    return this.bureau.getReport(name);
+  }
 }
