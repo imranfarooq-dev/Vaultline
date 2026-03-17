@@ -5,4 +5,8 @@ import { EndOfDayJob, JobReport } from './end-of-day.template-method';
 class RecordingJob extends EndOfDayJob {
   readonly name = 'recording';
   readonly calls: string[] = [];
+
+  constructor(private readonly accounts: AccountEntity[]) {
+    super();
+  }
 }
