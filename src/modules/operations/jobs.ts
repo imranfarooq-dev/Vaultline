@@ -8,4 +8,8 @@ import { EndOfDayJob, JobReport } from './end-of-day.template-method';
 export class InterestPostingJob extends EndOfDayJob {
   readonly name = 'interest-posting';
   private readonly calculator = new InterestCalculator();
+
+  constructor(private readonly accounts: Repository<AccountEntity>, private readonly ledger: LedgerService) {
+    super();
+  }
 }
