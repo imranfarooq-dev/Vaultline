@@ -17,4 +17,13 @@ class RecordingJob extends EndOfDayJob {
     if (account.accountNumber === 'BAD') throw new Error('corrupt');
     return account.balanceMinor > 0 ? `${account.accountNumber} ok` : null;
   }
+  protected override async afterRun(report: JobReport) { this.calls.push(`afterRun:${report.affected}`); }
 }
+
+describe('Template Method: end-of-day job skeleton', () => {
+  it('runs the steps in the order fixed by the base class', async () => {
+    const job = new RecordingJob([anAccount({ accountNumber: 'A' }), anAccount({ accountNumber: 'B' })]);
+    await job.run();
+    expect(job.calls).toEqual(['beforeRun', 'loadAccounts', 'process:A', 'process:B', 'afterRun:2']);
+  });
+});
