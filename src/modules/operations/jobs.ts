@@ -16,4 +16,11 @@ export class InterestPostingJob extends EndOfDayJob {
   protected loadAccounts() {
     return this.accounts.find({ where: { status: AccountStatus.ACTIVE, type: In([AccountType.SAVINGS, AccountType.FIXED_DEPOSIT]) } });
   }
+
+  protected async processAccount(account: AccountEntity): Promise<string | null> {
+    const { strategy, monthlyInterestMinor } = this.calculator.calculate(account.type, account.balanceMinor, account.annualInterestRate);
+    if (monthlyInterestMinor <= 0) return null;
+    const posting = await this.ledger.deposit(account.id, monthlyInterestMinor, { type: LedgerEntryType.INTEREST, description: `Monthly profit (${strategy})` });
+    return `${account.accountNumber}: +${monthlyInterestMinor} (${strategy}) ref ${posting.reference}`;
+  }
 }
