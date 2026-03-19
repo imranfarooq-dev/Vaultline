@@ -12,4 +12,8 @@ export class InterestPostingJob extends EndOfDayJob {
   constructor(private readonly accounts: Repository<AccountEntity>, private readonly ledger: LedgerService) {
     super();
   }
+
+  protected loadAccounts() {
+    return this.accounts.find({ where: { status: AccountStatus.ACTIVE, type: In([AccountType.SAVINGS, AccountType.FIXED_DEPOSIT]) } });
+  }
 }
