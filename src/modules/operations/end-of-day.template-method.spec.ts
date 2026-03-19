@@ -9,4 +9,12 @@ class RecordingJob extends EndOfDayJob {
   constructor(private readonly accounts: AccountEntity[]) {
     super();
   }
+
+  protected override async beforeRun() { this.calls.push('beforeRun'); }
+  protected async loadAccounts() { this.calls.push('loadAccounts'); return this.accounts; }
+  protected async processAccount(account: AccountEntity) {
+    this.calls.push(`process:${account.accountNumber}`);
+    if (account.accountNumber === 'BAD') throw new Error('corrupt');
+    return account.balanceMinor > 0 ? `${account.accountNumber} ok` : null;
+  }
 }
