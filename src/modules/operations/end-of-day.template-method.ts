@@ -60,4 +60,9 @@ export abstract class EndOfDayJob {
     await this.afterRun(report);
     return report;
   }
+
+  // ----- steps subclasses MUST implement -----
+  protected abstract loadAccounts(): Promise<AccountEntity[]>;
+  /** Return a description if the account was affected, or null if skipped. */
+  protected abstract processAccount(account: AccountEntity): Promise<string | null>;
 }
