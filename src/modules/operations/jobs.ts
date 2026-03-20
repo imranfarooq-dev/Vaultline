@@ -24,3 +24,8 @@ export class InterestPostingJob extends EndOfDayJob {
     return `${account.accountNumber}: +${monthlyInterestMinor} (${strategy}) ref ${posting.reference}`;
   }
 }
+
+/** Flags active accounts with no activity for N days. Overrides a hook too. */
+export class DormancyReviewJob extends EndOfDayJob {
+  readonly name = 'dormancy-review';
+}
