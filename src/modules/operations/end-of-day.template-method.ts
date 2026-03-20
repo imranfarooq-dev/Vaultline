@@ -65,4 +65,9 @@ export abstract class EndOfDayJob {
   protected abstract loadAccounts(): Promise<AccountEntity[]>;
   /** Return a description if the account was affected, or null if skipped. */
   protected abstract processAccount(account: AccountEntity): Promise<string | null>;
+
+  // ----- hooks subclasses MAY override -----
+  protected async beforeRun(): Promise<void> {
+    this.logger.log(`Starting ${this.name}`);
+  }
 }
