@@ -36,4 +36,8 @@ export class DormancyReviewJob extends EndOfDayJob {
   ) {
     super();
   }
+
+  protected loadAccounts() {
+    return this.accounts.find({ where: { status: AccountStatus.ACTIVE } });
+  }
 }
