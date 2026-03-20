@@ -28,4 +28,12 @@ export class InterestPostingJob extends EndOfDayJob {
 /** Flags active accounts with no activity for N days. Overrides a hook too. */
 export class DormancyReviewJob extends EndOfDayJob {
   readonly name = 'dormancy-review';
+
+  constructor(
+    private readonly accounts: Repository<AccountEntity>,
+    private readonly entries: Repository<LedgerEntryEntity>,
+    private readonly inactiveDays = 180,
+  ) {
+    super();
+  }
 }
