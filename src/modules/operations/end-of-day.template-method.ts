@@ -70,4 +70,8 @@ export abstract class EndOfDayJob {
   protected async beforeRun(): Promise<void> {
     this.logger.log(`Starting ${this.name}`);
   }
+
+  protected async afterRun(report: JobReport): Promise<void> {
+    this.logger.log(`Finished ${this.name}: scanned=${report.scanned} affected=${report.affected} failed=${report.failed} in ${report.durationMs}ms`);
+  }
 }
