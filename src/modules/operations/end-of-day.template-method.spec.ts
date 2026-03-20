@@ -26,4 +26,11 @@ describe('Template Method: end-of-day job skeleton', () => {
     await job.run();
     expect(job.calls).toEqual(['beforeRun', 'loadAccounts', 'process:A', 'process:B', 'afterRun:2']);
   });
+
+  it('counts affected, skipped and failed accounts without stopping the batch', async () => {
+    const job = new RecordingJob([anAccount({ accountNumber: 'A' }), anAccount({ accountNumber: 'BAD' }), anAccount({ accountNumber: 'Z', balanceMinor: 0 })]);
+    const report = await job.run();
+    expect(report).toMatchObject({ job: 'recording', scanned: 3, affected: 1, failed: 1, details: ['A ok'], errors: ['BAD: corrupt'] });
+    expect(job.calls).toContain('process:Z'); // processing continued after the failure
+  });
 });
