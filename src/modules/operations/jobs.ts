@@ -40,4 +40,12 @@ export class DormancyReviewJob extends EndOfDayJob {
   protected loadAccounts() {
     return this.accounts.find({ where: { status: AccountStatus.ACTIVE } });
   }
+
+  protected async processAccount(account: AccountEntity): Promise<string | null> {
+    const cutoff = new Date(Date.now() - this.inactiveDays * 24 * 3600 * 1000);
+    const lastActivity = await this.entries.findOne({ where: { accountId: account.id }, order: { createdAt: 'DESC' } });
+    const lastSeen = lastActivity?.createdAt ?? account.createdAt;
+    if (lastSeen >= cutoff) return null;
+    return `${account.accountNumber}: inactive since ${lastSeen.toISOString().slice(0, 10)}`;
+  }
 }
