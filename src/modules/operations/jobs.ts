@@ -48,4 +48,9 @@ export class DormancyReviewJob extends EndOfDayJob {
     if (lastSeen >= cutoff) return null;
     return `${account.accountNumber}: inactive since ${lastSeen.toISOString().slice(0, 10)}`;
   }
+
+  protected override async afterRun(report: JobReport): Promise<void> {
+    await super.afterRun(report);
+    if (report.affected > 0) this.logger.warn(`${report.affected} dormant account(s) need customer outreach`);
+  }
 }
