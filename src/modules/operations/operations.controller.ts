@@ -12,4 +12,13 @@ import { DormancyReviewJob, InterestPostingJob } from './jobs';
 @Controller('operations')
 export class OperationsController {
   private readonly jobs: Record<string, EndOfDayJob>;
+
+  constructor(
+    @InjectRepository(AccountEntity) accounts: Repository<AccountEntity>,
+    @InjectRepository(LedgerEntryEntity) entries: Repository<LedgerEntryEntity>,
+    ledger: LedgerService,
+  ) {
+    const all = [new InterestPostingJob(accounts, ledger), new DormancyReviewJob(accounts, entries)];
+    this.jobs = Object.fromEntries(all.map((job) => [job.name, job]));
+  }
 }
