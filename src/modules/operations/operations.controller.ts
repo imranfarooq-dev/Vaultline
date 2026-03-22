@@ -21,4 +21,13 @@ export class OperationsController {
     const all = [new InterestPostingJob(accounts, ledger), new DormancyReviewJob(accounts, entries)];
     this.jobs = Object.fromEntries(all.map((job) => [job.name, job]));
   }
+
+  @Post('jobs/:name/run')
+  @ApiParam({ name: 'name', enum: ['interest-posting', 'dormancy-review'] })
+  @ApiOperation({ summary: 'Run a batch job. Both share one skeleton: EndOfDayJob.run()' })
+  run(@Param('name') name: string) {
+    const job = this.jobs[name];
+    if (!job) throw new NotFoundError(`Unknown job ${name}`, { available: Object.keys(this.jobs) });
+    return job.run();
+  }
 }
