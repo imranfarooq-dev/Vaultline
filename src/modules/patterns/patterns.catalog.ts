@@ -22,4 +22,8 @@ export const PATTERN_CATALOG: PatternEntry[] = [
   { pattern: 'Adapter', category: 'Structural', inOneLine: 'Kafka client and legacy credit bureau behind our own interfaces', file: 'src/modules/messaging/kafka-event-publisher.adapter.ts', tryIt: 'GET /api/loans/credit-report/Ali%20Raza' },
   { pattern: 'Bridge', category: 'Structural', inOneLine: 'Statement types x output formats without class explosion', file: 'src/modules/statements/statement.bridge.ts', tryIt: 'GET /api/statements/:accountId?type=detailed&format=csv' },
   { pattern: 'Composite', category: 'Structural', inOneLine: 'Portfolio tree of groups and accounts with rolled-up totals', file: 'src/modules/accounts/domain/portfolio.composite.ts', tryIt: 'GET /api/accounts/portfolio/:ownerName' },
+  { pattern: 'Decorator', category: 'Structural', inOneLine: 'Audit, fraud screening and fees layered around transfers', file: 'src/modules/transactions/transfer/money-transfer.decorators.ts', tryIt: 'POST /api/transactions/transfer (see "pipeline")' },
+  { pattern: 'Facade', category: 'Structural', inOneLine: 'One call to onboard a customer across many subsystems', file: 'src/modules/banking/banking.facade.ts', tryIt: 'POST /api/banking/onboard' },
+  { pattern: 'Flyweight', category: 'Structural', inOneLine: 'Shared immutable Currency objects', file: 'src/modules/core/currency.flyweight.ts', tryIt: 'GET /api/accounts/currencies' },
+  { pattern: 'Proxy', category: 'Structural', inOneLine: 'Caching, rate-limiting proxy in front of a slow FX provider', file: 'src/modules/fx/exchange-rate.proxy.ts', tryIt: 'GET /api/fx/convert?from=USD&to=PKR&amountMinor=10000 (twice)' },
 ];
