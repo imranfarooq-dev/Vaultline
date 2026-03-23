@@ -30,4 +30,8 @@ export const PATTERN_CATALOG: PatternEntry[] = [
   { pattern: 'Chain of Responsibility', category: 'Behavioral', inOneLine: 'Amount, status, funds and daily-limit checks as linked handlers', file: 'src/modules/transactions/validation/transaction-validation.chain.ts', tryIt: 'POST /api/transactions/withdraw with too much money' },
   { pattern: 'Command', category: 'Behavioral', inOneLine: 'Deposits/withdrawals/transfers as objects with undo', file: 'src/modules/transactions/commands/bank.commands.ts', tryIt: 'POST /api/transactions/commands/:commandId/undo' },
   { pattern: 'Interpreter', category: 'Behavioral', inOneLine: 'A small fraud-rule language parsed and evaluated at runtime', file: 'src/modules/fraud/fraud-rule.interpreter.ts', tryIt: 'POST /api/fraud/evaluate' },
+  { pattern: 'Iterator', category: 'Behavioral', inOneLine: 'Page through millions of ledger entries one at a time', file: 'src/modules/transactions/ledger-history.iterator.ts', tryIt: 'GET /api/transactions/accounts/:accountId/export.csv' },
+  { pattern: 'Mediator', category: 'Behavioral', inOneLine: 'Loan desks coordinate only through an approval mediator', file: 'src/modules/loans/domain/loan-approval.mediator.ts', tryIt: 'POST /api/loans/drafts/:id/submit (see decisionLog)' },
+  { pattern: 'Memento', category: 'Behavioral', inOneLine: 'Undo changes to a loan draft via snapshots', file: 'src/modules/loans/domain/loan-draft.memento.ts', tryIt: 'POST /api/loans/drafts/:id/undo' },
+  { pattern: 'Observer', category: 'Behavioral', inOneLine: 'Event bus notifies audit, metrics and Kafka observers', file: 'src/modules/messaging/domain-event-bus.observer.ts', tryIt: 'GET /api/events/stats' },
 ];
