@@ -17,4 +17,10 @@ describe('Pattern catalog', () => {
   it('lists exactly the 23 Gang of Four patterns', () => {
     expect(PATTERN_CATALOG.map((p) => p.pattern).sort()).toEqual([...GOF_23].sort());
   });
+
+  it.each(PATTERN_CATALOG.map((p) => [p.pattern, p.file]))('%s: file exists and carries its teaching header', (pattern, file) => {
+    const path = join(root, file);
+    expect(existsSync(path)).toBe(true);
+    expect(readFileSync(path, 'utf8').toUpperCase()).toContain(`PATTERN: ${pattern.toUpperCase()}`);
+  });
 });
