@@ -26,4 +26,8 @@ export const PATTERN_CATALOG: PatternEntry[] = [
   { pattern: 'Facade', category: 'Structural', inOneLine: 'One call to onboard a customer across many subsystems', file: 'src/modules/banking/banking.facade.ts', tryIt: 'POST /api/banking/onboard' },
   { pattern: 'Flyweight', category: 'Structural', inOneLine: 'Shared immutable Currency objects', file: 'src/modules/core/currency.flyweight.ts', tryIt: 'GET /api/accounts/currencies' },
   { pattern: 'Proxy', category: 'Structural', inOneLine: 'Caching, rate-limiting proxy in front of a slow FX provider', file: 'src/modules/fx/exchange-rate.proxy.ts', tryIt: 'GET /api/fx/convert?from=USD&to=PKR&amountMinor=10000 (twice)' },
+  // ---------------- Behavioral ----------------
+  { pattern: 'Chain of Responsibility', category: 'Behavioral', inOneLine: 'Amount, status, funds and daily-limit checks as linked handlers', file: 'src/modules/transactions/validation/transaction-validation.chain.ts', tryIt: 'POST /api/transactions/withdraw with too much money' },
+  { pattern: 'Command', category: 'Behavioral', inOneLine: 'Deposits/withdrawals/transfers as objects with undo', file: 'src/modules/transactions/commands/bank.commands.ts', tryIt: 'POST /api/transactions/commands/:commandId/undo' },
+  { pattern: 'Interpreter', category: 'Behavioral', inOneLine: 'A small fraud-rule language parsed and evaluated at runtime', file: 'src/modules/fraud/fraud-rule.interpreter.ts', tryIt: 'POST /api/fraud/evaluate' },
 ];
