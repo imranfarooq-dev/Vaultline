@@ -34,4 +34,8 @@ export const PATTERN_CATALOG: PatternEntry[] = [
   { pattern: 'Mediator', category: 'Behavioral', inOneLine: 'Loan desks coordinate only through an approval mediator', file: 'src/modules/loans/domain/loan-approval.mediator.ts', tryIt: 'POST /api/loans/drafts/:id/submit (see decisionLog)' },
   { pattern: 'Memento', category: 'Behavioral', inOneLine: 'Undo changes to a loan draft via snapshots', file: 'src/modules/loans/domain/loan-draft.memento.ts', tryIt: 'POST /api/loans/drafts/:id/undo' },
   { pattern: 'Observer', category: 'Behavioral', inOneLine: 'Event bus notifies audit, metrics and Kafka observers', file: 'src/modules/messaging/domain-event-bus.observer.ts', tryIt: 'GET /api/events/stats' },
+  { pattern: 'State', category: 'Behavioral', inOneLine: 'Pending/Active/Frozen/Closed decide what an account may do', file: 'src/modules/accounts/domain/account-state.ts', tryIt: 'PATCH /api/accounts/:id/status' },
+  { pattern: 'Strategy', category: 'Behavioral', inOneLine: 'Swappable interest algorithms per account type', file: 'src/modules/accounts/domain/interest.strategy.ts', tryIt: 'GET /api/accounts/:id/interest-preview' },
+  { pattern: 'Template Method', category: 'Behavioral', inOneLine: 'Batch jobs share one skeleton, differ in steps', file: 'src/modules/operations/end-of-day.template-method.ts', tryIt: 'POST /api/operations/jobs/interest-posting/run' },
+  { pattern: 'Visitor', category: 'Behavioral', inOneLine: 'Fee, tax and risk reports over accounts without changing them', file: 'src/modules/accounts/domain/account.visitor.ts', tryIt: 'GET /api/accounts/reports/month-end' },
 ];
