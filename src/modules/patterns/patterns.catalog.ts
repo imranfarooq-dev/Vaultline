@@ -18,4 +18,8 @@ export const PATTERN_CATALOG: PatternEntry[] = [
   { pattern: 'Abstract Factory', category: 'Creational', inOneLine: 'Matching validator + fee + formatter families for RAAST and SWIFT', file: 'src/modules/payments/payment-rail.abstract-factory.ts', tryIt: 'POST /api/payments/quote' },
   { pattern: 'Builder', category: 'Creational', inOneLine: 'Step-by-step, validated loan application', file: 'src/modules/loans/domain/loan-application.builder.ts', tryIt: 'POST /api/loans/drafts/:id/submit' },
   { pattern: 'Prototype', category: 'Creational', inOneLine: 'Account products cloned from base prototypes', file: 'src/modules/accounts/domain/account-product.prototype.ts', tryIt: 'GET /api/accounts/products' },
+  // ---------------- Structural ----------------
+  { pattern: 'Adapter', category: 'Structural', inOneLine: 'Kafka client and legacy credit bureau behind our own interfaces', file: 'src/modules/messaging/kafka-event-publisher.adapter.ts', tryIt: 'GET /api/loans/credit-report/Ali%20Raza' },
+  { pattern: 'Bridge', category: 'Structural', inOneLine: 'Statement types x output formats without class explosion', file: 'src/modules/statements/statement.bridge.ts', tryIt: 'GET /api/statements/:accountId?type=detailed&format=csv' },
+  { pattern: 'Composite', category: 'Structural', inOneLine: 'Portfolio tree of groups and accounts with rolled-up totals', file: 'src/modules/accounts/domain/portfolio.composite.ts', tryIt: 'GET /api/accounts/portfolio/:ownerName' },
 ];
