@@ -11,3 +11,10 @@ const GOF_23 = [
   'Adapter', 'Bridge', 'Composite', 'Decorator', 'Facade', 'Flyweight', 'Proxy',
   'Chain of Responsibility', 'Command', 'Interpreter', 'Iterator', 'Mediator', 'Memento', 'Observer', 'State', 'Strategy', 'Template Method', 'Visitor',
 ];
+const root = join(__dirname, '..', '..');
+
+describe('Pattern catalog', () => {
+  it('lists exactly the 23 Gang of Four patterns', () => {
+    expect(PATTERN_CATALOG.map((p) => p.pattern).sort()).toEqual([...GOF_23].sort());
+  });
+});
