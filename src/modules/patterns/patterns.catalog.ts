@@ -14,4 +14,8 @@ export interface PatternEntry {
 export const PATTERN_CATALOG: PatternEntry[] = [
   // ---------------- Creational ----------------
   { pattern: 'Singleton', category: 'Creational', inOneLine: 'Exactly one shared reference-number generator', file: 'src/modules/core/reference-number.singleton.ts', tryIt: 'POST /api/transactions/deposit (see the reference)' },
+  { pattern: 'Factory Method', category: 'Creational', inOneLine: 'Subclasses decide how Savings/Current/FD accounts are created', file: 'src/modules/accounts/domain/account.factory.ts', tryIt: 'POST /api/accounts' },
+  { pattern: 'Abstract Factory', category: 'Creational', inOneLine: 'Matching validator + fee + formatter families for RAAST and SWIFT', file: 'src/modules/payments/payment-rail.abstract-factory.ts', tryIt: 'POST /api/payments/quote' },
+  { pattern: 'Builder', category: 'Creational', inOneLine: 'Step-by-step, validated loan application', file: 'src/modules/loans/domain/loan-application.builder.ts', tryIt: 'POST /api/loans/drafts/:id/submit' },
+  { pattern: 'Prototype', category: 'Creational', inOneLine: 'Account products cloned from base prototypes', file: 'src/modules/accounts/domain/account-product.prototype.ts', tryIt: 'GET /api/accounts/products' },
 ];
