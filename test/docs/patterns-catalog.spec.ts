@@ -23,4 +23,9 @@ describe('Pattern catalog', () => {
     expect(existsSync(path)).toBe(true);
     expect(readFileSync(path, 'utf8').toUpperCase()).toContain(`PATTERN: ${pattern.toUpperCase()}`);
   });
+
+  it('docs/PATTERNS.md mentions every pattern', () => {
+    const doc = readFileSync(join(root, 'docs', 'PATTERNS.md'), 'utf8');
+    for (const pattern of GOF_23) expect(doc).toContain(pattern);
+  });
 });
