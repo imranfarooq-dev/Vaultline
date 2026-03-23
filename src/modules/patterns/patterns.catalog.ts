@@ -10,3 +10,8 @@ export interface PatternEntry {
   file: string;
   tryIt: string;
 }
+
+export const PATTERN_CATALOG: PatternEntry[] = [
+  // ---------------- Creational ----------------
+  { pattern: 'Singleton', category: 'Creational', inOneLine: 'Exactly one shared reference-number generator', file: 'src/modules/core/reference-number.singleton.ts', tryIt: 'POST /api/transactions/deposit (see the reference)' },
+];
