@@ -42,4 +42,10 @@ describe('Customer journey (e2e)', () => {
     const { body } = await http.get('/api/patterns').expect(200);
     expect(body.total).toBe(23);
   });
+
+  it('rejects invalid and unexpected input with 400', async () => {
+    const { body } = await http.post('/api/banking/onboard').set(J).send({ ownerName: 'X', type: 'GOLD', currency: 'PKR', hacker: true }).expect(400);
+    expect(body.error).toBe('HTTP_ERROR');
+    expect(JSON.stringify(body.message)).toContain('property hacker should not exist');
+  });
 });
