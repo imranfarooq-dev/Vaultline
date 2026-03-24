@@ -48,4 +48,12 @@ describe('Customer journey (e2e)', () => {
     expect(body.error).toBe('HTTP_ERROR');
     expect(JSON.stringify(body.message)).toContain('property hacker should not exist');
   });
+
+  it('onboards two accounts for the same customer', async () => {
+    const s = await http.post('/api/banking/onboard').set(J).send({ ownerName: 'Zara Malik', type: 'SAVINGS', currency: 'PKR', productCode: 'BASIC_SAVER', initialDepositMinor: 20_000_000 }).expect(201);
+    const b = await http.post('/api/banking/onboard').set(J).send({ ownerName: 'Zara Malik', type: 'CURRENT', currency: 'PKR', initialDepositMinor: 0 }).expect(201);
+    salary = s.body.account;
+    business = b.body.account;
+    expect(s.body.account).toMatchObject({ status: 'ACTIVE', balanceMinor: 20_000_000, productCode: 'BASIC_SAVER' });
+  });
 });
