@@ -36,4 +36,10 @@ describe('Customer journey (e2e)', () => {
 
   let salary: { id: string; accountNumber: string };
   let business: { id: string };
+
+  it('health and pattern catalog are available', async () => {
+    await http.get('/api/health/ready').expect(200);
+    const { body } = await http.get('/api/patterns').expect(200);
+    expect(body.total).toBe(23);
+  });
 });
