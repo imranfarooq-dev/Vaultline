@@ -89,4 +89,10 @@ describe('Customer journey (e2e)', () => {
     expect(decision.body.decisionLog.length).toBeGreaterThan(0);
     await http.get(`/api/loans/${decision.body.id}`).expect(200);
   });
+
+  it('runs a batch job and posts interest', async () => {
+    const { body } = await http.post('/api/operations/jobs/interest-posting/run').expect(201);
+    expect(body).toMatchObject({ job: 'interest-posting', failed: 0 });
+    expect(body.affected).toBeGreaterThanOrEqual(1);
+  });
 });
