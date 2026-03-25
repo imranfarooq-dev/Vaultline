@@ -95,4 +95,12 @@ describe('Customer journey (e2e)', () => {
     expect(body).toMatchObject({ job: 'interest-posting', failed: 0 });
     expect(body.affected).toBeGreaterThanOrEqual(1);
   });
+
+  it('answers questions from the knowledge base (RAG)', async () => {
+    await http.post('/api/ai/ingest').expect(201);
+    const { body } = await http.post('/api/ai/ask').set(J).send({ question: 'What is the monthly maintenance fee for a current account?' }).expect(201);
+    // Fake hashing embeddings match shared WORDS, not meaning, so we check the
+    // top-k sources rather than rank #1. With nomic-embed-text it is rank #1.
+    expect(body.sources.map((s: { source: string }) => s.source)).toContain('02-fees-and-charges.md');
+  });
 });
