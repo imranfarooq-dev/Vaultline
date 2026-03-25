@@ -78,4 +78,15 @@ describe('Customer journey (e2e)', () => {
     const missing = await http.get('/api/accounts/00000000-0000-4000-8000-000000000000').expect(404);
     expect(missing.body).toMatchObject({ error: 'NOT_FOUND' });
   });
+
+  it('completes a loan journey with undo, builder validation and mediator decision', async () => {
+    const draft = await http.post('/api/loans/drafts').set(J).send({ applicantName: 'Zara Malik', accountId: salary.id, amountMinor: 30_000_000, termMonths: 36, purpose: 'home renovation', monthlyIncomeMinor: 50_000_000 }).expect(201);
+    const id = draft.body.draftId;
+    await http.patch(`/api/loans/drafts/${id}`).set(J).send({ amountMinor: 900_000_000 }).expect(200);
+    await http.post(`/api/loans/drafts/${id}/undo`).expect(201);
+    const decision = await http.post(`/api/loans/drafts/${id}/submit`).expect(201);
+    expect(['APPROVED', 'REJECTED', 'MANUAL_REVIEW']).toContain(decision.body.status);
+    expect(decision.body.decisionLog.length).toBeGreaterThan(0);
+    await http.get(`/api/loans/${decision.body.id}`).expect(200);
+  });
 });
