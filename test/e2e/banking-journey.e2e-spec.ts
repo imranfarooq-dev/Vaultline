@@ -70,4 +70,12 @@ describe('Customer journey (e2e)', () => {
     const csv = await http.get(`/api/transactions/accounts/${salary.id}/export.csv`).expect(200);
     expect(csv.text.trim().split('\n')).toHaveLength(3); // header + deposit + transfer
   });
+
+  it('maps business errors to meaningful HTTP codes', async () => {
+    await http.post('/api/transactions/transfer').set(J).send({ fromAccountId: salary.id, toAccountId: business.id, amountMinor: 6_000_000, channel: 'mobile' }).expect(403);
+    await http.post('/api/transactions/withdraw').set(J).send({ accountId: business.id, amountMinor: 999_999_999 }).expect(422);
+    await http.patch(`/api/accounts/${salary.id}/status`).set(J).send({ action: 'close' }).expect(409);
+    const missing = await http.get('/api/accounts/00000000-0000-4000-8000-000000000000').expect(404);
+    expect(missing.body).toMatchObject({ error: 'NOT_FOUND' });
+  });
 });
