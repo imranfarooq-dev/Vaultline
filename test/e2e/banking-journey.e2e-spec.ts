@@ -56,4 +56,18 @@ describe('Customer journey (e2e)', () => {
     business = b.body.account;
     expect(s.body.account).toMatchObject({ status: 'ACTIVE', balanceMinor: 20_000_000, productCode: 'BASIC_SAVER' });
   });
+
+  it('moves money and shows it everywhere consistently', async () => {
+    const t = await http.post('/api/transactions/transfer').set(J).send({ fromAccountId: salary.id, toAccountId: business.id, amountMinor: 3_000_000, channel: 'web' }).expect(201);
+    expect(t.body.pipeline).toEqual(['audit', 'fraud-screening', 'fee', 'ledger']);
+
+    const overview = await http.get('/api/banking/customers/Zara%20Malik/overview').expect(200);
+    expect(overview.body.portfolio.totals).toEqual({ PKR: 20_000_000 });
+
+    const statement = await http.get(`/api/statements/${salary.id}?type=detailed&format=json`).expect(200);
+    expect(JSON.parse(statement.text).summary['Closing balance']).toBe('Rs 170,000.00');
+
+    const csv = await http.get(`/api/transactions/accounts/${salary.id}/export.csv`).expect(200);
+    expect(csv.text.trim().split('\n')).toHaveLength(3); // header + deposit + transfer
+  });
 });
