@@ -18,4 +18,12 @@ export const llmProviders: Provider[] = [
         ? new ChatOllama({ baseUrl: config.ai.baseUrl, model: config.ai.chatModel, temperature: 0.1 })
         : new ExtractiveFakeChatModel(),
   },
+  {
+    provide: EMBEDDINGS,
+    inject: [AppConfigService],
+    useFactory: (config: AppConfigService) =>
+      config.ai.provider === 'ollama'
+        ? new OllamaEmbeddings({ baseUrl: config.ai.baseUrl, model: config.ai.embeddingModel })
+        : new HashingEmbeddings(),
+  },
 ];
