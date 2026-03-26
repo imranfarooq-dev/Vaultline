@@ -21,4 +21,16 @@ export class HashingEmbeddings extends Embeddings {
   async embedQuery(text: string): Promise<number[]> {
     return this.vectorize(text);
   }
+
+  private vectorize(text: string): number[] {
+    const vector = new Array<number>(EMBEDDING_DIMENSIONS).fill(0);
+    for (const word of text.toLowerCase().match(/[a-z0-9]+/g) ?? []) {
+      if (word.length < 3) continue;
+      let hash = 2166136261;
+      for (const ch of word) hash = Math.imul(hash ^ ch.charCodeAt(0), 16777619) >>> 0;
+      vector[hash % EMBEDDING_DIMENSIONS] += 1;
+    }
+    const norm = Math.sqrt(vector.reduce((s, v) => s + v * v, 0)) || 1;
+    return vector.map((v) => v / norm);
+  }
 }
