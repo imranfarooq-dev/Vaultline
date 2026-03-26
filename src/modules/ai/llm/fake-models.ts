@@ -17,4 +17,8 @@ export class HashingEmbeddings extends Embeddings {
   async embedDocuments(texts: string[]): Promise<number[][]> {
     return texts.map((text) => this.vectorize(text));
   }
+
+  async embedQuery(text: string): Promise<number[]> {
+    return this.vectorize(text);
+  }
 }
