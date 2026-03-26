@@ -13,4 +13,8 @@ export class HashingEmbeddings extends Embeddings {
   constructor() {
     super({});
   }
+
+  async embedDocuments(texts: string[]): Promise<number[][]> {
+    return texts.map((text) => this.vectorize(text));
+  }
 }
