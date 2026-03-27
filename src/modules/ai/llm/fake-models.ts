@@ -47,4 +47,11 @@ export class ExtractiveFakeChatModel extends SimpleChatModel {
   _llmType(): string {
     return 'extractive-fake';
   }
+
+  async _call(messages: BaseMessage[]): Promise<string> {
+    const prompt = messages.map((m) => (typeof m.content === 'string' ? m.content : JSON.stringify(m.content))).join('\n');
+    const context = prompt.split('CONTEXT:')[1]?.split('QUESTION:')[0]?.trim() ?? '';
+    const firstFacts = context.split('\n').filter((l) => l.trim() && !l.startsWith('[')).slice(0, 3).join(' ');
+    return `[fake-llm] Based on the bank documents: ${firstFacts || 'no relevant information found.'}`;
+  }
 }
