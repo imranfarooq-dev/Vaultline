@@ -43,4 +43,8 @@ export class ExtractiveFakeChatModel extends SimpleChatModel {
   constructor() {
     super({});
   }
+
+  _llmType(): string {
+    return 'extractive-fake';
+  }
 }
