@@ -34,3 +34,13 @@ export class HashingEmbeddings extends Embeddings {
     return vector.map((v) => v / norm);
   }
 }
+
+/**
+ * A pretend chat model that "answers" by quoting the first context lines it
+ * was given. Proves the whole LangChain pipeline works without a real LLM.
+ */
+export class ExtractiveFakeChatModel extends SimpleChatModel {
+  constructor() {
+    super({});
+  }
+}
