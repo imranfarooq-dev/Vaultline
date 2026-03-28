@@ -8,3 +8,9 @@ NestBank is a fictional bank used for learning. All figures below match the rule
 - Minimum opening balance: Rs 1,000
 - Daily withdrawal limit: Rs 50,000
 - Includes a debit card and free SMS alerts. No cheque book.
+
+## Student Saver (code STUDENT_SAVER)
+- Cloned from Basic Saver with student-friendly changes.
+- No minimum opening balance.
+- Daily withdrawal limit: Rs 20,000.
+- Profit rate: 8.5% per year.
