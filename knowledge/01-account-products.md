@@ -14,3 +14,9 @@ NestBank is a fictional bank used for learning. All figures below match the rule
 - No minimum opening balance.
 - Daily withdrawal limit: Rs 20,000.
 - Profit rate: 8.5% per year.
+
+## Freelancer Saver (code FREELANCER_SAVER)
+- Designed for freelancers receiving foreign remittances.
+- Profit rate: 9.25% per year.
+- Daily withdrawal limit: Rs 200,000.
+- International transfers are enabled and remittances are tracked for tax certificates.
