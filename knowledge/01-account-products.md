@@ -26,3 +26,12 @@ NestBank is a fictional bank used for learning. All figures below match the rule
 - Minimum opening balance: Rs 25,000.
 - Daily withdrawal limit: Rs 1,000,000.
 - Includes cheque book, debit card and unlimited transactions.
+
+## 1-Year Term Deposit (code TERM_DEPOSIT_1Y)
+- Account type: Fixed Deposit.
+- Profit rate: 12% per year, compounded monthly.
+- Minimum deposit: Rs 50,000.
+- Withdrawals are not allowed before maturity (daily withdrawal limit is zero).
+
+## Savings balances above Rs 1,000,000
+Savings accounts use tiered profit: the part of the balance above Rs 1,000,000 earns an extra 1.5% per year on top of the normal rate.
