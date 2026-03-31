@@ -12,3 +12,9 @@ Every account has a daily withdrawal limit. Withdrawals and outgoing transfers (
 - A valid BIC/SWIFT code for the beneficiary bank is required, for example DEUTDEFF.
 - A purpose of payment is mandatory, such as "Family support" or "Tuition fee".
 - Fee: Rs 2,500 plus 0.1% of the amount.
+
+## Currency
+Transfers between two NestBank accounts must be in the same currency. Cross-currency transfers require a foreign exchange conversion first. Supported currencies: PKR, USD, EUR, GBP, AED and SAR. Exchange rates are cached for up to 60 seconds.
+
+## Reversals
+A mistaken transaction is never deleted. It is corrected by a reversal entry that moves the money back. A transaction can only be reversed once, and only if the receiving account still has enough balance.
