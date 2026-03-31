@@ -20,3 +20,9 @@ NestBank is a fictional bank used for learning. All figures below match the rule
 - Profit rate: 9.25% per year.
 - Daily withdrawal limit: Rs 200,000.
 - International transfers are enabled and remittances are tracked for tax certificates.
+
+## Business Current (code BUSINESS_CURRENT)
+- Account type: Current. Current accounts earn no profit.
+- Minimum opening balance: Rs 25,000.
+- Daily withdrawal limit: Rs 1,000,000.
+- Includes cheque book, debit card and unlimited transactions.
