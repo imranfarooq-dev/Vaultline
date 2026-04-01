@@ -30,4 +30,16 @@ const toVectorLiteral = (embedding: number[]): string => `[${embedding.join(',')
 @Injectable()
 export class PgVectorStore {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
+
+  async replaceSource(source: string, chunks: KnowledgeChunk[], manager: EntityManager = this.dataSource.manager): Promise<void> {
+    await manager.transaction(async (tx) => {
+      await tx.query('DELETE FROM knowledge_chunks WHERE source = $1', [source]);
+      for (const chunk of chunks) {
+        await tx.query(
+          'INSERT INTO knowledge_chunks (source, chunk_index, content, metadata, embedding) VALUES ($1, $2, $3, $4, $5::vector)',
+          [chunk.source, chunk.chunkIndex, chunk.content, JSON.stringify(chunk.metadata), toVectorLiteral(chunk.embedding)],
+        );
+      }
+    });
+  }
 }
