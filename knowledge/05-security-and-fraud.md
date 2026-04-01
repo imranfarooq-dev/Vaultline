@@ -11,3 +11,9 @@ The bank may freeze an account if suspicious activity is detected. A frozen acco
 
 ## Closing an account
 An account can only be closed when its balance is exactly zero. Withdraw or transfer the remaining balance first. A closed account cannot be reopened.
+
+## Staying safe
+NestBank will never ask for your PIN, password or one-time code over the phone, SMS or email. Report suspicious messages to the helpline immediately.
+
+## Helpline
+The fictional NestBank helpline is 0800-NEST-BANK, available 24 hours a day.
