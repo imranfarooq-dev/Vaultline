@@ -9,3 +9,11 @@ export interface KnowledgeChunk {
   metadata: Record<string, unknown>;
   embedding: number[];
 }
+
+export interface ScoredChunk {
+  source: string;
+  chunkIndex: number;
+  content: string;
+  /** Cosine similarity: 1 = identical direction, 0 = unrelated. */
+  score: number;
+}
