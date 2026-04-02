@@ -55,4 +55,9 @@ export class PgVectorStore {
       .map((r) => ({ source: r.source, chunkIndex: r.chunk_index, content: r.content, score: Number(Number(r.score).toFixed(4)) }))
       .filter((r) => r.score >= minScore);
   }
+
+  async stats(): Promise<{ chunks: number; sources: string[] }> {
+    const rows: { source: string; count: string }[] = await this.dataSource.query('SELECT source, COUNT(*) AS count FROM knowledge_chunks GROUP BY source ORDER BY source');
+    return { chunks: rows.reduce((s, r) => s + Number(r.count), 0), sources: rows.map((r) => r.source) };
+  }
 }
