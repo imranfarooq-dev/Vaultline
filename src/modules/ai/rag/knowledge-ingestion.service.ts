@@ -16,4 +16,10 @@ import { PgVectorStore } from './pgvector.store';
 export class KnowledgeIngestionService implements OnApplicationBootstrap {
   private readonly logger = new Logger(KnowledgeIngestionService.name);
   private readonly splitter = RecursiveCharacterTextSplitter.fromLanguage('markdown', { chunkSize: 900, chunkOverlap: 120 });
+
+  constructor(
+    @Inject(EMBEDDINGS) private readonly embeddings: Embeddings,
+    private readonly store: PgVectorStore,
+    private readonly config: AppConfigService,
+  ) {}
 }
