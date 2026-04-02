@@ -42,4 +42,17 @@ export class PgVectorStore {
       }
     });
   }
+
+  async similaritySearch(queryEmbedding: number[], k = 4, minScore = 0): Promise<ScoredChunk[]> {
+    const rows: { source: string; chunk_index: number; content: string; score: string }[] = await this.dataSource.query(
+      `SELECT source, chunk_index, content, 1 - (embedding <=> $1::vector) AS score
+         FROM knowledge_chunks
+        ORDER BY embedding <=> $1::vector
+        LIMIT $2`,
+      [toVectorLiteral(queryEmbedding), k],
+    );
+    return rows
+      .map((r) => ({ source: r.source, chunkIndex: r.chunk_index, content: r.content, score: Number(Number(r.score).toFixed(4)) }))
+      .filter((r) => r.score >= minScore);
+  }
 }
