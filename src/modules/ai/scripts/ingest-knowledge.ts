@@ -10,3 +10,8 @@ async function main() {
   console.log(JSON.stringify(await app.get(KnowledgeIngestionService).ingestDirectory(), null, 2));
   await app.close();
 }
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
