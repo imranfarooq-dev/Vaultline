@@ -60,4 +60,21 @@ export class PgVectorStore {
     const rows: { source: string; count: string }[] = await this.dataSource.query('SELECT source, COUNT(*) AS count FROM knowledge_chunks GROUP BY source ORDER BY source');
     return { chunks: rows.reduce((s, r) => s + Number(r.count), 0), sources: rows.map((r) => r.source) };
   }
+
+  /** Session-level advisory lock so two pods never ingest at the same time. */
+  async withIngestionLock<T>(work: (manager: EntityManager) => Promise<T>): Promise<T | null> {
+    const runner = this.dataSource.createQueryRunner();
+    await runner.connect();
+    try {
+      const [{ locked }] = await runner.query('SELECT pg_try_advisory_lock(771001) AS locked');
+      if (!locked) return null;
+      try {
+        return await work(runner.manager);
+      } finally {
+        await runner.query('SELECT pg_advisory_unlock(771001)');
+      }
+    } finally {
+      await runner.release();
+    }
+  }
 }
