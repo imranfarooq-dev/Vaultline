@@ -59,4 +59,17 @@ export class KnowledgeIngestionService implements OnApplicationBootstrap {
     this.logger.log(`Ingested ${result.reduce((s, r) => s + r.chunks, 0)} chunks from ${result.length} file(s)`);
     return { skipped: false, files: result };
   }
+
+  private async autoIngestWithRetry(): Promise<void> {
+    for (let attempt = 1; attempt <= 60; attempt++) {
+      try {
+        if ((await this.store.stats()).chunks > 0) return;
+        await this.ingestDirectory();
+        return;
+      } catch (error) {
+        this.logger.warn(`Auto-ingest attempt ${attempt} failed (${(error as Error).message}); retrying in 30s`);
+        await new Promise((resolve) => setTimeout(resolve, 30_000));
+      }
+    }
+  }
 }
