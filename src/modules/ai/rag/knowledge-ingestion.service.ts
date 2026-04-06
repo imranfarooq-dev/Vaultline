@@ -22,4 +22,10 @@ export class KnowledgeIngestionService implements OnApplicationBootstrap {
     private readonly store: PgVectorStore,
     private readonly config: AppConfigService,
   ) {}
+
+  /** Auto-ingest in the background once Ollama has pulled the embedding model. */
+  onApplicationBootstrap(): void {
+    if (!this.config.ai.autoIngest) return;
+    void this.autoIngestWithRetry();
+  }
 }
