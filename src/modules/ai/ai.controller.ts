@@ -12,4 +12,11 @@ class AskDto {
   @IsString()
   @Length(3, 500)
   question: string;
+
+  @ApiPropertyOptional({ example: 4 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(10)
+  k?: number;
 }
