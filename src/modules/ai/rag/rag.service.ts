@@ -32,4 +32,10 @@ export class RagService {
     ['system', SYSTEM_PROMPT],
     ['human', 'CONTEXT:\n{context}\n\nQUESTION: {question}'],
   ]);
+
+  constructor(
+    @Inject(EMBEDDINGS) private readonly embeddings: Embeddings,
+    @Inject(CHAT_MODEL) private readonly chatModel: BaseChatModel,
+    private readonly store: PgVectorStore,
+  ) {}
 }
