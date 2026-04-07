@@ -12,4 +12,12 @@ describe('RAG building blocks (no database, no Ollama)', () => {
     expect(vector).toHaveLength(EMBEDDING_DIMENSIONS);
     expect(cosine(vector, vector)).toBeCloseTo(1, 5);
   });
+
+  it('texts sharing words are closer than unrelated texts', async () => {
+    const e = new HashingEmbeddings();
+    const query = await e.embedQuery('international swift transfer fee');
+    const related = await e.embedQuery('SWIFT international transfers have a fee of Rs 2,500');
+    const unrelated = await e.embedQuery('student saver accounts have no minimum balance');
+    expect(cosine(query, related)).toBeGreaterThan(cosine(query, unrelated));
+  });
 });
