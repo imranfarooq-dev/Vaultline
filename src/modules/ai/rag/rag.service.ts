@@ -38,4 +38,8 @@ export class RagService {
     @Inject(CHAT_MODEL) private readonly chatModel: BaseChatModel,
     private readonly store: PgVectorStore,
   ) {}
+
+  private get chain() {
+    return RunnableSequence.from([this.prompt, this.chatModel, new StringOutputParser()]);
+  }
 }
