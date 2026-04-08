@@ -20,3 +20,14 @@ class AskDto {
   @Max(10)
   k?: number;
 }
+
+@ApiTags('AI assistant (Ollama + LangChain + pgvector RAG)')
+@Controller('ai')
+export class AiController {
+  constructor(
+    private readonly rag: RagService,
+    private readonly ingestion: KnowledgeIngestionService,
+    private readonly store: PgVectorStore,
+    private readonly config: AppConfigService,
+  ) {}
+}
