@@ -31,4 +31,12 @@ describe('RAG building blocks (no database, no Ollama)', () => {
     expect(result.answer).toContain('SWIFT fee is Rs 2,500');
     expect(result.sources).toEqual([expect.objectContaining({ source: 'fees.md', score: 0.91 })]);
   });
+
+  it('streams tokens through the same chain', async () => {
+    const store = { similaritySearch: jest.fn().mockResolvedValue([{ source: 'a.md', chunkIndex: 0, content: 'Limit is Rs 50,000.', score: 0.8 }]) } as unknown as PgVectorStore;
+    const rag = new RagService(new HashingEmbeddings(), new ExtractiveFakeChatModel(), store);
+    let text = '';
+    for await (const token of rag.stream('limit?')) text += token;
+    expect(text).toContain('Limit is Rs 50,000.');
+  });
 });
