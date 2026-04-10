@@ -52,4 +52,25 @@ export class RagService {
       throw new DependencyUnavailableError(`Retrieval failed: ${(error as Error).message}`);
     }
   }
+
+  async ask(question: string, k = 4) {
+    const started = Date.now();
+    const chunks = await this.retrieve(question, k);
+    if (chunks.length === 0) {
+      return { answer: "I don't have that information yet. Try POST /api/ai/ingest first.", sources: [], tookMs: Date.now() - started };
+    }
+
+    let answer: string;
+    try {
+      answer = await this.chain.invoke({ context: this.formatContext(chunks), question });
+    } catch (error) {
+      throw new DependencyUnavailableError(`Chat model failed: ${(error as Error).message}. Has the model finished downloading?`);
+    }
+
+    return {
+      answer: answer.trim(),
+      sources: chunks.map((c) => ({ source: c.source, chunk: c.chunkIndex, score: c.score, excerpt: `${c.content.slice(0, 160)}...` })),
+      tookMs: Date.now() - started,
+    };
+  }
 }
