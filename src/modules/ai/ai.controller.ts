@@ -30,4 +30,10 @@ export class AiController {
     private readonly store: PgVectorStore,
     private readonly config: AppConfigService,
   ) {}
+
+  @Get('status')
+  async status() {
+    const { provider, chatModel, embeddingModel, baseUrl } = this.config.ai;
+    return { provider, chatModel, embeddingModel, ollama: baseUrl, knowledge: await this.store.stats() };
+  }
 }
