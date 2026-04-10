@@ -36,4 +36,10 @@ export class AiController {
     const { provider, chatModel, embeddingModel, baseUrl } = this.config.ai;
     return { provider, chatModel, embeddingModel, ollama: baseUrl, knowledge: await this.store.stats() };
   }
+
+  @Post('ingest')
+  @ApiOperation({ summary: 'Split, embed and store every markdown file in /knowledge' })
+  ingest() {
+    return this.ingestion.ingestDirectory();
+  }
 }
