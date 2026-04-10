@@ -39,4 +39,10 @@ describe('RAG building blocks (no database, no Ollama)', () => {
     for await (const token of rag.stream('limit?')) text += token;
     expect(text).toContain('Limit is Rs 50,000.');
   });
+
+  it('answers honestly when nothing relevant is indexed', async () => {
+    const store = { similaritySearch: jest.fn().mockResolvedValue([]) } as unknown as PgVectorStore;
+    const rag = new RagService(new HashingEmbeddings(), new ExtractiveFakeChatModel(), store);
+    expect((await rag.ask('anything')).answer).toContain("don't have that information");
+  });
 });
