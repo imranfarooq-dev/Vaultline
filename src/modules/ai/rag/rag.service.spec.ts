@@ -20,4 +20,15 @@ describe('RAG building blocks (no database, no Ollama)', () => {
     const unrelated = await e.embedQuery('student saver accounts have no minimum balance');
     expect(cosine(query, related)).toBeGreaterThan(cosine(query, unrelated));
   });
+
+  it('runs the full LangChain chain: retrieve -> prompt -> model -> parser', async () => {
+    const store = {
+      similaritySearch: jest.fn().mockResolvedValue([{ source: 'fees.md', chunkIndex: 0, content: 'SWIFT fee is Rs 2,500 plus 0.1%.', score: 0.91 }]),
+    } as unknown as PgVectorStore;
+    const rag = new RagService(new HashingEmbeddings(), new ExtractiveFakeChatModel(), store);
+
+    const result = await rag.ask('What is the SWIFT fee?');
+    expect(result.answer).toContain('SWIFT fee is Rs 2,500');
+    expect(result.sources).toEqual([expect.objectContaining({ source: 'fees.md', score: 0.91 })]);
+  });
 });
