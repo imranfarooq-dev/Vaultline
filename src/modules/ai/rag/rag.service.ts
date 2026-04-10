@@ -42,4 +42,14 @@ export class RagService {
   private get chain() {
     return RunnableSequence.from([this.prompt, this.chatModel, new StringOutputParser()]);
   }
+
+  async retrieve(question: string, k = 4): Promise<ScoredChunk[]> {
+    try {
+      const queryVector = await this.embeddings.embedQuery(question);
+      return await this.store.similaritySearch(queryVector, k, 0.05);
+    } catch (error) {
+      if (error instanceof DependencyUnavailableError) throw error;
+      throw new DependencyUnavailableError(`Retrieval failed: ${(error as Error).message}`);
+    }
+  }
 }
