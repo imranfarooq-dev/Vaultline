@@ -73,4 +73,11 @@ export class RagService {
       tookMs: Date.now() - started,
     };
   }
+
+  /** Token-by-token streaming, used by the Server-Sent Events endpoint. */
+  async *stream(question: string, k = 4): AsyncGenerator<string> {
+    const chunks = await this.retrieve(question, k);
+    const stream = await this.chain.stream({ context: this.formatContext(chunks), question });
+    for await (const token of stream) yield token;
+  }
 }
