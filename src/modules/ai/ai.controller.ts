@@ -48,4 +48,10 @@ export class AiController {
   retrieve(@Body() dto: AskDto) {
     return this.rag.retrieve(dto.question, dto.k);
   }
+
+  @Post('ask')
+  @ApiOperation({ summary: 'Full RAG answer with sources' })
+  ask(@Body() dto: AskDto) {
+    return this.rag.ask(dto.question, dto.k);
+  }
 }
