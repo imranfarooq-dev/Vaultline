@@ -42,4 +42,10 @@ export class AiController {
   ingest() {
     return this.ingestion.ingestDirectory();
   }
+
+  @Post('retrieve')
+  @ApiOperation({ summary: 'Only the retrieval step: see which chunks would be sent to the LLM' })
+  retrieve(@Body() dto: AskDto) {
+    return this.rag.retrieve(dto.question, dto.k);
+  }
 }
