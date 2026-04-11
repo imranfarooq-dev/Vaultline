@@ -45,4 +45,10 @@ describe('RAG building blocks (no database, no Ollama)', () => {
     const rag = new RagService(new HashingEmbeddings(), new ExtractiveFakeChatModel(), store);
     expect((await rag.ask('anything')).answer).toContain("don't have that information");
   });
+
+  it('wraps an unreachable embedding model as a 503-style error', async () => {
+    const brokenEmbeddings = { embedQuery: jest.fn().mockRejectedValue(new Error('ECONNREFUSED')) } as unknown as HashingEmbeddings;
+    const rag = new RagService(brokenEmbeddings, new ExtractiveFakeChatModel(), {} as PgVectorStore);
+    await expect(rag.ask('x')).rejects.toBeInstanceOf(DependencyUnavailableError);
+  });
 });
