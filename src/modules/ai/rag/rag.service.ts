@@ -80,4 +80,8 @@ export class RagService {
     const stream = await this.chain.stream({ context: this.formatContext(chunks), question });
     for await (const token of stream) yield token;
   }
+
+  private formatContext(chunks: ScoredChunk[]): string {
+    return chunks.map((c) => `[${c.source} #${c.chunkIndex}]\n${c.content}`).join('\n\n');
+  }
 }
