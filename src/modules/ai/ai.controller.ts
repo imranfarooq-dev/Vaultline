@@ -54,4 +54,19 @@ export class AiController {
   ask(@Body() dto: AskDto) {
     return this.rag.ask(dto.question, dto.k);
   }
+
+  @Get('ask/stream')
+  @ApiOperation({ summary: 'Streamed answer (Server-Sent Events). Try: curl -N "localhost:3000/api/ai/ask/stream?q=..."' })
+  async stream(@Query('q') question: string, @Res() res: Response) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    try {
+      for await (const token of this.rag.stream(question ?? '')) res.write(`data: ${JSON.stringify(token)}\n\n`);
+      res.write('event: done\ndata: {}\n\n');
+    } catch (error) {
+      res.write(`event: error\ndata: ${JSON.stringify((error as Error).message)}\n\n`);
+    }
+    res.end();
+  }
 }
