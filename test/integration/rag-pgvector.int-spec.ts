@@ -32,4 +32,12 @@ describe('RAG with pgvector (integration)', () => {
     await app?.close();
     await db?.stop();
   });
+
+  it('ingests every knowledge file into chunks', async () => {
+    const result = await ingestion.ingestDirectory();
+    expect(result.skipped).toBe(false);
+    const stats = await store.stats();
+    expect(stats.sources).toHaveLength(5);
+    expect(stats.chunks).toBeGreaterThanOrEqual(5);
+  });
 });
