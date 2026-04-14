@@ -40,4 +40,10 @@ describe('RAG with pgvector (integration)', () => {
     expect(stats.sources).toHaveLength(5);
     expect(stats.chunks).toBeGreaterThanOrEqual(5);
   });
+
+  it('re-ingesting replaces chunks instead of duplicating them', async () => {
+    const before = (await store.stats()).chunks;
+    await ingestion.ingestDirectory();
+    expect((await store.stats()).chunks).toBe(before);
+  });
 });
