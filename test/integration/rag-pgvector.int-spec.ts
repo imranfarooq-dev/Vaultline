@@ -46,4 +46,10 @@ describe('RAG with pgvector (integration)', () => {
     await ingestion.ingestDirectory();
     expect((await store.stats()).chunks).toBe(before);
   });
+
+  it('similarity search finds the right document', async () => {
+    const hits = await rag.retrieve('What documents do I need for a loan and what credit score is required?', 3);
+    expect(hits[0].source).toBe('04-loans.md');
+    expect(hits[0].score).toBeGreaterThan(hits[hits.length - 1].score - 0.0001);
+  });
 });
