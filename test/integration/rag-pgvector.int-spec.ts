@@ -57,4 +57,12 @@ describe('RAG with pgvector (integration)', () => {
     const answer = await rag.ask('Can a frozen account receive salary deposits?');
     expect(answer.sources.map((s) => s.source)).toContain('05-security-and-fraud.md');
   });
+
+  it('advisory lock prevents two instances ingesting at once', async () => {
+    let inner: unknown = 'not-run';
+    await store.withIngestionLock(async () => {
+      inner = await store.withIngestionLock(async () => 'should not run');
+    });
+    expect(inner).toBeNull();
+  });
 });
