@@ -52,4 +52,9 @@ describe('RAG with pgvector (integration)', () => {
     expect(hits[0].source).toBe('04-loans.md');
     expect(hits[0].score).toBeGreaterThan(hits[hits.length - 1].score - 0.0001);
   });
+
+  it('answers with sources through the full chain', async () => {
+    const answer = await rag.ask('Can a frozen account receive salary deposits?');
+    expect(answer.sources.map((s) => s.source)).toContain('05-security-and-fraud.md');
+  });
 });
