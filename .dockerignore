@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+.git
+.github
+.env
+k8s
+infra
+**/.terraform
+**/*.tfstate*
+jenkins
+reports
+Jenkinsfile
