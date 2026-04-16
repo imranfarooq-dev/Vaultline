@@ -12,3 +12,22 @@
 #        Kafka UI http://localhost:8080  Ollama http://localhost:11434
 # =============================================================================
 name: nestbank
+
+x-app-env: &app-env
+  NODE_ENV: production
+  LOG_FORMAT: pretty
+  DB_HOST: postgres
+  DB_PORT: 5432
+  DB_USER: bank
+  DB_PASSWORD: bank_password
+  DB_NAME: bank
+  DB_RUN_MIGRATIONS: "false"   # the one-shot "migrate" service does it
+  KAFKA_ENABLED: "true"
+  KAFKA_BROKERS: kafka:9092
+  KAFKA_REPLICATION_FACTOR: 1
+  AI_PROVIDER: ollama
+  OLLAMA_BASE_URL: http://ollama:11434
+  OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-llama3.2:1b}
+  OLLAMA_EMBEDDING_MODEL: ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
+  INTERNAL_TRANSFER_FEE_MINOR: 0
+  FRAUD_RULES: "amount > 5000000 AND channel == 'mobile';hour < 5 AND amount > 1000000"
