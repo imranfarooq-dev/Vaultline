@@ -11,3 +11,9 @@ FROM node:${NODE_VERSION} AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
+
+# ---------- 2. compile TypeScript ----------
+FROM deps AS build
+COPY tsconfig.json nest-cli.json ./
+COPY src ./src
+RUN npm run build
