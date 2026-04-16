@@ -1,0 +1,14 @@
+# =============================================================================
+# NestBank - full local platform
+#
+#   docker compose up -d --build          start everything
+#   docker compose logs -f api worker     watch the app
+#   docker compose run --rm smoke         walk through all 23 patterns
+#   docker compose --profile test run --rm tests       run test suites in Docker
+#   docker compose --profile loadtest run --rm k6      load test
+#   docker compose down -v                stop and delete all data
+#
+# URLs:  API http://localhost:3000/api   Swagger http://localhost:3000/docs
+#        Kafka UI http://localhost:8080  Ollama http://localhost:11434
+# =============================================================================
+name: nestbank
