@@ -17,3 +17,9 @@ FROM deps AS build
 COPY tsconfig.json nest-cli.json ./
 COPY src ./src
 RUN npm run build
+
+# ---------- 3. test image (dev deps + sources + tests) ----------
+FROM deps AS test
+COPY . .
+ENV NODE_ENV=test
+CMD ["npx", "jest", "--selectProjects", "unit", "contract", "integration", "e2e", "--runInBand"]
