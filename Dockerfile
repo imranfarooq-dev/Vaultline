@@ -23,3 +23,9 @@ FROM deps AS test
 COPY . .
 ENV NODE_ENV=test
 CMD ["npx", "jest", "--selectProjects", "unit", "contract", "integration", "e2e", "--runInBand"]
+
+# ---------- 4. production-only dependencies ----------
+FROM node:${NODE_VERSION} AS prod-deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --no-audit --no-fund && npm cache clean --force
