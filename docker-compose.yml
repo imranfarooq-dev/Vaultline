@@ -31,3 +31,19 @@ x-app-env: &app-env
   OLLAMA_EMBEDDING_MODEL: ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
   INTERNAL_TRANSFER_FEE_MINOR: 0
   FRAUD_RULES: "amount > 5000000 AND channel == 'mobile';hour < 5 AND amount > 1000000"
+
+services:
+  # ---------------------------------------------------------------- data
+  postgres:
+    image: pgvector/pgvector:pg16          # PostgreSQL 16 + the vector extension for RAG
+    environment:
+      POSTGRES_USER: bank
+      POSTGRES_PASSWORD: bank_password
+      POSTGRES_DB: bank
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bank -d bank"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
