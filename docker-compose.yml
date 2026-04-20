@@ -164,3 +164,13 @@ services:
       SKIP_KAFKA_TESTS: "1"                 # Kafka suite uses Testcontainers: run it on the host
     depends_on:
       postgres: { condition: service_healthy }
+
+  k6:
+    image: grafana/k6:0.54.0
+    profiles: [loadtest]
+    environment:
+      BASE_URL: http://api:3000
+    volumes: ["./test/load:/scripts:ro"]
+    command: ["run", "/scripts/banking-load.js"]
+    depends_on:
+      api: { condition: service_healthy }
