@@ -96,3 +96,14 @@ services:
     #   resources:
     #     reservations:
     #       devices: [{ driver: nvidia, count: all, capabilities: [gpu] }]
+
+  ollama-pull:                              # one-shot: downloads the models, then exits
+    image: ollama/ollama:latest
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - ollama pull ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text} && ollama pull ${OLLAMA_CHAT_MODEL:-llama3.2:1b} && echo "Models ready"
+    depends_on:
+      ollama: { condition: service_healthy }
+    restart: "no"
