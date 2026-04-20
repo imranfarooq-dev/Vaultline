@@ -142,3 +142,13 @@ services:
       migrate: { condition: service_completed_successfully }
       kafka: { condition: service_healthy }
     restart: unless-stopped
+
+  # ---------------------------------------------------------------- tools (on demand)
+  smoke:
+    image: nestbank/banking-api:local
+    profiles: [tools]
+    environment:
+      BASE_URL: http://api:3000
+    command: ["node", "scripts/smoke-test.mjs"]
+    depends_on:
+      api: { condition: service_healthy }
