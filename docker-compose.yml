@@ -117,3 +117,17 @@ services:
     depends_on:
       postgres: { condition: service_healthy }
     restart: "no"
+
+  api:
+    image: nestbank/banking-api:local
+    environment:
+      <<: *app-env
+      APP_MODE: api
+      PORT: 3000
+      AI_AUTO_INGEST: "true"                # ingests /knowledge once the embedding model is pulled
+    ports: ["3000:3000"]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      kafka: { condition: service_healthy }
+      ollama: { condition: service_healthy }
+    restart: unless-stopped
