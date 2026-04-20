@@ -152,3 +152,15 @@ services:
     command: ["node", "scripts/smoke-test.mjs"]
     depends_on:
       api: { condition: service_healthy }
+
+  tests:
+    build: { context: ., target: test }
+    image: nestbank/banking-api:test
+    profiles: [test]
+    environment:
+      TEST_DB_HOST: postgres                # each suite creates its own throwaway database here
+      TEST_DB_USER: bank
+      TEST_DB_PASSWORD: bank_password
+      SKIP_KAFKA_TESTS: "1"                 # Kafka suite uses Testcontainers: run it on the host
+    depends_on:
+      postgres: { condition: service_healthy }
