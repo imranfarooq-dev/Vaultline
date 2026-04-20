@@ -107,3 +107,13 @@ services:
     depends_on:
       ollama: { condition: service_healthy }
     restart: "no"
+
+  # ---------------------------------------------------------------- app
+  migrate:                                  # one-shot: applies DB migrations before the app starts
+    build: { context: ., target: runtime }
+    image: nestbank/banking-api:local
+    environment: *app-env
+    command: ["node", "dist/database/run-migrations.js"]
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: "no"
