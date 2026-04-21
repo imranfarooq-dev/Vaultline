@@ -34,3 +34,9 @@ const expect = (condition, message) => { if (!condition) throw new Error(message
 const unique = Date.now().toString(36);
 
 console.log(`\nNestBank smoke test against ${BASE}\n`);
+
+const health = await call('GET', '/health/ready').catch((e) => ({ status: 0, data: e.message }));
+if (health.status !== 200) {
+  console.error(`API not ready (${health.status}): ${JSON.stringify(health.data)}`);
+  process.exit(1);
+}
