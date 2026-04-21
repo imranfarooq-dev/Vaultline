@@ -174,3 +174,8 @@ services:
     command: ["run", "/scripts/banking-load.js"]
     depends_on:
       api: { condition: service_healthy }
+
+volumes:
+  pgdata:
+  kafkadata:
+  ollama:
