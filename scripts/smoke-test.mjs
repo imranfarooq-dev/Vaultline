@@ -29,3 +29,8 @@ async function step(pattern, title, fn) {
     console.log(`  \u2718 [${pattern}] ${title}\n      !! ${error.message}`);
   }
 }
+
+const expect = (condition, message) => { if (!condition) throw new Error(message); };
+const unique = Date.now().toString(36);
+
+console.log(`\nNestBank smoke test against ${BASE}\n`);
