@@ -18,3 +18,14 @@ async function call(method, path, body) {
   try { data = JSON.parse(text); } catch { /* text/csv etc */ }
   return { status: res.status, data };
 }
+
+async function step(pattern, title, fn) {
+  try {
+    const shown = await fn();
+    passed++;
+    console.log(`  \u2714 [${pattern}] ${title}${shown ? `\n      -> ${shown}` : ''}`);
+  } catch (error) {
+    failed++;
+    console.log(`  \u2718 [${pattern}] ${title}\n      !! ${error.message}`);
+  }
+}
