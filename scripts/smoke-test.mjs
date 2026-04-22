@@ -52,3 +52,9 @@ await step('Facade', 'onboard a customer in one call', async () => {
   current = c.data.account;
   return `${savings.accountNumber} ${savings.status} ${savings.balanceFormatted}`;
 });
+
+await step('Factory Method', 'minimum opening balance enforced per account type', async () => {
+  const r = await call('POST', '/accounts', { ownerName: owner, type: 'FIXED_DEPOSIT', currency: 'PKR', initialDepositMinor: 100 });
+  expect(r.status === 422, `expected 422, got ${r.status}`);
+  return r.data.message;
+});
