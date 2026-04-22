@@ -40,3 +40,15 @@ if (health.status !== 200) {
   console.error(`API not ready (${health.status}): ${JSON.stringify(health.data)}`);
   process.exit(1);
 }
+
+const owner = `Ayesha Khan ${unique}`;
+let savings, current, commandId, draftId;
+
+await step('Facade', 'onboard a customer in one call', async () => {
+  const r = await call('POST', '/banking/onboard', { ownerName: owner, type: 'SAVINGS', currency: 'PKR', productCode: 'FREELANCER_SAVER', initialDepositMinor: 12_000_000 });
+  expect(r.status === 201, JSON.stringify(r.data));
+  savings = r.data.account;
+  const c = await call('POST', '/banking/onboard', { ownerName: owner, type: 'CURRENT', currency: 'PKR', initialDepositMinor: 500_000 });
+  current = c.data.account;
+  return `${savings.accountNumber} ${savings.status} ${savings.balanceFormatted}`;
+});
