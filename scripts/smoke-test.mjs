@@ -58,3 +58,11 @@ await step('Factory Method', 'minimum opening balance enforced per account type'
   expect(r.status === 422, `expected 422, got ${r.status}`);
   return r.data.message;
 });
+
+await step('Prototype', 'products cloned from prototypes keep independent perks', async () => {
+  const r = await call('GET', '/accounts/products');
+  const basic = r.data.find((p) => p.code === 'BASIC_SAVER');
+  const student = r.data.find((p) => p.code === 'STUDENT_SAVER');
+  expect(basic.features.perks.length === 1 && student.features.perks.length === 2, 'prototype was mutated by a clone');
+  return `STUDENT_SAVER perks: ${student.features.perks.join(', ')}`;
+});
