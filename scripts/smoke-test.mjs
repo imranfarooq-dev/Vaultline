@@ -66,3 +66,10 @@ await step('Prototype', 'products cloned from prototypes keep independent perks'
   expect(basic.features.perks.length === 1 && student.features.perks.length === 2, 'prototype was mutated by a clone');
   return `STUDENT_SAVER perks: ${student.features.perks.join(', ')}`;
 });
+
+await step('Singleton', 'reference numbers come from one generator', async () => {
+  const r = await call('POST', '/transactions/deposit', { accountId: current.id, amountMinor: 100_000 });
+  expect(/^DEP-\d{8}-/.test(r.data.reference), JSON.stringify(r.data));
+  commandId = r.data.commandId;
+  return r.data.reference;
+});
