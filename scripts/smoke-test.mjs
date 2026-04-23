@@ -73,3 +73,10 @@ await step('Singleton', 'reference numbers come from one generator', async () =>
   commandId = r.data.commandId;
   return r.data.reference;
 });
+
+await step('Command', 'undo the deposit, and refuse a second undo', async () => {
+  const undo = await call('POST', `/transactions/commands/${commandId}/undo`);
+  const again = await call('POST', `/transactions/commands/${commandId}/undo`);
+  expect(undo.status === 201 && again.status === 422, `${undo.status}/${again.status}`);
+  return `reversal ${undo.data.reference}`;
+});
