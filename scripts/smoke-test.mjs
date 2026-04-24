@@ -80,3 +80,10 @@ await step('Command', 'undo the deposit, and refuse a second undo', async () => 
   expect(undo.status === 201 && again.status === 422, `${undo.status}/${again.status}`);
   return `reversal ${undo.data.reference}`;
 });
+
+await step('Decorator', 'transfer passes through audit -> fraud -> fee -> ledger', async () => {
+  const r = await call('POST', '/transactions/transfer', { fromAccountId: savings.id, toAccountId: current.id, amountMinor: 250_000, channel: 'branch' });
+  expect(r.status === 201, JSON.stringify(r.data));
+  expect(r.data.pipeline.join('>') === 'audit>fraud-screening>fee>ledger', r.data.pipeline.join('>'));
+  return `pipeline ${r.data.pipeline.join(' > ')}, fee ${r.data.feeMinor}`;
+});
