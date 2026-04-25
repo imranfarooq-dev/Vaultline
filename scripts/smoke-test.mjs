@@ -100,3 +100,12 @@ await step('Chain of Responsibility', 'insufficient funds stopped by the chain',
   expect(r.status === 422, `expected 422, got ${r.status}`);
   return r.data.message;
 });
+
+await step('State', 'frozen account accepts deposits but rejects withdrawals', async () => {
+  await call('PATCH', `/accounts/${current.id}/status`, { action: 'freeze' });
+  const dep = await call('POST', '/transactions/deposit', { accountId: current.id, amountMinor: 1000 });
+  const wdl = await call('POST', '/transactions/withdraw', { accountId: current.id, amountMinor: 1000 });
+  await call('PATCH', `/accounts/${current.id}/status`, { action: 'unfreeze' });
+  expect(dep.status === 201 && wdl.status === 409, `${dep.status}/${wdl.status}`);
+  return wdl.data.message;
+});
