@@ -94,3 +94,9 @@ await step('Interpreter', 'a mobile transfer above Rs 50,000 is blocked by a fra
   const parsed = await call('POST', '/fraud/evaluate', { rule: "amount > 100 AND NOT (channel == 'web' OR hour < 5)", context: { amount: 500, channel: 'mobile', hour: 12 } });
   return `blocked by "${r.data.details.matchedRules[0]}"; parsedAs ${parsed.data.parsedAs} = ${parsed.data.matched}`;
 });
+
+await step('Chain of Responsibility', 'insufficient funds stopped by the chain', async () => {
+  const r = await call('POST', '/transactions/withdraw', { accountId: current.id, amountMinor: 999_999_999 });
+  expect(r.status === 422, `expected 422, got ${r.status}`);
+  return r.data.message;
+});
