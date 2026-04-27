@@ -132,3 +132,10 @@ await step('Flyweight', 'currencies are shared objects', async () => {
   const r = await call('GET', '/accounts/currencies');
   return `shared Currency objects in memory: ${r.data.sharedCurrencyObjectsInMemory}`;
 });
+
+await step('Bridge', 'detailed statement as text, mini statement as csv', async () => {
+  const text = await call('GET', `/statements/${savings.id}?type=detailed&format=text`);
+  const csv = await call('GET', `/statements/${savings.id}?type=mini&format=csv`);
+  expect(String(text.data).includes('DETAILED STATEMENT') && String(csv.data).startsWith('date,reference,amount'), 'unexpected output');
+  return String(text.data).split('\n').find((l) => l.startsWith('Closing balance'));
+});
