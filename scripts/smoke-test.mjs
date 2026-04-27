@@ -121,3 +121,9 @@ await step('Composite', 'portfolio totals roll up through nested groups', async 
   expect(r.data.accounts === 2, JSON.stringify(r.data));
   return `${r.data.accounts} accounts, total ${r.data.formattedTotals.join(', ')}`;
 });
+
+await step('Visitor', 'month-end fee/tax/risk report', async () => {
+  const r = await call('GET', '/accounts/reports/month-end');
+  expect(typeof r.data.totalFeesMinor === 'number', JSON.stringify(r.data));
+  return `${r.data.accounts} accounts, fees ${r.data.totalFeesMinor}, tax ${r.data.totalTaxMinor}`;
+});
