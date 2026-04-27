@@ -127,3 +127,8 @@ await step('Visitor', 'month-end fee/tax/risk report', async () => {
   expect(typeof r.data.totalFeesMinor === 'number', JSON.stringify(r.data));
   return `${r.data.accounts} accounts, fees ${r.data.totalFeesMinor}, tax ${r.data.totalTaxMinor}`;
 });
+
+await step('Flyweight', 'currencies are shared objects', async () => {
+  const r = await call('GET', '/accounts/currencies');
+  return `shared Currency objects in memory: ${r.data.sharedCurrencyObjectsInMemory}`;
+});
