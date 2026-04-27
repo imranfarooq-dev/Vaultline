@@ -139,3 +139,8 @@ await step('Bridge', 'detailed statement as text, mini statement as csv', async 
   expect(String(text.data).includes('DETAILED STATEMENT') && String(csv.data).startsWith('date,reference,amount'), 'unexpected output');
   return String(text.data).split('\n').find((l) => l.startsWith('Closing balance'));
 });
+
+await step('Iterator', 'CSV export streams the ledger page by page', async () => {
+  const r = await call('GET', `/transactions/accounts/${savings.id}/export.csv`);
+  return `${String(r.data).trim().split('\n').length - 1} rows exported`;
+});
