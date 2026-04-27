@@ -115,3 +115,9 @@ await step('Strategy', 'interest algorithm chosen by account type', async () => 
   expect(r.data.strategy === 'tiered', r.data.strategy);
   return `${r.data.strategy}: ${r.data.formatted} per month`;
 });
+
+await step('Composite', 'portfolio totals roll up through nested groups', async () => {
+  const r = await call('GET', `/accounts/portfolio/${encodeURIComponent(owner)}`);
+  expect(r.data.accounts === 2, JSON.stringify(r.data));
+  return `${r.data.accounts} accounts, total ${r.data.formattedTotals.join(', ')}`;
+});
