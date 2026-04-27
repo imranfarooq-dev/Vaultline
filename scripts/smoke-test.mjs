@@ -109,3 +109,9 @@ await step('State', 'frozen account accepts deposits but rejects withdrawals', a
   expect(dep.status === 201 && wdl.status === 409, `${dep.status}/${wdl.status}`);
   return wdl.data.message;
 });
+
+await step('Strategy', 'interest algorithm chosen by account type', async () => {
+  const r = await call('GET', `/accounts/${savings.id}/interest-preview`);
+  expect(r.data.strategy === 'tiered', r.data.strategy);
+  return `${r.data.strategy}: ${r.data.formatted} per month`;
+});
