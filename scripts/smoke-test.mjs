@@ -168,3 +168,9 @@ await step('Memento', 'draft changes can be undone', async () => {
   expect(undone.data.fields.amountMinor === 50_000_000, JSON.stringify(undone.data));
   return `amount restored to ${undone.data.fields.amountMinor}`;
 });
+
+await step('Builder + Mediator + Adapter', 'submit draft: desks coordinate through the mediator', async () => {
+  const r = await call('POST', `/loans/drafts/${draftId}/submit`);
+  expect(r.status === 201, JSON.stringify(r.data));
+  return `${r.data.status}: ${r.data.decisionLog.join(' | ')}`;
+});
