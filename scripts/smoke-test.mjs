@@ -159,3 +159,12 @@ await step('Abstract Factory', 'SWIFT family quotes, RAAST family rejects USD', 
   expect(swift.data.valid && !raast.data.valid, 'unexpected validation');
   return `SWIFT fee ${swift.data.feeMinor}; RAAST errors: ${raast.data.errors.length}`;
 });
+
+await step('Memento', 'draft changes can be undone', async () => {
+  const d = await call('POST', '/loans/drafts', { applicantName: 'Ali Raza', accountId: savings.id, amountMinor: 50_000_000, termMonths: 24, purpose: 'car', monthlyIncomeMinor: 40_000_000 });
+  draftId = d.data.draftId;
+  await call('PATCH', `/loans/drafts/${draftId}`, { amountMinor: 90_000_000 });
+  const undone = await call('POST', `/loans/drafts/${draftId}/undo`);
+  expect(undone.data.fields.amountMinor === 50_000_000, JSON.stringify(undone.data));
+  return `amount restored to ${undone.data.fields.amountMinor}`;
+});
