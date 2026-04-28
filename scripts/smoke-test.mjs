@@ -152,3 +152,10 @@ await step('Proxy', 'second FX lookup is served from cache', async () => {
   expect(r.data.source === 'cache', r.data.source);
   return `${r.data.amount} = ${r.data.converted} (source ${r.data.source}, ${r.data.tookMs}ms)`;
 });
+
+await step('Abstract Factory', 'SWIFT family quotes, RAAST family rejects USD', async () => {
+  const swift = await call('POST', '/payments/quote', { rail: 'SWIFT', amountMinor: 5_000_000, currency: 'USD', beneficiaryName: 'Bilal', beneficiaryIban: 'DE89370400440532013000', beneficiaryBic: 'DEUTDEFF', purpose: 'Tuition' });
+  const raast = await call('POST', '/payments/quote', { rail: 'RAAST', amountMinor: 5_000_000, currency: 'USD', beneficiaryName: 'Bilal', beneficiaryIban: 'bad' });
+  expect(swift.data.valid && !raast.data.valid, 'unexpected validation');
+  return `SWIFT fee ${swift.data.feeMinor}; RAAST errors: ${raast.data.errors.length}`;
+});
