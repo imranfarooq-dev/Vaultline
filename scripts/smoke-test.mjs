@@ -174,3 +174,9 @@ await step('Builder + Mediator + Adapter', 'submit draft: desks coordinate throu
   expect(r.status === 201, JSON.stringify(r.data));
   return `${r.data.status}: ${r.data.decisionLog.join(' | ')}`;
 });
+
+await step('Template Method', 'interest-posting batch job uses the shared skeleton', async () => {
+  const r = await call('POST', '/operations/jobs/interest-posting/run');
+  expect(r.data.job === 'interest-posting', JSON.stringify(r.data));
+  return `scanned ${r.data.scanned}, affected ${r.data.affected}, failed ${r.data.failed}`;
+});
