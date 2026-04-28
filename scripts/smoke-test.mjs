@@ -144,3 +144,11 @@ await step('Iterator', 'CSV export streams the ledger page by page', async () =>
   const r = await call('GET', `/transactions/accounts/${savings.id}/export.csv`);
   return `${String(r.data).trim().split('\n').length - 1} rows exported`;
 });
+
+await step('Proxy', 'second FX lookup is served from cache', async () => {
+  const pair = ['GBP', 'AED'];
+  await call('GET', `/fx/convert?from=${pair[0]}&to=${pair[1]}&amountMinor=10000`);
+  const r = await call('GET', `/fx/convert?from=${pair[0]}&to=${pair[1]}&amountMinor=10000`);
+  expect(r.data.source === 'cache', r.data.source);
+  return `${r.data.amount} = ${r.data.converted} (source ${r.data.source}, ${r.data.tookMs}ms)`;
+});
