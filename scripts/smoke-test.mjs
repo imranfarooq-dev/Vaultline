@@ -186,3 +186,16 @@ await step('Observer', 'events delivered to every observer', async () => {
   expect(r.data.observers.length >= 3, JSON.stringify(r.data));
   return `observers: ${r.data.observers.join(', ')} | transport: ${r.data.transport}`;
 });
+
+await step('RAG', 'ingest knowledge and ask a question', async () => {
+  const ingest = await call('POST', '/ai/ingest');
+  if (ingest.status === 503) return `SKIPPED (model not ready yet): ${ingest.data.message}`;
+  const r = await call('POST', '/ai/ask', { question: 'What is the fee for a SWIFT international transfer?' });
+  if (r.status === 503) return `SKIPPED (chat model not ready yet): ${r.data.message}`;
+  expect(r.status === 201, JSON.stringify(r.data));
+  if (VERBOSE) console.log(r.data);
+  return `${r.data.answer.slice(0, 160)} [top source: ${r.data.sources[0]?.source}]`;
+});
+
+console.log(`\n${passed} passed, ${failed} failed\n`);
+process.exit(failed ? 1 : 0);
