@@ -30,3 +30,8 @@ test-docker: ## Run unit, contract, integration and e2e tests inside Docker
 # ---------- Node on the host ----------
 install: ## Install dependencies
 	npm ci
+test: ## Fast tests (no Docker)
+	npm run test:unit
+	npm run test:contract
+test-all: ## Every suite incl. Testcontainers (needs Docker)
+	npm run test:all
