@@ -6,3 +6,9 @@ STATE_BUCKET ?= nestbank-tfstate-CHANGE_ME
 
 help: ## Show all commands
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}'
+
+# ---------- Docker Compose (local platform) ----------
+up: ## Start Postgres, Kafka, Ollama, API and worker
+	docker compose up -d --build
+	@echo "API http://localhost:3000/api | Swagger http://localhost:3000/docs | Kafka UI http://localhost:8080"
+	@echo "First start downloads ~1.6GB of models: make logs-ai"
