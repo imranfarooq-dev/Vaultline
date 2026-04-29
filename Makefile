@@ -20,3 +20,7 @@ logs: ## Follow API and worker logs
 	docker compose logs -f api worker
 logs-ai: ## Follow model download
 	docker compose logs -f ollama-pull
+smoke: ## Walk through all 23 patterns against the running stack
+	docker compose run --rm smoke
+load-test: ## k6 load test
+	docker compose --profile loadtest run --rm k6
