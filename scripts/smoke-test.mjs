@@ -180,3 +180,9 @@ await step('Template Method', 'interest-posting batch job uses the shared skelet
   expect(r.data.job === 'interest-posting', JSON.stringify(r.data));
   return `scanned ${r.data.scanned}, affected ${r.data.affected}, failed ${r.data.failed}`;
 });
+
+await step('Observer', 'events delivered to every observer', async () => {
+  const r = await call('GET', '/events/stats');
+  expect(r.data.observers.length >= 3, JSON.stringify(r.data));
+  return `observers: ${r.data.observers.join(', ')} | transport: ${r.data.transport}`;
+});
