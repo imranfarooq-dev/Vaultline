@@ -24,3 +24,9 @@ smoke: ## Walk through all 23 patterns against the running stack
 	docker compose run --rm smoke
 load-test: ## k6 load test
 	docker compose --profile loadtest run --rm k6
+test-docker: ## Run unit, contract, integration and e2e tests inside Docker
+	docker compose --profile test run --rm --build tests
+
+# ---------- Node on the host ----------
+install: ## Install dependencies
+	npm ci
