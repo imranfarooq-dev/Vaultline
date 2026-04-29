@@ -16,3 +16,7 @@ down: ## Stop containers (keep data)
 	docker compose down
 clean: ## Stop and delete all data and models
 	docker compose down -v --remove-orphans
+logs: ## Follow API and worker logs
+	docker compose logs -f api worker
+logs-ai: ## Follow model download
+	docker compose logs -f ollama-pull
