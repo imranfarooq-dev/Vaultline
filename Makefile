@@ -12,3 +12,7 @@ up: ## Start Postgres, Kafka, Ollama, API and worker
 	docker compose up -d --build
 	@echo "API http://localhost:3000/api | Swagger http://localhost:3000/docs | Kafka UI http://localhost:8080"
 	@echo "First start downloads ~1.6GB of models: make logs-ai"
+down: ## Stop containers (keep data)
+	docker compose down
+clean: ## Stop and delete all data and models
+	docker compose down -v --remove-orphans
