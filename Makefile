@@ -43,3 +43,7 @@ k8s-deploy: ## Build image and deploy to the current kube context
 	kubectl apply -k k8s/overlays/local
 	kubectl -n banking wait --for=condition=complete job/banking-migrate --timeout=5m
 	kubectl -n banking rollout status deploy/banking-api --timeout=5m
+k8s-status: ## Show what is running
+	kubectl -n banking get pods,svc,jobs,pvc,hpa
+k8s-forward: ## Expose the API on localhost:3000
+	kubectl -n banking port-forward svc/banking-api 3000:80
