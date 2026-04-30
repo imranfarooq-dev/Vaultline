@@ -35,3 +35,11 @@ test: ## Fast tests (no Docker)
 	npm run test:contract
 test-all: ## Every suite incl. Testcontainers (needs Docker)
 	npm run test:all
+
+# ---------- Local Kubernetes ----------
+k8s-deploy: ## Build image and deploy to the current kube context
+	docker build --target runtime -t nestbank/banking-api:local .
+	kubectl -n banking delete job banking-migrate --ignore-not-found 2>/dev/null || true
+	kubectl apply -k k8s/overlays/local
+	kubectl -n banking wait --for=condition=complete job/banking-migrate --timeout=5m
+	kubectl -n banking rollout status deploy/banking-api --timeout=5m
