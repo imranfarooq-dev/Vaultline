@@ -59,3 +59,10 @@ jenkins-logs: ## Follow Jenkins controller and agent logs
 	docker compose -f jenkins/docker-compose.yml logs -f jenkins jenkins-agent
 jenkins-down: ## Stop Jenkins (keep jobs and build history)
 	docker compose -f jenkins/docker-compose.yml down
+jenkins-clean: ## Stop Jenkins and delete its data, keys and caches
+	docker compose -f jenkins/docker-compose.yml down -v
+
+# ---------- AWS (Terraform) ----------
+tf-bootstrap: ## Create the S3 state bucket (once). STATE_BUCKET=...
+	terraform -chdir=infra/terraform/bootstrap init
+	terraform -chdir=infra/terraform/bootstrap apply -var="bucket_name=$(STATE_BUCKET)"
