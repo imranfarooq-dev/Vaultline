@@ -47,3 +47,11 @@ k8s-status: ## Show what is running
 	kubectl -n banking get pods,svc,jobs,pvc,hpa
 k8s-forward: ## Expose the API on localhost:3000
 	kubectl -n banking port-forward svc/banking-api 3000:80
+k8s-delete: ## Remove everything from the cluster
+	kubectl delete namespace banking
+
+# ---------- Jenkins (CI/CD) ----------
+jenkins-up: ## Start Jenkins controller + build agent on http://localhost:8090
+	docker compose -f jenkins/docker-compose.yml up -d --build
+	@echo "Jenkins: http://localhost:8090 (admin / see jenkins/.env, default admin)"
+	@echo "The pipeline checks out this folder: commit your changes first (git add -A && git commit)"
