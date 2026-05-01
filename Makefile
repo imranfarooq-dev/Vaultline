@@ -70,3 +70,9 @@ tf-init: ## Init backend for ENV (default dev)
 	terraform -chdir=infra/terraform/live init -reconfigure -backend-config=environments/$(ENV).backend.hcl
 tf-plan: tf-init ## Preview AWS changes
 	terraform -chdir=infra/terraform/live plan -var-file=environments/$(ENV).tfvars -out=$(ENV).tfplan
+tf-apply: ## Apply the saved plan (~20 min first time)
+	terraform -chdir=infra/terraform/live apply $(ENV).tfplan
+aws-deploy: ## Push image to ECR and deploy to EKS
+	./infra/scripts/deploy-aws.sh
+aws-destroy: ## Delete everything on AWS (stops billing)
+	./infra/scripts/destroy-aws.sh $(ENV)
