@@ -55,3 +55,7 @@ jenkins-up: ## Start Jenkins controller + build agent on http://localhost:8090
 	docker compose -f jenkins/docker-compose.yml up -d --build
 	@echo "Jenkins: http://localhost:8090 (admin / see jenkins/.env, default admin)"
 	@echo "The pipeline checks out this folder: commit your changes first (git add -A && git commit)"
+jenkins-logs: ## Follow Jenkins controller and agent logs
+	docker compose -f jenkins/docker-compose.yml logs -f jenkins jenkins-agent
+jenkins-down: ## Stop Jenkins (keep jobs and build history)
+	docker compose -f jenkins/docker-compose.yml down
