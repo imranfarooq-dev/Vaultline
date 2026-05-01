@@ -66,3 +66,7 @@ jenkins-clean: ## Stop Jenkins and delete its data, keys and caches
 tf-bootstrap: ## Create the S3 state bucket (once). STATE_BUCKET=...
 	terraform -chdir=infra/terraform/bootstrap init
 	terraform -chdir=infra/terraform/bootstrap apply -var="bucket_name=$(STATE_BUCKET)"
+tf-init: ## Init backend for ENV (default dev)
+	terraform -chdir=infra/terraform/live init -reconfigure -backend-config=environments/$(ENV).backend.hcl
+tf-plan: tf-init ## Preview AWS changes
+	terraform -chdir=infra/terraform/live plan -var-file=environments/$(ENV).tfvars -out=$(ENV).tfplan
