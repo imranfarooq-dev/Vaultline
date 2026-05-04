@@ -8,3 +8,16 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 const BASE = `${__ENV.BASE_URL || 'http://localhost:3000'}/api`;
+const JSON_HEADERS = { headers: { 'Content-Type': 'application/json' } };
+
+export const options = {
+  scenarios: {
+    readers: { executor: 'constant-vus', vus: 10, duration: '45s', exec: 'browse' },
+    payers: { executor: 'ramping-vus', startVUs: 0, stages: [{ duration: '15s', target: 15 }, { duration: '30s', target: 15 }], exec: 'pay' },
+  },
+  thresholds: {
+    http_req_failed: ['rate<0.02'],                     // < 2% errors
+    'http_req_duration{scenario:readers}': ['p(95)<300'],
+    'http_req_duration{scenario:payers}': ['p(95)<800'],
+  },
+};
