@@ -1,0 +1,7 @@
+# Continuous Integration: every push and pull request.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
