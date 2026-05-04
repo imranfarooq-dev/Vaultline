@@ -21,3 +21,9 @@ export const options = {
     'http_req_duration{scenario:payers}': ['p(95)<800'],
   },
 };
+
+export function setup() {
+  const open = (name) =>
+    http.post(`${BASE}/banking/onboard`, JSON.stringify({ ownerName: name, type: 'CURRENT', currency: 'PKR', initialDepositMinor: 500000000 }), JSON_HEADERS).json('account.id');
+  return { a: open(`Load A ${Date.now()}`), b: open(`Load B ${Date.now()}`) };
+}
