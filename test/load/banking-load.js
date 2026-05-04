@@ -27,3 +27,10 @@ export function setup() {
     http.post(`${BASE}/banking/onboard`, JSON.stringify({ ownerName: name, type: 'CURRENT', currency: 'PKR', initialDepositMinor: 500000000 }), JSON_HEADERS).json('account.id');
   return { a: open(`Load A ${Date.now()}`), b: open(`Load B ${Date.now()}`) };
 }
+
+export function browse(data) {
+  const r = http.get(`${BASE}/accounts/${data.a}`);
+  check(r, { 'account 200': (res) => res.status === 200 });
+  http.get(`${BASE}/transactions/accounts/${data.a}?limit=10`);
+  sleep(0.5);
+}
