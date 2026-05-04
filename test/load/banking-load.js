@@ -34,3 +34,10 @@ export function browse(data) {
   http.get(`${BASE}/transactions/accounts/${data.a}?limit=10`);
   sleep(0.5);
 }
+
+export function pay(data) {
+  const [from, to] = Math.random() < 0.5 ? [data.a, data.b] : [data.b, data.a];
+  const r = http.post(`${BASE}/transactions/transfer`, JSON.stringify({ fromAccountId: from, toAccountId: to, amountMinor: 100, channel: 'web' }), JSON_HEADERS);
+  check(r, { 'transfer 201': (res) => res.status === 201 });
+  sleep(0.2);
+}
