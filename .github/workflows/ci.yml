@@ -52,3 +52,16 @@ jobs:
           tags: nestbank/banking-api:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  kubernetes:
+    name: Validate Kubernetes manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: kustomize build + kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz | tar xz
+          cp k8s/overlays/aws/app.env.example k8s/overlays/aws/app.env
+          for overlay in local aws; do
+            kubectl kustomize k8s/overlays/$overlay | ./kubeconform -strict -summary -kubernetes-version 1.31.0
+          done
