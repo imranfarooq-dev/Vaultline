@@ -65,3 +65,18 @@ jobs:
           for overlay in local aws; do
             kubectl kustomize k8s/overlays/$overlay | ./kubeconform -strict -summary -kubernetes-version 1.31.0
           done
+
+  terraform:
+    name: Terraform fmt & validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with: { terraform_version: 1.10.5 }
+      - run: terraform fmt -check -recursive infra/terraform
+      - name: validate
+        run: |
+          for root in bootstrap live; do
+            terraform -chdir=infra/terraform/$root init -backend=false -input=false
+            terraform -chdir=infra/terraform/$root validate
+          done
