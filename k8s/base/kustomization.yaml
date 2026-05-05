@@ -1,0 +1,29 @@
+# Everything the bank app needs on ANY cluster. Overlays add the environment details.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: banking
+labels:
+  - pairs: { app.kubernetes.io/part-of: nestbank }
+    includeSelectors: false
+resources:
+  - namespace.yaml
+  - migration-job.yaml
+  - api.yaml
+  - worker.yaml
+  - ollama.yaml
+configMapGenerator:
+  - name: banking-config
+    literals:
+      - NODE_ENV=production
+      - LOG_FORMAT=json
+      - DB_PORT=5432
+      - DB_NAME=bank
+      - DB_RUN_MIGRATIONS=false
+      - KAFKA_ENABLED=true
+      - AI_PROVIDER=ollama
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_CHAT_MODEL=llama3.2:1b
+      - OLLAMA_EMBEDDING_MODEL=nomic-embed-text
+      - INTERNAL_TRANSFER_FEE_MINOR=0
+      - FRAUD_RULES=amount > 5000000 AND channel == 'mobile';hour < 5 AND amount > 1000000
+# The image name stays the placeholder "banking-api"; each overlay maps it to a real image.
