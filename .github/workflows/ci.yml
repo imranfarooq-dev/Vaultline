@@ -24,3 +24,15 @@ jobs:
       - run: npm run test:cov
       - uses: actions/upload-artifact@v4
         with: { name: coverage, path: coverage }
+
+  container-tests:
+    name: Integration & e2e (Testcontainers)
+    runs-on: ubuntu-latest   # GitHub runners have Docker, so Testcontainers just works
+    needs: fast-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run test:integration
+      - run: npm run test:e2e
