@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: banking-api
+spec:
+  replicas: 2
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels: { app: banking-api }
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: { maxUnavailable: 0, maxSurge: 1 }   # zero-downtime deploys
+  template:
+    metadata:
+      labels: { app: banking-api }
+    spec:
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 30
+      securityContext: { runAsNonRoot: true, runAsUser: 1000, fsGroup: 1000 }
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector: { matchLabels: { app: banking-api } }
+      containers:
+        - name: api
+          image: banking-api
+          imagePullPolicy: IfNotPresent
+          ports: [{ name: http, containerPort: 3000 }]
+          env:
+            - { name: APP_MODE, value: api }
+            - { name: PORT, value: "3000" }
+            - { name: AI_AUTO_INGEST, value: "true" }
+          envFrom:
+            - configMapRef: { name: banking-config }
+            - secretRef: { name: banking-secrets }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: [ALL] }
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { memory: 512Mi }
+          startupProbe:          # give Nest time to boot before other probes start
+            httpGet: { path: /api/health/live, port: http }
+            periodSeconds: 3
+            failureThreshold: 40
+          livenessProbe:         # "is the process stuck?" -> restart
+            httpGet: { path: /api/health/live, port: http }
+            periodSeconds: 15
+          readinessProbe:        # "can it take traffic?" -> add/remove from Service
+            httpGet: { path: /api/health/ready, port: http }
+            periodSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+      volumes:
+        - { name: tmp, emptyDir: {} }
