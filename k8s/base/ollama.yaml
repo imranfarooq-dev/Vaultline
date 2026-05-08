@@ -7,3 +7,35 @@ spec:
   accessModes: [ReadWriteOnce]
   resources:
     requests: { storage: 10Gi }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+spec:
+  replicas: 1
+  strategy: { type: Recreate }   # RWO volume cannot be shared by two pods
+  selector:
+    matchLabels: { app: ollama }
+  template:
+    metadata:
+      labels: { app: ollama }
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: ollama
+          image: ollama/ollama:latest
+          ports: [{ name: http, containerPort: 11434 }]
+          env:
+            - { name: OLLAMA_KEEP_ALIVE, value: "24h" }   # keep the model loaded in memory
+          resources:
+            requests: { cpu: 500m, memory: 2Gi }
+            limits: { memory: 6Gi }
+          readinessProbe:
+            httpGet: { path: /api/tags, port: http }
+            periodSeconds: 10
+          volumeMounts:
+            - { name: models, mountPath: /root/.ollama }
+      volumes:
+        - name: models
+          persistentVolumeClaim: { claimName: ollama-models }
