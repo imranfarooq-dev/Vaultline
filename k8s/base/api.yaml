@@ -77,3 +77,13 @@ spec:
   metrics:
     - type: Resource
       resource: { name: cpu, target: { type: Utilization, averageUtilization: 70 } }
+---
+# Voluntary disruptions (node drains, upgrades) always leave one API pod running.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: banking-api
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: { app: banking-api }
