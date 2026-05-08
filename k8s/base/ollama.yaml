@@ -1,0 +1,9 @@
+# Local LLM server. Models are stored on a PersistentVolume so they download only once.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ollama-models
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests: { storage: 10Gi }
