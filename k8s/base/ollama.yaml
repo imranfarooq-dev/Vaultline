@@ -47,3 +47,27 @@ metadata:
 spec:
   selector: { app: ollama }
   ports: [{ name: http, port: 11434, targetPort: http }]
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ollama-pull-models
+spec:
+  backoffLimit: 10
+  template:
+    spec:
+      restartPolicy: OnFailure
+      enableServiceLinks: false
+      containers:
+        - name: pull
+          image: ollama/ollama:latest
+          env:
+            - { name: OLLAMA_HOST, value: "http://ollama:11434" }
+            - name: OLLAMA_CHAT_MODEL
+              valueFrom: { configMapKeyRef: { name: banking-config, key: OLLAMA_CHAT_MODEL } }
+            - name: OLLAMA_EMBEDDING_MODEL
+              valueFrom: { configMapKeyRef: { name: banking-config, key: OLLAMA_EMBEDDING_MODEL } }
+          command: ["/bin/sh", "-c"]
+          args:
+            - until ollama list >/dev/null 2>&1; do echo waiting for ollama; sleep 5; done;
+              ollama pull "$OLLAMA_EMBEDDING_MODEL" && ollama pull "$OLLAMA_CHAT_MODEL"
