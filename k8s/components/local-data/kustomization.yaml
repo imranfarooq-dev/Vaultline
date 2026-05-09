@@ -1,0 +1,7 @@
+# In-cluster PostgreSQL + Kafka for LOCAL clusters only.
+# On AWS these are replaced by managed RDS and MSK (see infra/terraform).
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+resources:
+  - postgres.yaml
+  - kafka.yaml
