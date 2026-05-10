@@ -1,0 +1,30 @@
+# Local cluster (Docker Desktop / kind / minikube):
+#   docker build -t nestbank/banking-api:local .
+#   kubectl apply -k k8s/overlays/local
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: banking
+resources:
+  - ../../base
+components:
+  - ../../components/local-data
+configMapGenerator:
+  - name: banking-config
+    behavior: merge
+    literals:
+      - DB_HOST=postgres
+      - DB_SSL=false
+      - KAFKA_BROKERS=kafka:9092
+      - KAFKA_SSL=false
+      - KAFKA_REPLICATION_FACTOR=1
+images:
+  - name: banking-api
+    newName: nestbank/banking-api
+    newTag: local
+secretGenerator:
+  - name: banking-secrets
+    literals:            # fine for a laptop; never commit real secrets like this
+      - DB_USER=bank
+      - DB_PASSWORD=bank_password
+generatorOptions:
+  disableNameSuffixHash: false
