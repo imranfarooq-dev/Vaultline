@@ -1,0 +1,17 @@
+# Optional: needs an ingress controller (e.g. ingress-nginx).
+#   kubectl apply -n banking -f k8s/overlays/local/ingress.yaml
+#   open http://banking.localtest.me/docs   (localtest.me always resolves to 127.0.0.1)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: banking-api
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: banking.localtest.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: banking-api, port: { number: 80 } }
