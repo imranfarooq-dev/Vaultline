@@ -18,3 +18,8 @@ variable "region" {
   type    = string
   default = "eu-west-1"
 }
+
+variable "bucket_name" {
+  type        = string
+  description = "Globally unique name, e.g. nestbank-tfstate-123456789012"
+}
