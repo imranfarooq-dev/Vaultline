@@ -13,3 +13,8 @@ terraform {
     aws = { source = "hashicorp/aws", version = "~> 5.95" }
   }
 }
+
+variable "region" {
+  type    = string
+  default = "eu-west-1"
+}
