@@ -27,3 +27,11 @@ variable "bucket_name" {
 provider "aws" {
   region = var.region
 }
+
+resource "aws_s3_bucket" "state" {
+  bucket = var.bucket_name
+
+  lifecycle {
+    prevent_destroy = true # losing state = Terraform forgets what it created
+  }
+}
