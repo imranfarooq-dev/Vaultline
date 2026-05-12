@@ -23,3 +23,7 @@ variable "bucket_name" {
   type        = string
   description = "Globally unique name, e.g. nestbank-tfstate-123456789012"
 }
+
+provider "aws" {
+  region = var.region
+}
