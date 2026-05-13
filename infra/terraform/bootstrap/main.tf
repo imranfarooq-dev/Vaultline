@@ -42,3 +42,12 @@ resource "aws_s3_bucket_versioning" "state" {
     status = "Enabled" # recover a corrupted or deleted state file
   }
 }
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "state" {
+  bucket = aws_s3_bucket.state.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms" # state contains secrets such as the DB password
+    }
+  }
+}
