@@ -58,3 +58,20 @@ module "eks" {
     }
   }
 }
+
+# IAM Role for Service Accounts: gives ONLY the EBS CSI controller pod permission
+# to manage EBS volumes, instead of granting it to every node.
+module "ebs_csi_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.52"
+
+  role_name             = "${var.name}-ebs-csi"
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+}
