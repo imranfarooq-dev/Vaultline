@@ -25,3 +25,8 @@ variable "general_instance_types" {
   type    = list(string)
   default = ["t3.large"]
 }
+
+variable "general_min_size" {
+  type    = number
+  default = 2
+}
