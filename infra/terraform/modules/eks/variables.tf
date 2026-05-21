@@ -20,3 +20,8 @@ variable "api_allowed_cidrs" {
   default     = ["0.0.0.0/0"]
   description = "Who may reach the Kubernetes API. Set to your office/VPN IP in real environments."
 }
+
+variable "general_instance_types" {
+  type    = list(string)
+  default = ["t3.large"]
+}
