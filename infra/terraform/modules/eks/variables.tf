@@ -46,3 +46,8 @@ variable "ai_instance_type" {
   default     = "m6i.xlarge"
   description = "4 vCPU / 16 GiB runs llama3.2:1b on CPU. Use g5.xlarge (+ ai_ami_type) for GPU."
 }
+
+variable "ai_ami_type" {
+  type    = string
+  default = "AL2023_x86_64_STANDARD"
+}
