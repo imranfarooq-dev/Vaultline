@@ -6,3 +6,10 @@ resource "random_password" "master" {
   # RDS forbids / @ " and spaces in master passwords.
   override_special = "!#$%^&*()-_=+[]{}<>:?"
 }
+
+# Stored in Secrets Manager; the deploy script copies it into a Kubernetes Secret.
+# Upgrade path: External Secrets Operator to sync it automatically.
+resource "aws_secretsmanager_secret" "db" {
+  name_prefix             = "${var.name}-db-"
+  recovery_window_in_days = var.deletion_protection ? 30 : 0
+}
