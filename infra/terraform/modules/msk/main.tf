@@ -24,3 +24,17 @@ resource "aws_security_group" "msk" {
     create_before_destroy = true
   }
 }
+
+resource "aws_msk_configuration" "this" {
+  name           = "${var.name}-config"
+  kafka_versions = [var.kafka_version]
+
+  # min.insync.replicas=1 keeps producing possible while one broker is being patched.
+  server_properties = <<-PROPERTIES
+    auto.create.topics.enable=true
+    default.replication.factor=${min(var.broker_count, 3)}
+    min.insync.replicas=1
+    num.partitions=3
+    log.retention.hours=168
+  PROPERTIES
+}
