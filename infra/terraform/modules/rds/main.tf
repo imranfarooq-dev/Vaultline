@@ -13,3 +13,12 @@ resource "aws_secretsmanager_secret" "db" {
   name_prefix             = "${var.name}-db-"
   recovery_window_in_days = var.deletion_protection ? 30 : 0
 }
+
+resource "aws_secretsmanager_secret_version" "db" {
+  secret_id = aws_secretsmanager_secret.db.id
+  secret_string = jsonencode({
+    username = var.username
+    password = random_password.master.result
+    dbname   = var.database_name
+  })
+}
