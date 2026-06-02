@@ -13,3 +13,8 @@ variable "subnet_ids" {
 variable "allowed_security_group_ids" {
   type = list(string)
 }
+
+variable "engine_version" {
+  type    = string
+  default = "16"
+}
