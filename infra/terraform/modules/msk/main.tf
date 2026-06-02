@@ -38,3 +38,8 @@ resource "aws_msk_configuration" "this" {
     log.retention.hours=168
   PROPERTIES
 }
+
+resource "aws_cloudwatch_log_group" "broker" {
+  name              = "/aws/msk/${var.name}"
+  retention_in_days = 7
+}
