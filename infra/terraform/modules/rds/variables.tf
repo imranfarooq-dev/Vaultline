@@ -18,3 +18,8 @@ variable "engine_version" {
   type    = string
   default = "16"
 }
+
+variable "instance_class" {
+  type    = string
+  default = "db.t4g.micro"
+}
