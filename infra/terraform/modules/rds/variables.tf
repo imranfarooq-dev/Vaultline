@@ -23,3 +23,8 @@ variable "instance_class" {
   type    = string
   default = "db.t4g.micro"
 }
+
+variable "allocated_storage" {
+  type    = number
+  default = 20
+}
