@@ -52,3 +52,22 @@ resource "aws_security_group" "db" {
     create_before_destroy = true
   }
 }
+
+resource "aws_db_parameter_group" "this" {
+  name_prefix = "${var.name}-pg16-"
+  family      = "postgres16"
+
+  parameter {
+    name  = "rds.force_ssl" # reject unencrypted connections (app uses DB_SSL=true)
+    value = "1"
+  }
+
+  parameter {
+    name  = "log_min_duration_statement" # log queries slower than 500 ms
+    value = "500"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
