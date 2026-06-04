@@ -28,3 +28,8 @@ variable "broker_count" {
     error_message = "Use 2 brokers (dev) or 3 brokers (prod), one per subnet."
   }
 }
+
+variable "instance_type" {
+  type    = string
+  default = "kafka.t3.small"
+}
