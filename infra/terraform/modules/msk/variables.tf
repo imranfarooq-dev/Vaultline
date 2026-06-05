@@ -33,3 +33,8 @@ variable "instance_type" {
   type    = string
   default = "kafka.t3.small"
 }
+
+variable "volume_size_gb" {
+  type    = number
+  default = 20
+}
