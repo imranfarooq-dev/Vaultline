@@ -71,3 +71,33 @@ resource "aws_db_parameter_group" "this" {
     create_before_destroy = true
   }
 }
+
+resource "aws_db_instance" "this" {
+  identifier     = var.name
+  engine         = "postgres"
+  engine_version = var.engine_version
+
+  instance_class        = var.instance_class
+  allocated_storage     = var.allocated_storage
+  max_allocated_storage = var.allocated_storage * 5 # storage autoscaling
+  storage_type          = "gp3"
+  storage_encrypted     = true
+
+  db_name  = var.database_name
+  username = var.username
+  password = random_password.master.result
+
+  db_subnet_group_name   = aws_db_subnet_group.this.name
+  vpc_security_group_ids = [aws_security_group.db.id]
+  parameter_group_name   = aws_db_parameter_group.this.name
+  publicly_accessible    = false
+
+  multi_az                   = var.multi_az # standby replica in a second AZ for automatic failover
+  backup_retention_period    = var.backup_retention_days
+  auto_minor_version_upgrade = true
+  apply_immediately          = !var.deletion_protection
+  deletion_protection        = var.deletion_protection
+  skip_final_snapshot        = !var.deletion_protection
+  final_snapshot_identifier  = var.deletion_protection ? "${var.name}-final" : null
+  copy_tags_to_snapshot      = true
+}
