@@ -33,3 +33,8 @@ variable "database_name" {
   type    = string
   default = "bank"
 }
+
+variable "username" {
+  type    = string
+  default = "bank"
+}
