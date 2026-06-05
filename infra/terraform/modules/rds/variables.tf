@@ -38,3 +38,8 @@ variable "username" {
   type    = string
   default = "bank"
 }
+
+variable "multi_az" {
+  type    = bool
+  default = false
+}
