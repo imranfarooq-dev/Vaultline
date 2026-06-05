@@ -28,3 +28,8 @@ variable "allocated_storage" {
   type    = number
   default = 20
 }
+
+variable "database_name" {
+  type    = string
+  default = "bank"
+}
