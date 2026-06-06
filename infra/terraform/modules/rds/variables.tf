@@ -48,3 +48,9 @@ variable "backup_retention_days" {
   type    = number
   default = 7
 }
+
+variable "deletion_protection" {
+  type        = bool
+  default     = false
+  description = "true in prod: blocks accidental deletes and keeps a final snapshot"
+}
