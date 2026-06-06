@@ -43,3 +43,8 @@ variable "multi_az" {
   type    = bool
   default = false
 }
+
+variable "backup_retention_days" {
+  type    = number
+  default = 7
+}
