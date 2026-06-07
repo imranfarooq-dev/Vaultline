@@ -10,3 +10,10 @@
 locals {
   name = "nestbank-${var.environment}"
 }
+
+module "network" {
+  source             = "../modules/network"
+  name               = local.name
+  cidr               = var.vpc_cidr
+  single_nat_gateway = var.environment != "prod"
+}
