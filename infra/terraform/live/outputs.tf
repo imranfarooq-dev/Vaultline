@@ -13,3 +13,7 @@ output "configure_kubectl" {
 output "ecr_repository_url" {
   value = module.ecr.repository_url
 }
+
+output "rds_address" {
+  value = module.rds.address
+}
