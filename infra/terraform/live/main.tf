@@ -17,3 +17,9 @@ module "network" {
   cidr               = var.vpc_cidr
   single_nat_gateway = var.environment != "prod"
 }
+
+module "ecr" {
+  source       = "../modules/ecr"
+  name         = "nestbank/banking-api"
+  force_delete = var.environment != "prod"
+}
