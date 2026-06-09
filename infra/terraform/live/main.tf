@@ -38,3 +38,14 @@ module "eks" {
   ai_instance_type       = var.ai_instance_type
   ai_ami_type            = var.ai_ami_type
 }
+
+module "rds" {
+  source                     = "../modules/rds"
+  name                       = local.name
+  vpc_id                     = module.network.vpc_id
+  subnet_ids                 = module.network.private_subnet_ids
+  allowed_security_group_ids = [module.eks.node_security_group_id]
+  instance_class             = var.rds_instance_class
+  multi_az                   = var.environment == "prod"
+  deletion_protection        = var.environment == "prod"
+}
