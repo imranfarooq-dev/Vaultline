@@ -40,3 +40,8 @@ variable "general_max_size" {
   type    = number
   default = 4
 }
+
+variable "use_spot" {
+  type    = bool
+  default = false
+}
