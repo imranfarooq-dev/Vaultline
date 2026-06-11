@@ -21,3 +21,7 @@ output "rds_address" {
 output "rds_secret_arn" {
   value = module.rds.secret_arn
 }
+
+output "msk_bootstrap_brokers_tls" {
+  value = module.msk.bootstrap_brokers_tls
+}
