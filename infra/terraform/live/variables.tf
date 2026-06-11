@@ -35,3 +35,8 @@ variable "general_min_size" {
   type    = number
   default = 2
 }
+
+variable "general_max_size" {
+  type    = number
+  default = 4
+}
