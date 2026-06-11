@@ -25,3 +25,14 @@ output "rds_secret_arn" {
 output "msk_bootstrap_brokers_tls" {
   value = module.msk.bootstrap_brokers_tls
 }
+
+# Consumed by infra/scripts/deploy-aws.sh -> k8s/overlays/aws/app.env
+output "k8s_app_env" {
+  value = <<-ENV
+    DB_HOST=${module.rds.address}
+    DB_SSL=true
+    KAFKA_BROKERS=${module.msk.bootstrap_brokers_tls}
+    KAFKA_SSL=true
+    KAFKA_REPLICATION_FACTOR=${module.msk.replication_factor}
+  ENV
+}
