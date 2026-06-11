@@ -25,3 +25,8 @@ variable "eks_api_allowed_cidrs" {
   type    = list(string)
   default = ["0.0.0.0/0"]
 }
+
+variable "general_instance_types" {
+  type    = list(string)
+  default = ["t3.large"]
+}
