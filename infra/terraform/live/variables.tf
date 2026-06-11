@@ -20,3 +20,8 @@ variable "kubernetes_version" {
   type    = string
   default = "1.31"
 }
+
+variable "eks_api_allowed_cidrs" {
+  type    = list(string)
+  default = ["0.0.0.0/0"]
+}
