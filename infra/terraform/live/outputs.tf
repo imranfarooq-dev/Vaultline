@@ -17,3 +17,7 @@ output "ecr_repository_url" {
 output "rds_address" {
   value = module.rds.address
 }
+
+output "rds_secret_arn" {
+  value = module.rds.secret_arn
+}
