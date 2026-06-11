@@ -49,3 +49,13 @@ module "rds" {
   multi_az                   = var.environment == "prod"
   deletion_protection        = var.environment == "prod"
 }
+
+module "msk" {
+  source                     = "../modules/msk"
+  name                       = local.name
+  vpc_id                     = module.network.vpc_id
+  subnet_ids                 = module.network.private_subnet_ids
+  allowed_security_group_ids = [module.eks.node_security_group_id]
+  broker_count               = var.msk_broker_count
+  instance_type              = var.msk_instance_type
+}
