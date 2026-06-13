@@ -55,3 +55,8 @@ variable "ai_ami_type" {
   type    = string
   default = "AL2023_x86_64_STANDARD"
 }
+
+variable "rds_instance_class" {
+  type    = string
+  default = "db.t4g.micro"
+}
