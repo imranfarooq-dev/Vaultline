@@ -45,3 +45,8 @@ variable "use_spot" {
   type    = bool
   default = false
 }
+
+variable "ai_instance_type" {
+  type    = string
+  default = "m6i.xlarge"
+}
