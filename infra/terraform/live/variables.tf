@@ -50,3 +50,8 @@ variable "ai_instance_type" {
   type    = string
   default = "m6i.xlarge"
 }
+
+variable "ai_ami_type" {
+  type    = string
+  default = "AL2023_x86_64_STANDARD"
+}
