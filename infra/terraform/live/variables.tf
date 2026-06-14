@@ -65,3 +65,8 @@ variable "msk_broker_count" {
   type    = number
   default = 2
 }
+
+variable "msk_instance_type" {
+  type    = string
+  default = "kafka.t3.small"
+}
