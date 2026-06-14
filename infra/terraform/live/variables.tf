@@ -60,3 +60,8 @@ variable "rds_instance_class" {
   type    = string
   default = "db.t4g.micro"
 }
+
+variable "msk_broker_count" {
+  type    = number
+  default = 2
+}
