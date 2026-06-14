@@ -1,0 +1,50 @@
+# AWS EKS. Do not apply by hand the first time: infra/scripts/deploy-aws.sh
+# fills in app.env (RDS/MSK endpoints from Terraform), creates the DB secret
+# from AWS Secrets Manager, pushes the image to ECR and sets the image below.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: banking
+resources:
+  - ../../base
+  - storageclass-gp3.yaml
+configMapGenerator:
+  - name: banking-config
+    behavior: merge
+    envs:
+      - app.env          # generated from `terraform output -raw k8s_app_env`
+images:
+  - name: banking-api
+    newName: ECR_REPOSITORY_URL   # replaced by deploy-aws.sh
+    newTag: IMAGE_TAG             # replaced by deploy-aws.sh
+patches:
+  # Expose the API through an AWS load balancer.
+  - target: { kind: Service, name: banking-api }
+    patch: |-
+      - op: add
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /metadata/annotations
+        value:
+          service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  # Always pull from ECR.
+  - target: { kind: Deployment, name: banking-.* }
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/imagePullPolicy
+        value: Always
+  # Models live on an encrypted gp3 EBS volume.
+  - target: { kind: PersistentVolumeClaim, name: ollama-models }
+    patch: |-
+      - op: add
+        path: /spec/storageClassName
+        value: gp3
+  # Run Ollama on the dedicated "ai" node group (see infra/terraform/modules/eks).
+  - target: { kind: Deployment, name: ollama }
+    patch: |-
+      - op: add
+        path: /spec/template/spec/nodeSelector
+        value: { workload: ai }
+      - op: add
+        path: /spec/template/spec/tolerations
+        value: [{ key: workload, operator: Equal, value: ai, effect: NoSchedule }]
