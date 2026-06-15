@@ -1,0 +1,23 @@
+# Core pipeline
+workflow-aggregator
+pipeline-stage-view
+pipeline-graph-view
+git
+ssh-slaves
+ssh-credentials
+
+# Configuration as code
+configuration-as-code
+job-dsl
+
+# Reports
+junit
+coverage
+htmlpublisher
+
+# Quality of life
+timestamper
+ansicolor
+ws-cleanup
+credentials-binding
+aws-credentials
