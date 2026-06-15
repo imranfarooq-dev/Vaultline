@@ -13,3 +13,20 @@
 #                                     └──────────────────────────────────────────┘
 # =============================================================================
 name: nestbank-jenkins
+
+services:
+  # One-shot: creates the SSH key pair the controller uses to log in to the agent.
+  keygen:
+    image: alpine:3.20
+    volumes: [agent_keys:/keys]
+    command:
+      - /bin/sh
+      - -c
+      - |
+        if [ ! -f /keys/id_rsa ]; then
+          apk add --no-cache openssh-keygen >/dev/null
+          ssh-keygen -t rsa -b 4096 -m PEM -N "" -C jenkins-agent -f /keys/id_rsa
+        fi
+        chown -R 1000:1000 /keys && chmod 600 /keys/id_rsa && chmod 644 /keys/id_rsa.pub
+        echo "agent keys ready"
+    restart: "no"
