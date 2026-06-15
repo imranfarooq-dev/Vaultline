@@ -6,3 +6,12 @@
 # =============================================================================
 jenkins:
   systemMessage: "NestBank CI/CD. Configured as code in jenkins/controller/casc.yaml"
+  numExecutors: 0          # the controller never runs builds itself (security best practice)
+  mode: EXCLUSIVE
+
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_ADMIN_ID}"
+          password: "${JENKINS_ADMIN_PASSWORD}"
