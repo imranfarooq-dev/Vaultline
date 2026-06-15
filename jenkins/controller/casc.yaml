@@ -1,0 +1,8 @@
+# =============================================================================
+# Jenkins Configuration as Code (JCasC)
+# Everything you would normally click together in "Manage Jenkins" lives here,
+# so the whole CI server can be destroyed and recreated identically.
+# ${VAR} values come from environment variables (see jenkins/docker-compose.yml).
+# =============================================================================
+jenkins:
+  systemMessage: "NestBank CI/CD. Configured as code in jenkins/controller/casc.yaml"
