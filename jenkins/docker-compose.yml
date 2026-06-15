@@ -1,0 +1,15 @@
+# =============================================================================
+# Jenkins for NestBank: controller + SSH build agent, configured entirely as code.
+#
+#   docker compose -f jenkins/docker-compose.yml up -d --build     (or: make jenkins-up)
+#   open http://localhost:8090   user: admin   password: admin  (change in jenkins/.env)
+#
+#   ┌──────────────────────┐   SSH    ┌──────────────────────────────────────────┐
+#   │ jenkins (controller) │ ───────▶ │ jenkins-agent                            │
+#   │  UI, schedules jobs, │          │  node 22, docker CLI, kubectl, terraform,│
+#   │  0 executors,        │          │  aws cli, kubeconform                    │
+#   │  NO docker access    │          │  builds images & runs Testcontainers via │
+#   └──────────────────────┘          │  the host Docker socket                  │
+#                                     └──────────────────────────────────────────┘
+# =============================================================================
+name: nestbank-jenkins
