@@ -51,3 +51,18 @@ services:
     depends_on:
       keygen: { condition: service_completed_successfully }
     restart: unless-stopped
+
+  jenkins-agent:
+    build: ./agent
+    image: nestbank/jenkins-agent:local
+    volumes:
+      - agent_keys:/run/jenkins-keys:ro
+      - /var/run/docker.sock:/var/run/docker.sock   # builds use the HOST Docker engine
+      - agent_workspace:/home/jenkins/agent          # workspaces survive restarts
+      - agent_npm_cache:/home/jenkins/.npm           # faster npm ci
+    extra_hosts:
+      # Testcontainers starts containers on the host; the agent reaches their ports here.
+      - host.docker.internal:host-gateway
+    depends_on:
+      keygen: { condition: service_completed_successfully }
+    restart: unless-stopped
