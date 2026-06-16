@@ -65,3 +65,7 @@ credentials:
               description: "AWS credentials for Terraform and EKS deploys"
               accessKey: "${AWS_ACCESS_KEY_ID}"
               secretKey: "${AWS_SECRET_ACCESS_KEY}"
+
+unclassified:
+  location:
+    url: "http://localhost:8090/"
