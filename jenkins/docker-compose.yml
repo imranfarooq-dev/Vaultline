@@ -66,3 +66,9 @@ services:
     depends_on:
       keygen: { condition: service_completed_successfully }
     restart: unless-stopped
+
+volumes:
+  jenkins_home:
+  agent_keys:
+  agent_workspace:
+  agent_npm_cache:
