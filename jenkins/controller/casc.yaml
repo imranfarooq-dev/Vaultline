@@ -69,3 +69,24 @@ credentials:
 unclassified:
   location:
     url: "http://localhost:8090/"
+
+# Job DSL: creates the pipeline job. The pipeline itself is defined in /Jenkinsfile.
+jobs:
+  - script: |
+      pipelineJob('nestbank') {
+        displayName('NestBank - build, test, scan, deploy')
+        description('Pipeline defined in Jenkinsfile at the repository root. Click "Build with Parameters".')
+        logRotator { numToKeep(30) }
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote { url('${NESTBANK_REPO_URL}') }
+                branch('${NESTBANK_REPO_BRANCH}')
+              }
+            }
+            scriptPath('Jenkinsfile')
+            lightweight(false)
+          }
+        }
+      }
