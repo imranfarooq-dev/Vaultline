@@ -19,3 +19,13 @@ x-app-env: &app-env
   AI_PROVIDER: fake
   AI_AUTO_INGEST: "false"
   LOG_FORMAT: json
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment: { POSTGRES_USER: bank, POSTGRES_PASSWORD: bank_password, POSTGRES_DB: bank }
+    tmpfs: [/var/lib/postgresql/data]       # RAM-backed: fast and nothing left behind
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bank -d bank"]
+      interval: 3s
+      retries: 30
