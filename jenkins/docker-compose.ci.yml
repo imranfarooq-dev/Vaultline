@@ -1,0 +1,21 @@
+# =============================================================================
+# Throwaway stack for the Jenkins "Smoke test" stage.
+# Runs the image that was JUST built, with real Postgres and Kafka, then walks
+# through all 23 patterns. The LLM is faked so the stage needs no 1.6 GB model.
+#
+#   IMAGE=nestbank/banking-api:<tag> docker compose -p ci-42 -f jenkins/docker-compose.ci.yml run --rm smoke
+#   docker compose -p ci-42 -f jenkins/docker-compose.ci.yml down -v
+#
+# Nothing publishes ports, so parallel builds never collide.
+# =============================================================================
+x-app-env: &app-env
+  DB_HOST: postgres
+  DB_USER: bank
+  DB_PASSWORD: bank_password
+  DB_NAME: bank
+  DB_RUN_MIGRATIONS: "false"
+  KAFKA_ENABLED: "true"
+  KAFKA_BROKERS: kafka:9092
+  AI_PROVIDER: fake
+  AI_AUTO_INGEST: "false"
+  LOG_FORMAT: json
