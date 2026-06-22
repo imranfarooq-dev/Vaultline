@@ -62,3 +62,10 @@ services:
       migrate: { condition: service_completed_successfully }
       kafka: { condition: service_healthy }
     # health check comes from the image's HEALTHCHECK instruction
+
+  worker:
+    image: ${IMAGE:?set IMAGE to the image under test}
+    environment: { <<: *app-env, APP_MODE: worker, PORT: 3001 }
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      kafka: { condition: service_healthy }
