@@ -47,3 +47,10 @@ services:
       test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
       interval: 5s
       retries: 30
+
+  migrate:
+    image: ${IMAGE:?set IMAGE to the image under test}
+    environment: *app-env
+    command: ["node", "dist/database/run-migrations.js"]
+    depends_on:
+      postgres: { condition: service_healthy }
