@@ -69,3 +69,11 @@ services:
     depends_on:
       migrate: { condition: service_completed_successfully }
       kafka: { condition: service_healthy }
+
+  smoke:
+    image: ${IMAGE:?set IMAGE to the image under test}
+    environment: { BASE_URL: "http://api:3000" }
+    command: ["node", "scripts/smoke-test.mjs"]
+    depends_on:
+      api: { condition: service_healthy }
+      worker: { condition: service_started }
