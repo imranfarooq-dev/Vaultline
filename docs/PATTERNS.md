@@ -63,3 +63,14 @@ Memory trick:
 - Observer goes *across processes* with Kafka: the worker pod is an observer of events produced by API pods.
 - LangChain itself is **Strategy**: `ChatOllama` and the fake model share one interface, so the RAG code never changes (`src/modules/ai/llm/llm.providers.ts`).
 - Visitor has a real trade-off: adding a new *operation* is easy (new visitor), but adding a new *account type* means touching every visitor.
+
+## NestJS already uses several of these
+
+| NestJS feature | Pattern |
+|---|---|
+| Providers (default scope) | Singleton |
+| `useFactory` providers | Factory |
+| Guards, Pipes, Interceptors, Middleware | Chain of Responsibility |
+| Interceptors wrapping handlers | Decorator |
+| `@Module` hiding internals behind exports | Facade |
+| Lifecycle hooks (`onModuleInit`) | Template Method (the framework calls your hook) |
