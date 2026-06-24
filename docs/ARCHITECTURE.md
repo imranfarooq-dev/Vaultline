@@ -49,3 +49,9 @@ src/
 ```
 
 Business rules live in `domain/` folders as plain TypeScript classes with **no NestJS or database imports**. That is why most unit tests need no mocks at all.
+
+## Money handling
+
+- Amounts are **integers in minor units** (paisa): `Rs 1,250.50` is stored as `125050`. Floating point is never used for balances.
+- The ledger is **append-only**. A mistake is corrected with a `REVERSAL` entry, never by editing or deleting history.
+- `balance_minor >= 0` is enforced by a database `CHECK` constraint as the last line of defence.
