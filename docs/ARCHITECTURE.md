@@ -61,3 +61,11 @@ Business rules live in `domain/` folders as plain TypeScript classes with **no N
 Every money movement runs in one DB transaction and takes `SELECT ... FOR UPDATE` row locks.
 Transfers lock both accounts in **sorted id order**, so two opposite transfers can never deadlock.
 `test/integration/ledger.int-spec.ts` proves it: 20 parallel withdrawals from Rs 10 in Rs 1 steps give exactly 10 successes and a final balance of 0.
+
+## Events and Kafka
+
+- Envelope: `eventId`, `eventType`, `occurredAt`, `schemaVersion`, `payload`, validated by Joi schemas shared by producer and consumer (see `test/contract`).
+- Topic per aggregate: `banking.account-events`, `banking.transaction-events`, `banking.loan-events`, `banking.customer-events`.
+- Message key = account id, so all events of one account stay **in order** in one partition.
+- Producer is idempotent. The consumer is idempotent too: `event_id` is the primary key of `notifications`, and inserts use `ON CONFLICT DO NOTHING`.
+- Messages that can never be processed go to `banking.dead-letter` instead of blocking the partition forever.
