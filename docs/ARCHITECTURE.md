@@ -55,3 +55,9 @@ Business rules live in `domain/` folders as plain TypeScript classes with **no N
 - Amounts are **integers in minor units** (paisa): `Rs 1,250.50` is stored as `125050`. Floating point is never used for balances.
 - The ledger is **append-only**. A mistake is corrected with a `REVERSAL` entry, never by editing or deleting history.
 - `balance_minor >= 0` is enforced by a database `CHECK` constraint as the last line of defence.
+
+## Concurrency
+
+Every money movement runs in one DB transaction and takes `SELECT ... FOR UPDATE` row locks.
+Transfers lock both accounts in **sorted id order**, so two opposite transfers can never deadlock.
+`test/integration/ledger.int-spec.ts` proves it: 20 parallel withdrawals from Rs 10 in Rs 1 steps give exactly 10 successes and a final balance of 0.
