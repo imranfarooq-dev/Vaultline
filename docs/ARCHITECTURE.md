@@ -69,3 +69,12 @@ Transfers lock both accounts in **sorted id order**, so two opposite transfers c
 - Message key = account id, so all events of one account stay **in order** in one partition.
 - Producer is idempotent. The consumer is idempotent too: `event_id` is the primary key of `notifications`, and inserts use `ON CONFLICT DO NOTHING`.
 - Messages that can never be processed go to `banking.dead-letter` instead of blocking the partition forever.
+
+### Known trade-off: events after commit
+
+The ledger commits, *then* publishes. If the pod crashes between those two steps, the event is lost.
+The production-grade fix is the **Transactional Outbox**: write the event into an `outbox` table inside the same DB transaction, and let a relay (a poller, or Debezium CDC) publish it to Kafka. It is left out to keep the code readable, and is a great exercise:
+
+1. Add an `outbox_events` table in a new migration.
+2. Replace `events.publish()` in `LedgerService` with an insert using the same `EntityManager`.
+3. Add a worker loop that reads unpublished rows with `FOR UPDATE SKIP LOCKED`, publishes them, and marks them sent.
