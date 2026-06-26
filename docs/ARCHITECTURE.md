@@ -107,3 +107,17 @@ ANSWERING (POST /api/ai/ask)
 | `/api/health/dependencies` | humans | Kafka connection, Ollama models |
 
 Ollama is deliberately **not** in any probe: a 1.6 GB model download must not make Kubernetes restart healthy pods.
+
+## Local vs AWS
+
+| Concern | Docker Compose | Local Kubernetes | AWS |
+|---|---|---|---|
+| PostgreSQL | `pgvector/pgvector:pg16` | StatefulSet | RDS PostgreSQL 16, TLS enforced |
+| Kafka | `apache/kafka` KRaft | StatefulSet | MSK, TLS on 9094 |
+| Ollama | container | Deployment + PVC | Deployment on a dedicated, tainted node group |
+| Image | built locally | `nestbank/banking-api:local` | ECR |
+| Config | compose env | `configMapGenerator` literals | `app.env` generated from Terraform outputs |
+| Secrets | compose env | `secretGenerator` | Secrets Manager → Kubernetes Secret |
+| Exposure | port 3000 | `port-forward` / Ingress | Network Load Balancer |
+
+Switches that make the same code run everywhere: `DB_SSL`, `KAFKA_SSL`, `KAFKA_REPLICATION_FACTOR`, `AI_PROVIDER`.
