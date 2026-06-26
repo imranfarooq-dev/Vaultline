@@ -44,3 +44,9 @@
 - faster: `TEST_DB_HOST=localhost npm run test:e2e` creates a uniquely-named database on an existing server (for example the compose Postgres) and drops it afterwards.
 
 Set `SKIP_KAFKA_TESTS=1` to skip the Kafka suite.
+
+## Ideas to extend
+
+- **Mutation testing** with Stryker (`npx stryker run`) to see whether tests actually catch bugs.
+- **Property-based testing** with fast-check: for any sequence of deposits and withdrawals, balance = sum of ledger entries.
+- **Chaos**: `kubectl delete pod` the worker mid-load and confirm no notification is lost or duplicated.
