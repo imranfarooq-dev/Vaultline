@@ -36,3 +36,11 @@
 - `event-pipeline.int-spec.ts`: API → real Kafka → worker → Postgres, duplicate delivery ignored, poison message dead-lettered.
 
 **E2E** sends real HTTP requests through validation pipes, the exception filter, controllers and services: a full customer journey from onboarding to loan decision and a RAG answer, including correct 400/403/404/409/422 responses.
+
+## Test databases
+
+`test/support/postgres.ts` gives every test file its **own fresh, migrated database**:
+- default: starts a `pgvector/pgvector:pg16` container with Testcontainers.
+- faster: `TEST_DB_HOST=localhost npm run test:e2e` creates a uniquely-named database on an existing server (for example the compose Postgres) and drops it afterwards.
+
+Set `SKIP_KAFKA_TESTS=1` to skip the Kafka suite.
