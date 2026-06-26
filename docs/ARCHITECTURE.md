@@ -97,3 +97,13 @@ ANSWERING (POST /api/ai/ask)
 - `pg_try_advisory_lock` stops two API pods ingesting at the same time.
 - `AI_PROVIDER=fake` swaps in deterministic hashing embeddings and an extractive fake model. Tests and laptops without Ollama still exercise the entire chain.
 - Changing the embedding model to one with a different dimension requires a migration that changes `vector(768)`.
+
+## Health checks
+
+| Endpoint | Used by | Checks |
+|---|---|---|
+| `/api/health/live` | liveness + startup probes | process responds |
+| `/api/health/ready` | readiness probe | database reachable |
+| `/api/health/dependencies` | humans | Kafka connection, Ollama models |
+
+Ollama is deliberately **not** in any probe: a 1.6 GB model download must not make Kubernetes restart healthy pods.
