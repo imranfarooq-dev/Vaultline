@@ -78,3 +78,22 @@ The production-grade fix is the **Transactional Outbox**: write the event into a
 1. Add an `outbox_events` table in a new migration.
 2. Replace `events.publish()` in `LedgerService` with an insert using the same `EntityManager`.
 3. Add a worker loop that reads unpublished rows with `FOR UPDATE SKIP LOCKED`, publishes them, and marks them sent.
+
+## RAG pipeline
+
+```
+INDEXING (POST /api/ai/ingest, or automatically on startup)
+  knowledge/*.md ─▶ RecursiveCharacterTextSplitter (900 chars, 120 overlap)
+                 ─▶ OllamaEmbeddings(nomic-embed-text) ─▶ 768-dim vectors
+                 ─▶ knowledge_chunks table (vector(768), HNSW cosine index)
+
+ANSWERING (POST /api/ai/ask)
+  question ─▶ embedQuery ─▶ ORDER BY embedding <=> $query LIMIT k
+           ─▶ ChatPromptTemplate(system rules + context + question)
+           ─▶ ChatOllama(llama3.2:1b) ─▶ StringOutputParser ─▶ answer + sources
+```
+
+- The vector store is ~80 lines of hand-written SQL (`pgvector.store.ts`) so every step is visible.
+- `pg_try_advisory_lock` stops two API pods ingesting at the same time.
+- `AI_PROVIDER=fake` swaps in deterministic hashing embeddings and an extractive fake model. Tests and laptops without Ollama still exercise the entire chain.
+- Changing the embedding model to one with a different dimension requires a migration that changes `vector(768)`.
