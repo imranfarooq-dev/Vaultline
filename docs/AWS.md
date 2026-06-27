@@ -28,3 +28,8 @@ infra/terraform/
 ```
 
 Databases accept traffic **only** from the EKS node security group, never from the internet.
+
+## Prerequisites
+
+- Terraform ≥ 1.10, AWS CLI v2, kubectl, Docker, jq
+- AWS credentials with admin-level rights for the sandbox account: `aws sts get-caller-identity`
