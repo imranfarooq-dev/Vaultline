@@ -89,3 +89,11 @@ For autoscaling (HPA), install metrics-server once:
 ```bash
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
+
+### 5. Destroy
+
+```bash
+make aws-destroy ENV=dev
+```
+
+The script deletes the Kubernetes namespace **first**. The NLB and EBS volumes were created by Kubernetes, not Terraform; if they still exist, `terraform destroy` hangs on the VPC.
