@@ -73,3 +73,19 @@ make aws-deploy
 5. copies the DB credentials from Secrets Manager into the `banking-secrets` Kubernetes Secret,
 6. applies `k8s/overlays/aws` with the new image tag,
 7. waits for the migration Job and the rollouts, then prints the load-balancer URL.
+
+### 4. Try it
+
+```bash
+HOST=$(kubectl -n banking get svc banking-api -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+curl http://$HOST/api/patterns
+BASE_URL=http://$HOST node scripts/smoke-test.mjs
+kubectl -n banking logs -f job/ollama-pull-models     # model download
+kubectl -n banking logs -f deploy/banking-worker      # events from MSK
+```
+
+For autoscaling (HPA), install metrics-server once:
+
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
