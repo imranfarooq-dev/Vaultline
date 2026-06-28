@@ -33,3 +33,14 @@ Databases accept traffic **only** from the EKS node security group, never from t
 
 - Terraform ≥ 1.10, AWS CLI v2, kubectl, Docker, jq
 - AWS credentials with admin-level rights for the sandbox account: `aws sts get-caller-identity`
+
+## Step by step
+
+### 1. State bucket (once per account)
+
+```bash
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+make tf-bootstrap STATE_BUCKET=nestbank-tfstate-$ACCOUNT_ID
+```
+
+Put the same bucket name into `infra/terraform/live/environments/dev.backend.hcl`.
