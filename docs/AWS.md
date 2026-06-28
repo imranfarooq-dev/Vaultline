@@ -97,3 +97,16 @@ make aws-destroy ENV=dev
 ```
 
 The script deletes the Kubernetes namespace **first**. The NLB and EBS volumes were created by Kubernetes, not Terraform; if they still exist, `terraform destroy` hangs on the VPC.
+
+## dev vs prod
+
+| Setting | dev | prod |
+|---|---|---|
+| NAT gateways | 1 | 1 per AZ |
+| General nodes | 2 × t3.large, spot | 3–8 × m6i.large, on-demand |
+| Ollama node | m6i.xlarge (CPU) | g5.xlarge (GPU, NVIDIA AMI) |
+| RDS | db.t4g.micro, single AZ | db.m7g.large, Multi-AZ, deletion protection, final snapshot |
+| MSK | 2 × kafka.t3.small | 3 × kafka.m7g.large |
+| Kubernetes API access | anywhere | your CIDR only |
+
+For a GPU node you also need the NVIDIA device plugin, plus a `nvidia.com/gpu: 1` resource limit on the Ollama container.
