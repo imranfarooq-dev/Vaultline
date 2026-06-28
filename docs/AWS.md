@@ -58,3 +58,18 @@ Useful afterwards:
 terraform -chdir=infra/terraform/live output
 terraform -chdir=infra/terraform/live output -raw configure_kubectl
 ```
+
+### 3. Deploy the application
+
+```bash
+make aws-deploy
+```
+
+`infra/scripts/deploy-aws.sh` then:
+1. reads Terraform outputs,
+2. connects kubectl to EKS,
+3. builds a `linux/amd64` image and pushes it to ECR,
+4. writes `k8s/overlays/aws/app.env` with the RDS and MSK endpoints,
+5. copies the DB credentials from Secrets Manager into the `banking-secrets` Kubernetes Secret,
+6. applies `k8s/overlays/aws` with the new image tag,
+7. waits for the migration Job and the rollouts, then prints the load-balancer URL.
