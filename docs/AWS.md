@@ -44,3 +44,17 @@ make tf-bootstrap STATE_BUCKET=nestbank-tfstate-$ACCOUNT_ID
 ```
 
 Put the same bucket name into `infra/terraform/live/environments/dev.backend.hcl`.
+
+### 2. Plan and apply the infrastructure
+
+```bash
+make tf-plan ENV=dev      # read the plan: ~90 resources
+make tf-apply ENV=dev     # ~20-25 minutes (EKS and MSK are slow to create)
+```
+
+Useful afterwards:
+
+```bash
+terraform -chdir=infra/terraform/live output
+terraform -chdir=infra/terraform/live output -raw configure_kubectl
+```
