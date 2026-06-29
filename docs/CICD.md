@@ -29,3 +29,24 @@ Commit again whenever you want Jenkins to see a change. To build from GitHub ins
 Then open **nestbank → Build with Parameters → Build**.
 
 > The very first run uses default parameters. Jenkins only learns about the `parameters { }` block after reading the Jenkinsfile once, which is a normal Jenkins behaviour.
+
+## 2. How Jenkins is put together
+
+```
+ jenkins/docker-compose.yml
+ ├── keygen          one-shot: creates an SSH key pair in a shared volume
+ ├── jenkins         CONTROLLER: web UI, scheduling, plugins, credentials
+ │                   0 executors, no Docker access
+ └── jenkins-agent   BUILD AGENT (SSH): node 22, docker CLI + compose, terraform,
+                     kubectl, kubeconform, aws cli. Uses the host Docker engine.
+```
+
+**Why a separate agent?** Builds run arbitrary code from the repository. Keeping them off the controller protects its credentials and configuration, which is standard practice in enterprise Jenkins. It also avoids the classic *"Docker agent can't see the workspace"* problem you hit when a containerised controller launches build containers itself.
+
+**Configuration as Code.** Nothing is clicked together in the UI. `casc.yaml` defines:
+- the admin user, and the rule that the controller never builds,
+- the `docker-agent` node, its SSH launcher and build environment variables,
+- credentials: the agent SSH key (read from the generated file) and `aws-nestbank`,
+- the `nestbank` pipeline job (through Job DSL), pointing at `Jenkinsfile`.
+
+Delete everything with `make jenkins-clean`, start again, and you get the identical server.
