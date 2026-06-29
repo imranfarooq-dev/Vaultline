@@ -85,3 +85,18 @@ Prepare ─▶ Quality gates ─────────▶ Unit & contract ─�
 | `DEPLOY_ENV` | none | `dev` or `prod` runs Terraform and deploys |
 
 **Result colours.** Green: everything passed. Yellow (**UNSTABLE**): tests passed but the coverage gate was not met. Red: a stage failed.
+
+## 4. Deploying to AWS from Jenkins
+
+1. Complete the one-time steps in [AWS.md](AWS.md): the state bucket, and the bucket name in `infra/terraform/live/environments/*.backend.hcl`. Commit.
+2. Put credentials in `jenkins/.env`:
+   ```
+   AWS_ACCESS_KEY_ID=AKIA...
+   AWS_SECRET_ACCESS_KEY=...
+   ```
+3. `make jenkins-up` again (configuration as code reloads the credential).
+4. Build with `DEPLOY_ENV=dev`. For `prod`, the pipeline pauses at **Approval**.
+
+> ⚠️ `DEPLOY_ENV=dev|prod` creates billable AWS resources. Tear down with `make aws-destroy ENV=dev`.
+
+For real teams, replace long-lived access keys with an IAM role (Jenkins on EC2/EKS with an instance profile or IRSA), and store secrets in a vault.
