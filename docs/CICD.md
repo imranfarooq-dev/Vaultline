@@ -111,3 +111,11 @@ For real teams, replace long-lived access keys with an IAM role (Jenkins on EC2/
 | `Couldn't find any revision to build` | commit to the `main` branch, or set `NESTBANK_REPO_BRANCH` |
 | Parameters missing on first run | expected; run once, then "Build with Parameters" appears |
 | Build is slow the first time | npm cache, Trivy DB and Docker layers are cached in volumes for later builds |
+
+## 6. Exercises
+
+- Convert the job to a **Multibranch Pipeline** so every branch and pull request gets its own build.
+- Add a **webhook** from GitHub instead of manual builds.
+- Push images to ECR on every `main` build, and deploy dev automatically.
+- Move agents to **Kubernetes** with the Kubernetes plugin: one pod per build that is thrown away afterwards.
+- Add a **shared library** (`@Library`) and move the smoke-test stage into it: the Template Method pattern at pipeline level.
