@@ -50,3 +50,38 @@ Then open **nestbank → Build with Parameters → Build**.
 - the `nestbank` pipeline job (through Job DSL), pointing at `Jenkinsfile`.
 
 Delete everything with `make jenkins-clean`, start again, and you get the identical server.
+
+## 3. The pipeline
+
+```
+Prepare ─▶ Quality gates ─────────▶ Unit & contract ─▶ Integration & e2e ─▶ Build image ─▶ Security scan ─▶ Smoke test
+           ├ TypeScript             JUnit + coverage     Testcontainers                     Trivy            ephemeral stack:
+           ├ Kubernetes manifests   (gate: lines ≥ 35%)  (pgvector, Kafka)                                    Postgres+Kafka+API+worker
+           └ Terraform validate
+                                             ── only when DEPLOY_ENV = dev | prod ──
+                          Terraform plan ─▶ Approval (prod) ─▶ Terraform apply ─▶ Deploy to EKS + remote smoke test
+```
+
+| Stage | What it proves | Output in Jenkins |
+|---|---|---|
+| Prepare | Tool versions; `npm ci` from the lockfile | build name `#12 a1b2c3d4` |
+| Quality gates | Code compiles; K8s YAML is valid for 1.31; Terraform is formatted and valid. Runs **in parallel** | parallel branches in stage view |
+| Unit & contract | 185 fast tests, event contracts | **Test Result** trend, **Coverage** trend, HTML report |
+| Integration & e2e | Row locks, pgvector search, Kafka → worker, full HTTP journeys on real containers | test results |
+| Build image | Multi-stage runtime image tagged with the git SHA, OCI labels | image `nestbank/banking-api:<sha>` |
+| Security scan | HIGH/CRITICAL fixable CVEs (Trivy). Set `FAIL_ON_CRITICAL_CVES` to block the build | `reports/trivy.txt` |
+| Smoke test | The image **that will ship** boots, migrates, serves all 23 patterns, and the worker really consumes from Kafka | `reports/smoke-stack.log` |
+| Terraform plan | What would change on AWS | `reports/terraform-plan-<env>.txt` |
+| Approval | A human confirms prod (`input` step, 30-minute timeout) | "Deploy to prod" button |
+| Terraform apply → Deploy | Applies the *reviewed* plan file, runs `infra/scripts/deploy-aws.sh`, smoke tests the live URL | live URL in the log |
+
+**Build parameters**
+
+| Parameter | Default | Use |
+|---|---|---|
+| `RUN_CONTAINER_TESTS` | true | untick for a quick 3-minute loop |
+| `RUN_SMOKE_TEST` | true | |
+| `FAIL_ON_CRITICAL_CVES` | false | turn into a hard security gate |
+| `DEPLOY_ENV` | none | `dev` or `prod` runs Terraform and deploys |
+
+**Result colours.** Green: everything passed. Yellow (**UNSTABLE**): tests passed but the coverage gate was not met. Red: a stage failed.
