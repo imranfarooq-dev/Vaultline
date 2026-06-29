@@ -100,3 +100,14 @@ Prepare ─▶ Quality gates ─────────▶ Unit & contract ─�
 > ⚠️ `DEPLOY_ENV=dev|prod` creates billable AWS resources. Tear down with `make aws-destroy ENV=dev`.
 
 For real teams, replace long-lived access keys with an IAM role (Jenkins on EC2/EKS with an instance profile or IRSA), and store secrets in a vault.
+
+## 5. Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| Agent shows *offline* | `make jenkins-logs`; the controller retries SSH for ~5 min while the agent starts |
+| `permission denied ... docker.sock` | the agent entrypoint adds `jenkins` to the socket's group; recreate the agent: `docker compose -f jenkins/docker-compose.yml up -d --force-recreate jenkins-agent` |
+| Testcontainers cannot connect to started containers | the agent reaches them via `host.docker.internal` (`extra_hosts: host-gateway`); needs Docker Engine 20.10+ |
+| `Couldn't find any revision to build` | commit to the `main` branch, or set `NESTBANK_REPO_BRANCH` |
+| Parameters missing on first run | expected; run once, then "Build with Parameters" appears |
+| Build is slow the first time | npm cache, Trivy DB and Docker layers are cached in volumes for later builds |
