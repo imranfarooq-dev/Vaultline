@@ -110,3 +110,14 @@ The script deletes the Kubernetes namespace **first**. The NLB and EBS volumes w
 | Kubernetes API access | anywhere | your CIDR only |
 
 For a GPU node you also need the NVIDIA device plugin, plus a `nvidia.com/gpu: 1` resource limit on the Ollama container.
+
+## Hardening checklist (next steps for a real bank)
+
+- **Secrets:** External Secrets Operator syncing from Secrets Manager, with rotation.
+- **Kafka auth:** IAM or SASL/SCRAM instead of unauthenticated TLS.
+- **Traffic:** AWS Load Balancer Controller + ALB Ingress with an ACM certificate (HTTPS) and AWS WAF.
+- **Kubernetes API:** private endpoint, reached through a VPN or bastion.
+- **TLS verification:** bundle the RDS CA certificate instead of `rejectUnauthorized: false`.
+- **Pipeline:** GitHub Actions with OIDC federation to AWS, running `terraform plan` on PRs and deploying on merge.
+- **Observability:** Container Insights / Prometheus + Grafana, OpenTelemetry tracing across API → Kafka → worker.
+- **Data:** the transactional outbox (see ARCHITECTURE.md) and RDS Performance Insights.
