@@ -254,3 +254,15 @@ Details: **[docs/TESTING.md](docs/TESTING.md)**.
 | [docs/TESTING.md](docs/TESTING.md) | Test pyramid and what each suite proves |
 | [docs/AWS.md](docs/AWS.md) | Terraform, EKS, RDS, MSK, costs, hardening checklist |
 | [docs/CICD.md](docs/CICD.md) | Jenkins architecture, every pipeline stage, deploying from Jenkins, troubleshooting |
+
+## Suggested learning path
+
+1. Read `docs/PATTERNS.md`, then run `make up && make smoke`.
+2. Pick one pattern per day: read the header comment, the code, its `*.spec.ts`, and trigger it in Swagger.
+3. Break something on purpose. Remove `setNext(new DailyLimitHandler())`, or reorder the decorators in `transactions.module.ts`, and watch the tests fail.
+4. Follow one deposit: controller → Command → Chain → State → ledger (row lock) → Observer → Kafka UI → worker → `/api/notifications`.
+5. Study the RAG flow in `src/modules/ai`, then add your own Markdown to `knowledge/`.
+6. Deploy to local Kubernetes, then run the Jenkins pipeline, then deploy to AWS.
+7. Exercises: implement the transactional outbox, add a `PdfStatementRenderer` (Bridge), add a new fraud-rule operator such as `IN` (Interpreter), or a `LoyaltyPointsVisitor`.
+
+> NestBank is fictional. Fees, tax rates and rules are illustrative, and this is a learning project, not financial or tax advice.
