@@ -219,3 +219,28 @@ Prepare ▶ Quality gates (typecheck | k8s | terraform) ▶ Unit & contract ▶ 
 The controller only orchestrates; builds run on a separate SSH agent with Node, Docker, Terraform, kubectl and the AWS CLI. Everything, including users, the agent, credentials and the job, is defined in `jenkins/controller/casc.yaml`. Choose `DEPLOY_ENV=dev` to deploy to AWS from the pipeline.
 
 ---
+
+## 6. Develop and test on your machine
+
+```bash
+npm ci
+docker compose up -d postgres kafka ollama ollama-pull   # only the infrastructure
+cp .env.example .env
+npm run migration:run:dev
+npm run start:dev
+```
+
+No Ollama? Set `AI_PROVIDER=fake` in `.env`. No Kafka? Set `KAFKA_ENABLED=false`.
+
+| Command | What | Needs Docker |
+|---|---|---|
+| `npm run test:unit` | 141 unit + docs tests | no |
+| `npm run test:contract` | 44 event-contract tests | no |
+| `npm run test:integration` | Postgres, pgvector and Kafka via Testcontainers | yes |
+| `npm run test:e2e` | full HTTP journeys on a real database | yes |
+| `npm run test:all` | everything | yes |
+| `npm run test:cov` | coverage report | no |
+
+Details: **[docs/TESTING.md](docs/TESTING.md)**.
+
+---
