@@ -185,3 +185,17 @@ make k8s-delete
 ```
 
 ---
+
+## 4. Deploy to AWS with Terraform
+
+Full walkthrough, costs and teardown: **[docs/AWS.md](docs/AWS.md)**.
+
+```bash
+make tf-bootstrap STATE_BUCKET=nestbank-tfstate-<account-id>   # once
+make tf-plan ENV=dev
+make tf-apply ENV=dev          # VPC, EKS, RDS (pgvector), MSK, ECR: ~20-25 min
+make aws-deploy                # image → ECR, manifests → EKS, prints the URL
+make aws-destroy ENV=dev       # ⚠️ remember this: AWS bills by the hour
+```
+
+---
