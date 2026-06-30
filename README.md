@@ -149,3 +149,39 @@ curl -s $B/events/stats
 All amounts are **minor units**: `12000000` = Rs 120,000.00.
 
 ---
+
+## 3. Run on your local Kubernetes
+
+Works with Docker Desktop Kubernetes, kind or minikube. Give the cluster ~8 GB RAM.
+
+```bash
+make k8s-deploy        # builds the image, applies k8s/overlays/local, waits for migrations + rollout
+make k8s-status
+make k8s-forward       # then open http://localhost:3000/docs
+BASE_URL=http://localhost:3000 node scripts/smoke-test.mjs
+```
+
+Behind `make k8s-deploy`:
+
+```bash
+docker build --target runtime -t nestbank/banking-api:local .
+kubectl apply -k k8s/overlays/local
+kubectl -n banking wait --for=condition=complete job/banking-migrate --timeout=5m
+kubectl -n banking rollout status deploy/banking-api
+```
+
+- **kind:** run `kind load docker-image nestbank/banking-api:local` after building.
+- **minikube:** run `eval $(minikube docker-env)` before building.
+- **Autoscaling:** the HPA needs metrics-server (`minikube addons enable metrics-server`, or apply the metrics-server manifest).
+
+Things to try:
+
+```bash
+kubectl -n banking logs -f job/ollama-pull-models             # model download
+kubectl -n banking scale deploy/banking-worker --replicas=3   # consumer group rebalances partitions
+kubectl -n banking delete pod -l app=banking-api              # zero downtime: PDB + rolling pods
+kubectl kustomize k8s/overlays/local | less                   # see the final rendered YAML
+make k8s-delete
+```
+
+---
