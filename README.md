@@ -244,3 +244,13 @@ No Ollama? Set `AI_PROVIDER=fake` in `.env`. No Kafka? Set `KAFKA_ENABLED=false`
 Details: **[docs/TESTING.md](docs/TESTING.md)**.
 
 ---
+
+## Documentation
+
+| Doc | Read it for |
+|---|---|
+| [docs/PATTERNS.md](docs/PATTERNS.md) | Every pattern: where it lives, how to trigger it, how patterns combine |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Processes, money handling, concurrency, Kafka design, RAG pipeline, trade-offs |
+| [docs/TESTING.md](docs/TESTING.md) | Test pyramid and what each suite proves |
+| [docs/AWS.md](docs/AWS.md) | Terraform, EKS, RDS, MSK, costs, hardening checklist |
+| [docs/CICD.md](docs/CICD.md) | Jenkins architecture, every pipeline stage, deploying from Jenkins, troubleshooting |
