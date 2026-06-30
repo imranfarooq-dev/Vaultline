@@ -199,3 +199,23 @@ make aws-destroy ENV=dev       # ⚠️ remember this: AWS bills by the hour
 ```
 
 ---
+
+## 5. CI/CD with Jenkins
+
+Full guide: **[docs/CICD.md](docs/CICD.md)**.
+
+```bash
+git init -b main && git add -A && git commit -m "NestBank"   # Jenkins checks out this folder
+make jenkins-up                                                # http://localhost:8090  (admin / admin)
+```
+
+Open the **nestbank** job → **Build with Parameters**:
+
+```
+Prepare ▶ Quality gates (typecheck | k8s | terraform) ▶ Unit & contract ▶ Integration & e2e
+        ▶ Build image ▶ Trivy scan ▶ Smoke test ▶ [Terraform plan ▶ Approval ▶ Apply ▶ Deploy to EKS]
+```
+
+The controller only orchestrates; builds run on a separate SSH agent with Node, Docker, Terraform, kubectl and the AWS CLI. Everything, including users, the agent, credentials and the job, is defined in `jenkins/controller/casc.yaml`. Choose `DEPLOY_ENV=dev` to deploy to AWS from the pipeline.
+
+---
